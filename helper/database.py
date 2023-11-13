@@ -4,6 +4,11 @@ from .utils import send_log
 
 class Database:
 
+    def __init__(self, uri, database_name):
+        self._client = motor.motor_asyncio.AsyncIOMotorClient(uri)
+        self.db = self._client[database_name]
+        self.col = self.db.user
+
     def new_user(self, id):
         return dict(
             _id=int(id),                                   
@@ -32,12 +37,6 @@ class Database:
 
     async def delete_user(self, user_id):
         await self.col.delete_many({'_id': int(user_id)})
-
-    async def set_format_template(self, user_id, template):
-        self.format_templates[user_id] = template
-
-    async def get_format_template(self, user_id):
-        return self.format_templates.get(user_id, None)
     
     async def set_thumbnail(self, id, file_id):
         await self.col.update_one({'_id': int(id)}, {'$set': {'file_id': file_id}})
@@ -53,5 +52,5 @@ class Database:
         user = await self.col.find_one({'_id': int(id)})
         return user.get('caption', None)
 
+
 db = Database(Config.DB_URL, Config.DB_NAME)
-        
