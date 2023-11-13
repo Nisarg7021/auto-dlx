@@ -98,51 +98,7 @@ async def docs(bot, update):
     media = getattr(file, file.media.value)
     c_caption = await db.get_caption(update.message.chat.id)
     c_thumb = await db.get_thumbnail(update.message.chat.id)
-    
-@Client.on_message(filters.private & filters.command('add_caption'))
-async def set_caption(client, message):
-    if len(message.command) == 1:
-       return await message.reply_text("**__Gɪᴠᴇ Tʜᴇ Cᴀᴩᴛɪᴏɴ__\n\nExᴀᴍᴩʟᴇ:- `/set_caption {filename}\n\n💾 Sɪᴢᴇ: {filesize}\n\n⏰ Dᴜʀᴀᴛɪᴏɴ: {duration}`**")
-    caption = message.text.split(" ", 1)[1]
-    await db.set_caption(message.from_user.id, caption=caption)
-    await message.reply_text("__**✅ Cᴀᴩᴛɪᴏɴ Sᴀᴠᴇᴅ**__")
    
-@Client.on_message(filters.private & filters.command('rem_caption'))
-async def del_caption(client, message):
-    caption = await db.get_caption(message.from_user.id)  
-    if not caption:
-       return await message.reply_text("__**😔 Yᴏᴜ Dᴏɴ'ᴛ Hᴀᴠᴇ Aɴy Cᴀᴩᴛɪᴏɴ**__")
-    await db.set_caption(message.from_user.id, caption=None)
-    await message.reply_text("__**❌️ Cᴀᴩᴛɪᴏɴ Dᴇʟᴇᴛᴇᴅ**__")
-                                       
-@Client.on_message(filters.private & filters.command(['caption', 'current_caption']))
-async def current_caption(client, message):
-    caption = await db.get_caption(message.from_user.id)  
-    if caption:
-       await message.reply_text(f"**Yᴏᴜ'ʀᴇ Cᴀᴩᴛɪᴏɴ:-**\n\n`{caption}`")
-    else:
-       await message.reply_text("__**😔 Yᴏᴜ Dᴏɴ'ᴛ Hᴀᴠᴇ Aɴy Cᴀᴩᴛɪᴏɴ**__")
-
-
-@Client.on_message(filters.private & filters.command(['thumb', 'thumbnail']))
-async def thumb(client, message):    
-    thumb = await db.get_thumbnail(message.from_user.id)
-    if thumb:
-       await client.send_photo(chat_id=message.chat.id, photo=thumb)
-    else:
-        await message.reply_text("😔 __**Yᴏᴜ Dᴏɴ'ᴛ Hᴀᴠᴇ Aɴy Tʜᴜᴍʙɴᴀɪʟ**__") 
-		
-@Client.on_message(filters.private & filters.command(['rem_thumb', 'remthumb']))
-async def delthumb(client, message):
-    await db.set_thumbnail(message.from_user.id, file_id=None)
-    await message.reply_text("❌️ __**Tʜᴜᴍʙɴᴀɪʟ Dᴇʟᴇᴛᴇᴅ**__")
-	
-@Client.on_message(filters.private & filters.photo)
-async def addthumb(client, message):
-    mkn = await message.reply_text("Please Wait ...")
-    await db.set_thumbnail(message.from_user.id, file_id=message.photo.file_id)                
-    await mkn.edit("✅️ __**Tʜᴜᴍʙɴᴀɪʟ Sᴀᴠᴇᴅ**__")
-
     await ms.edit("Trying to upload...")
     type = update.data.split("_")[1]
     try:
