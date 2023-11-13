@@ -12,9 +12,11 @@ from helper.database import db
 from PIL import Image
 import os, time
 
+import re
+
 def extract_episode_number(filename):
-    # Pattern: [AV] Undead Unluck S01 - E06 [Sub] [480p] @Animes_Vault.mkv
-    pattern = re.compile(r'S(\d+)[ -]E(\d+)', re.IGNORECASE)
+    # Updated Pattern: [AV] Undead Unluck S01 - E06 [Sub] [480p] @Animes_Vault.mkv
+    pattern = re.compile(r'S(\d+)[\s-]*E(\d+)', re.IGNORECASE)
     
     match = re.search(pattern, filename)
     if match:
@@ -23,6 +25,7 @@ def extract_episode_number(filename):
 
     # Return None if no pattern matches
     return None
+	
 
 # Example Usage:
 filename = "[AV] Undead Unluck S01 - E06 [Sub] [480p] @Animes_Vault.mkv"
