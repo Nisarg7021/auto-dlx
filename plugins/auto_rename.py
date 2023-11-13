@@ -25,6 +25,7 @@ def get_duration(file_path):
         return 0
 
 # Example usage:
+user_id = message.from_user.id
 format_template = db.get_format_template(user_id)
 new_file_name = format_template.format(episode=episode_number)
 file_path = f"downloads/{new_file_name}"
