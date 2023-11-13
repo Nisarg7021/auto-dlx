@@ -31,24 +31,7 @@ import os, sys, time, asyncio, logging, datetime
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-file_name_pattern = re.compile(r'\[(.*?)\] Jujutsu Kaisen S(\d+) - E(\d+) (\d+p) (.*?) @(.*)\.mkv')
 
-# Add your logic to extract information from the file name
-def extract_info(file_name):
-    match = file_name_pattern.match(file_name)
-    if match:
-        return {
-            "tag": match.group(1),
-            "season": match.group(2),
-            "episode": match.group(3),
-            "quality": match.group(4),
-            "sub": match.group(5),
-            "source": match.group(6),
-        }
-    else:
-        return None
-
- 
 @Client.on_message(filters.command(["stats", "status"]) & filters.user(Config.ADMIN))
 async def get_stats(bot, message):
     total_users = await db.total_users_count()
@@ -61,80 +44,10 @@ async def get_stats(bot, message):
 
 
 #Restart to cancell all process 
-@Client.on_message(filters.private & filters.command("restart") & filters.user(Config.ADMIN))
+@Client.on_message(filters.private & filters.command("restart") & filters.use(Config.ADMIN))
 async def restart_bot(b, m):
     await m.reply_text("🔄__Rᴇꜱᴛᴀʀᴛɪɴɢ.....__")
     os.execl(sys.executable, sys.executable, *sys.argv)
-
-
-# Inside the add_format_template handler
-@Client.on_message(filters.private & filters.command("add_format_template"))
-async def add_format_template(client, message):
-    user_id = message.from_user.id
-    format_template = message.text.split("/add_format_template", 1)[1].strip()
-
-    # Save the format template to the database
-    await db.set_format_template(user_id, format_template)
-
-    await message.reply_text("Format template added successfully!")
-
-
-@Client.on_message(filters.private & filters.command("auto"))
-async def auto_toggle(client, message):
-    user_id = message.from_user.id
-    db.auto_rename = not db.auto_rename
-
-    if db.auto_rename:
-        await message.reply_text("Auto rename is ON")
-    else:
-        await message.reply_text("Auto rename is OFF")
-
-
-# Inside the rename_file handler
-@Client.on_message(filters.private & filters.command("file"))
-async def rename_file(client, message):
-    user_id = message.from_user.id
-    format_template = await db.get_format_template(user_id)
-
-    if not format_template:
-        return await message.reply_text("Please set a format template first using /add_format_template")
-     
-    if db.auto_rename:
-        return await message.reply_text("Auto rename is ON. Please disable it to manually rename files.")
-
-    # Extract information from the file name
-    file_name = message.text.split("/file", 1)[1].strip()
-    file_info = extract_info(file_name)
-
-    if file_info:
-        # Use the format template to rename the file
-        renamed_file_name = format_template.format(**file_info)
-        await message.reply_text(f"File renamed: {renamed_file_name}")
-    else:
-        await message.reply_text("File name does not match the expected pattern. Unable to rename.")
-
-# Inside the auto_rename handler
-@Client.on_message(filters.document & ~filters.private)
-async def auto_rename(client, message):
-    if not db.auto_rename:
-        return
-
-    user_id = message.from_user.id
-    format_template = await db.get_format_template(user_id)
-
-    if not format_template:
-        return
-
-    # Extract information from the file name
-    file_name = message.document.file_name
-    file_info = extract_info(file_name)
-
-    if file_info:
-        # Use the format template to rename the file
-        renamed_file_name = format_template.format(**file_info)
-        await message.reply_text(f"Auto-renamed: {renamed_file_name}")
-    else:
-        await message.reply_text("File name does not match the expected pattern. Unable to auto-rename.")
 
 
 @Client.on_message(filters.command("broadcast") & filters.user(Config.ADMIN) & filters.reply)
