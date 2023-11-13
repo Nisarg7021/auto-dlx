@@ -14,7 +14,7 @@ from PIL import Image
 import os, time
 
 
-@Client.on_message(filters.private & filters.command("rename"))& filters.reply)
+@Client.on_message(filters.private & filters.command("rename") & filters.reply)
 async def rename_start(client, message):
     file = getattr(message, message.media.value)
     filename = file.file_name  
