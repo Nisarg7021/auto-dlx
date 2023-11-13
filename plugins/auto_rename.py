@@ -16,6 +16,25 @@ import os, time
 
 import re
 
+# Assuming the video file is in the same directory as your script
+file_path = "video.mp4"
+
+# Get the absolute path
+file_path = os.path.abspath(file_path)
+
+# Function to get the duration
+def get_duration(file_path):
+    try:
+        with VideoFileClip(file_path) as video:
+            return video.duration
+    except Exception as e:
+        print(f"Error getting duration: {e}")
+        return 0
+
+# Get the duration and print it
+duration = get_duration(file_path)
+print(f"Video Duration: {duration} seconds")
+
 def get_duration(file_path):
     try:
         with VideoFileClip(file_path) as video:
