@@ -62,7 +62,10 @@ async def auto_rename_files(client, message):
 
     # Extract information from the incoming file name
     file_name = message.document.file_name
+    print(f"Original File Name: {file_name}")
+
     extracted_info = extract_info_from_file(file_name)
+    print(f"Extracted Info: {extracted_info}")
 
     if extracted_info:
         # Use the extracted_info dictionary and format_template string to generate the new file name
@@ -78,3 +81,4 @@ async def auto_rename_files(client, message):
         await message.reply_text(f"File renamed successfully to: {new_file_name}")
     else:
         await message.reply_text("Failed to extract information from the file name. Please check the format.")
+        
