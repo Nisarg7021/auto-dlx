@@ -2,7 +2,6 @@ from pyrogram import Client, filters
 from pyrogram.enums import MessageMediaType
 from pyrogram.errors import FloodWait
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
-from moviepy.editor import VideoFileClip
 from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
 
@@ -15,25 +14,6 @@ import os, time
 
 
 import re
-
-# Assuming the video file is in the same directory as your script
-file_path = "video.mp4"
-
-# Get the absolute path
-file_path = os.path.abspath(file_path)
-
-# Function to get the duration
-def get_duration(file_path):
-    try:
-        with VideoFileClip(file_path) as video:
-            return video.duration
-    except Exception as e:
-        print(f"Error getting duration: {e}")
-        return 0
-
-# Get the duration and print it
-duration = get_duration(file_path)
-print(f"Video Duration: {duration} seconds")
 
 
 def extract_episode_number(filename):
@@ -54,12 +34,6 @@ filename = "One Piece S1-07 [720p][Dual] @Anime_Edge.mkv"
 episode_number = extract_episode_number(filename)
 print(f"Extracted Episode Number: {episode_number}")
 
-try:
-    duration = get_duration(file_path)
-except Exception as e:
-    print(f"Error getting duration: {e}")
-    duration = 0
-
 # Assuming you have a command handler in Pyrogram
 @Client.on_message(filters.private & filters.command("autorename"))
 async def auto_rename_command(client, message):
@@ -72,7 +46,7 @@ async def auto_rename_command(client, message):
     await db.set_format_template(user_id, format_template)
 
     await message.reply_text("Auto rename format updated successfully!")
-
+	
 @Client.on_message(filters.private & (filters.document | filters.video))
 async def auto_rename_files(client, message):
     user_id = message.from_user.id
@@ -93,8 +67,8 @@ async def auto_rename_files(client, message):
         new_file_name = format_template.format(episode=episode_number)
         await message.reply_text(f"File renamed successfully to: {new_file_name}")
     else:
-        await message.reply_text("Failed to extract the episode number from the file name. Please check the format.")
-        
+        await message.reply_text("Failed to extract the episode number from the file name. Please check the format.")	    
+
 # Define a callback handler for document upload
 @Client.on_callback_query(filters.regex("upload"))
 async def docs(bot, update):
