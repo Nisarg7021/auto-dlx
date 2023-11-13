@@ -8,6 +8,7 @@ class Database:
         self._client = motor.motor_asyncio.AsyncIOMotorClient(uri)
         self.db = self._client[database_name]
         self.col = self.db.user
+        self.format_templates = {}  # Add this line to initialize the dictionary
 
     def new_user(self, id):
         return dict(
@@ -38,11 +39,11 @@ class Database:
     async def delete_user(self, user_id):
         await self.col.delete_many({'_id': int(user_id)})
 
-    async def set_format_template(cls, user_id, template):
-        cls.format_templates[user_id] = template
-        
-    async def get_format_template(cls, user_id):
-        return cls.format_templates.get(user_id, None)
+    async def set_format_template(self, user_id, template):
+        self.format_templates[user_id] = template
+
+    async def get_format_template(self, user_id):
+        return self.format_templates.get(user_id, None)
     
     async def set_thumbnail(self, id, file_id):
         await self.col.update_one({'_id': int(id)}, {'$set': {'file_id': file_id}})
@@ -58,9 +59,5 @@ class Database:
         user = await self.col.find_one({'_id': int(id)})
         return user.get('caption', None)
 
-
 db = Database(Config.DB_URL, Config.DB_NAME)
-
-
-
-
+        
