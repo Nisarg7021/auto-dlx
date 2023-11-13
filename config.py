@@ -30,9 +30,6 @@ class Config(object):
     API_HASH  = os.environ.get("API_HASH", "d8c8dab274f9a811814a6a96d044028e")
     BOT_TOKEN = os.environ.get("BOT_TOKEN", "6985292832:AAHGVJPolS-BlP4fAHD4Zvun-IJJx0XF14E") 
 
-    # Auto Rename Status
-    AUTO_RENAME = False
-       
     # database config
     DB_NAME = os.environ.get("DB_NAME","pyro-botz")     
     DB_URL  = os.environ.get("DB_URL","mongodb+srv://mehtadmphta33:Mehtab1234@cluster0.bfsb3oq.mongodb.net/?retryWrites=true&w=majority")
