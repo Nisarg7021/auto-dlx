@@ -14,15 +14,60 @@ from PIL import Image
 import os, time
 
 
-@Client.on_message(filters.private & filters.command("add_format_template"))
-async def add_format_template(client, message):
-    # Your code to handle adding format template
-    pass
+@Client.on_message(filters.private & (filters.document | filters.audio | filters.video))
+async def rename_start(client, message):
+    file = getattr(message, message.media.value)
+    filename = file.file_name  
+    if file.file_size > 2000 * 1024 * 1024:
+         return await message.reply_text("Sᴏʀʀy Bʀᴏ Tʜɪꜱ Bᴏᴛ Iꜱ Dᴏᴇꜱɴ'ᴛ Sᴜᴩᴩᴏʀᴛ Uᴩʟᴏᴀᴅɪɴɢ Fɪʟᴇꜱ Bɪɢɢᴇʀ Tʜᴀɴ 2Gʙ")
 
-@Client.on_message(filters.private & filters.command("file"))
-async def rename_file(client, message):
-    # Your code to handle file renaming
-    pass	
+    try:
+        await message.reply_text(
+            text=f"**__Pʟᴇᴀꜱᴇ Eɴᴛᴇʀ Nᴇᴡ Fɪʟᴇɴᴀᴍᴇ...__**\n\n**Oʟᴅ Fɪʟᴇ Nᴀᴍᴇ** :- `{filename}`",
+	    reply_to_message_id=message.id,  
+	    reply_markup=ForceReply(True)
+        )       
+        await sleep(30)
+    except FloodWait as e:
+        await sleep(e.value)
+        await message.reply_text(
+            text=f"**__Pʟᴇᴀꜱᴇ Eɴᴛᴇʀ Nᴇᴡ Fɪʟᴇɴᴀᴍᴇ...__**\n\n**Oʟᴅ Fɪʟᴇ Nᴀᴍᴇ** :- `{filename}`",
+	    reply_to_message_id=message.id,  
+	    reply_markup=ForceReply(True)
+        )
+    except:
+        pass
+
+
+
+@Client.on_message(filters.private & filters.reply)
+async def refunc(client, message):
+    reply_message = message.reply_to_message
+    if (reply_message.reply_markup) and isinstance(reply_message.reply_markup, ForceReply):
+        new_name = message.text 
+        await message.delete() 
+        msg = await client.get_messages(message.chat.id, reply_message.id)
+        file = msg.reply_to_message
+        media = getattr(file, file.media.value)
+        if not "." in new_name:
+            if "." in media.file_name:
+                extn = media.file_name.rsplit('.', 1)[-1]
+            else:
+                extn = "mkv"
+            new_name = new_name + "." + extn
+        await reply_message.delete()
+
+        button = [[InlineKeyboardButton("📁 Dᴏᴄᴜᴍᴇɴᴛ",callback_data = "upload_document")]]
+        if file.media in [MessageMediaType.VIDEO, MessageMediaType.DOCUMENT]:
+            button.append([InlineKeyboardButton("🎥 Vɪᴅᴇᴏ", callback_data = "upload_video")])
+        elif file.media == MessageMediaType.AUDIO:
+            button.append([InlineKeyboardButton("🎵 Aᴜᴅɪᴏ", callback_data = "upload_audio")])
+        await message.reply(
+            text=f"**Sᴇʟᴇᴄᴛ Tʜᴇ Oᴜᴛᴩᴜᴛ Fɪʟᴇ Tyᴩᴇ**\n**• Fɪʟᴇ Nᴀᴍᴇ :-**```{new_name}```",
+            reply_to_message_id=file.id,
+            reply_markup=InlineKeyboardMarkup(button)
+        )
+
 
 
 @Client.on_callback_query(filters.regex("upload"))
@@ -107,8 +152,3 @@ async def doc(bot, update):
     await ms.delete() 
     os.remove(file_path) 
     if ph_path: os.remove(ph_path) 
-
-
-
-
-
