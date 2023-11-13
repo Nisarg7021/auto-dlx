@@ -8,7 +8,7 @@ from helper.database import db
 
 
 def extract_info_from_file(file_name):
-    pattern = r'\[(.*?)\]\s*(.*?)\s*[Ss](\d+)\s*-\s*[Ee](\d+)\s*\[([^\]]+)\]\s*@(.*)\.mkv'
+    pattern = r'\[(.*?)\]\s*(.*?)\s*[Ss](\d+)\s*-\s*[Ee](\d+)\s*(\d+p)?\s*\[([^\]]+)\]\s*@(.*)\.mkv'
     match = re.match(pattern, file_name)
 
     if match:
@@ -16,19 +16,22 @@ def extract_info_from_file(file_name):
         season_number = match.group(3)
         episode_number = match.group(4)
         quality = match.group(5) if match.group(5) else "N/A"
-        source_group = match.group(6)
+        subtitle = match.group(6)
+        source_group = match.group(7)
 
         extracted_info = {
             "Series Title": series_title,
             "Season Number": season_number,
             "Episode Number": episode_number,
             "Quality": quality,
+            "Subtitle": subtitle,
             "Source/Group": source_group,
         }
 
         return extracted_info
     else:
         return None
+        
         
 
 # Example Usage
