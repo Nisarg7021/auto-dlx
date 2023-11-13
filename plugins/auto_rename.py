@@ -7,37 +7,34 @@ from helper.database import db
 
 
 
-def extract_info_from_file(file_name):
-    pattern = r'\[(.*?)\]\s*(.*?)\s*[Ss](\d+)\s*-\s*[Ee](\d+)\s*(\d+p)?\s*\[([^\]]+)\]\s*@(.*)\.mkv'
-    match = re.match(pattern, file_name)
+import re
 
-    if match:
-        series_title = match.group(2)
-        season_number = match.group(3)
-        episode_number = match.group(4)
-        quality = match.group(5) if match.group(5) else "N/A"
-        subtitle = match.group(6)
-        source_group = match.group(7)
+def extract_episode_number(filename):
+    # Pattern 1: S1E01 or S01E01
+    pattern1 = re.compile(r'S(\d+)E(\d+)')
+    
+    # Pattern 2: S02 E01
+    pattern2 = re.compile(r'S(\d+) E(\d+)')
+    
+    # Pattern 3: Episode Number After "E" or "-"
+    pattern3 = re.compile(r'[E|-](\d+)')
+    
+    # Pattern 4: Standalone Episode Number
+    pattern4 = re.compile(r'(\d+)')
+    
+    # Try each pattern in order
+    for pattern in [pattern1, pattern2, pattern3, pattern4]:
+        match = re.search(pattern, filename)
+        if match:
+            return match.group(1)  # Extracted episode number
+    
+    # Return None if no pattern matches
+    return None
 
-        extracted_info = {
-            "Series Title": series_title,
-            "Season Number": season_number,
-            "Episode Number": episode_number,
-            "Quality": quality,
-            "Subtitle": subtitle,
-            "Source/Group": source_group,
-        }
-
-        return extracted_info
-    else:
-        return None
-        
-        
-
-# Example Usage
-file_name = "[AV] Jujutsu Kaisen S02 - E15 [Sub] [480p] @Animes_Vault.mkv"
-info = extract_info_from_file(file_name)
-print(info)
+# Example Usage:
+filename = "One Piece S1-07 [720p][Dual] @Anime_Edge.mkv"
+episode_number = extract_episode_number(filename)
+print(f"Extracted Episode Number: {episode_number}")
 
 # Assuming you have a command handler in Pyrogram
 @Client.on_message(filters.private & filters.command("autorename"))
