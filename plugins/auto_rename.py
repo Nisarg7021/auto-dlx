@@ -13,20 +13,19 @@ from PIL import Image
 import os, time
 
 def extract_episode_number(filename):
-    # Pattern 1: S1E01 or S01E01
-    pattern1 = re.compile(r'S(\d+)E(\d+)')
+    # Pattern: [AV] Undead Unluck S01 - E06 [Sub] [480p] @Animes_Vault.mkv
+    pattern = re.compile(r'S(\d+)[ -]E(\d+)', re.IGNORECASE)
     
-    # Pattern 2: S02 E01
-    pattern2 = re.compile(r'S(\d+) E(\d+)')
-    
-    # Pattern 3: Episode Number After "E" or "-"
-    pattern3 = re.compile(r'[E|-](\d+)')
-    
-    # Pattern 4: Standalone Episode Number
-    pattern4 = re.compile(r'(\d+)')
+    match = re.search(pattern, filename)
+    if match:
+        season_number, episode_number = match.groups()
+        return f"S{season_number}E{episode_number}"
+
+    # Return None if no pattern matches
+    return None
 
 # Example Usage:
-filename = "[AC] Jujutsu kaisen S2 - E14 [720p] [Sub] @Anime_Campus.mkv"
+filename = "[AV] Undead Unluck S01 - E06 [Sub] [480p] @Animes_Vault.mkv"
 episode_number = extract_episode_number(filename)
 print(f"Extracted Episode Number: {episode_number}")
 
