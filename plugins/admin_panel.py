@@ -42,6 +42,24 @@ async def get_stats(bot, message):
     await st.edit(text=f"**--Bᴏᴛ Sᴛᴀᴛᴜꜱ--** \n\n**⌚️ Bᴏᴛ Uᴩᴛɪᴍᴇ:** {uptime} \n**🐌 Cᴜʀʀᴇɴᴛ Pɪɴɢ:** `{time_taken_s:.3f} ᴍꜱ` \n**👭 Tᴏᴛᴀʟ Uꜱᴇʀꜱ:** `{total_users}`")
 
 
+# Auto Rename Command Handlers
+@Client.on_message(filters.private & filters.command("auto"))
+async def toggle_auto(client, message):
+    user_id = message.from_user.id
+    if user_id in Config.ADMIN:
+        command = message.text.split("/auto", 1)[1].strip().lower()
+        if command == "on":
+            Config.AUTO_RENAME = True
+            await message.reply_text("Auto rename is now enabled!")
+        elif command == "off":
+            Config.AUTO_RENAME = False
+            await message.reply_text("Auto rename is now disabled!")
+        else:
+            await message.reply_text("Invalid command. Use /auto on or /auto off.")
+    else:
+        await message.reply_text("You don't have permission to use this command.") 
+
+
 #Restart to cancell all process 
 @Client.on_message(filters.private & filters.command("restart") & filters.user(Config.ADMIN))
 async def restart_bot(b, m):
