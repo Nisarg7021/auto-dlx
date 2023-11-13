@@ -1,3 +1,4 @@
+import os
 import re
 from pyrogram import Client, filters
 from pyrogram.enums import MessageMediaType
@@ -152,4 +153,5 @@ async def docs(bot, update):
  
     await ms.delete() 
     os.remove(file_path) 
-    if ph_path: os.remove(ph_path) u
+    if ph_path: os.remove(ph_path)
+	    
