@@ -14,36 +14,39 @@ from PIL import Image
 import os, time
 
 
-@Client.on_message(filters.private & (filters.document | filters.audio | filters.video))
+@Client.on_message(filters.private & filters.command("rename", prefixes="/") & filters.reply & (filters.document | filters.audio | filters.video))
 async def rename_start(client, message):
+    # Check if the replied message is a media file
+    if message.media is None:
+        return await message.reply_text("This command requires a reply to a media message.")
+
+    # Get file details
     file = getattr(message, message.media.value)
     filename = file.file_name  
+
+    # Check file size
     if file.file_size > 2000 * 1024 * 1024:
-         return await message.reply_text("Sᴏʀʀy Bʀᴏ Tʜɪꜱ Bᴏᴛ Iꜱ Dᴏᴇꜱɴ'ᴛ Sᴜᴩᴩᴏʀᴛ Uᴩʟᴏᴀᴅɪɴɢ Fɪʟᴇꜱ Bɪɢɢᴇʀ Tʜᴀɴ 2Gʙ")
+        return await message.reply_text("Sorry, this bot doesn't support uploading files bigger than 2GB")
 
     try:
+        # Prompt the user to enter a new file name
         await message.reply_text(
-            text=f"**__Pʟᴇᴀꜱᴇ Eɴᴛᴇʀ Nᴇᴡ Fɪʟᴇɴᴀᴍᴇ...__**\n\n**Oʟᴅ Fɪʟᴇ Nᴀᴍᴇ** :- `{filename}`",
-	    reply_to_message_id=message.id,  
-	    reply_markup=ForceReply(True)
-        )       
-        await sleep(30)
-    except FloodWait as e:
-        await sleep(e.value)
-        await message.reply_text(
-            text=f"**__Pʟᴇᴀꜱᴇ Eɴᴛᴇʀ Nᴇᴡ Fɪʟᴇɴᴀᴍᴇ...__**\n\n**Oʟᴅ Fɪʟᴇ Nᴀᴍᴇ** :- `{filename}`",
-	    reply_to_message_id=message.id,  
-	    reply_markup=ForceReply(True)
+            text=f"**__Please enter the new file name:__**\n\n**Old File Name:** `{filename}`",
+            reply_markup=ForceReply(True)
         )
-    except:
-        pass
 
+        # Allow more time for users to reply (e.g., 120 seconds)
+        await sleep(120)
+    except Exception as e:
+        print(f"An error occurred: {e}")
 
-
+# Define the /rename callback handler
 @Client.on_message(filters.private & filters.reply)
 async def refunc(client, message):
     reply_message = message.reply_to_message
-    if (reply_message.reply_markup) and isinstance(reply_message.reply_markup, ForceReply):
+
+    # Check if the replied message has a ForceReply
+    if reply_message.reply_markup and isinstance(reply_message.reply_markup, ForceReply):
         new_name = message.text 
         await message.delete() 
         msg = await client.get_messages(message.chat.id, reply_message.id)
