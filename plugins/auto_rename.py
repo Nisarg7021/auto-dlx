@@ -3,6 +3,8 @@ from pyrogram import Client, filters
 from pyrogram.enums import MessageMediaType
 from pyrogram.errors import FloodWait
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
+from helper.database import db
+
 
 
 def extract_info_from_file(file_name):
