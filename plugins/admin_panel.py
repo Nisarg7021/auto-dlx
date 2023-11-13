@@ -30,6 +30,23 @@ import os, sys, time, asyncio, logging, datetime
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
+file_name_pattern = re.compile(r'\[(.*?)\] Jujutsu Kaisen S(\d+) - E(\d+) (\d+p) (.*?) @(.*)\.mkv')
+
+# Add your logic to extract information from the file name
+def extract_info(file_name):
+    match = file_name_pattern.match(file_name)
+    if match:
+        return {
+            "tag": match.group(1),
+            "season": match.group(2),
+            "episode": match.group(3),
+            "quality": match.group(4),
+            "sub": match.group(5),
+            "source": match.group(6),
+        }
+    else:
+        return None
+
  
 @Client.on_message(filters.command(["stats", "status"]) & filters.user(Config.ADMIN))
 async def get_stats(bot, message):
@@ -40,24 +57,6 @@ async def get_stats(bot, message):
     end_t = time.time()
     time_taken_s = (end_t - start_t) * 1000
     await st.edit(text=f"**--Bᴏᴛ Sᴛᴀᴛᴜꜱ--** \n\n**⌚️ Bᴏᴛ Uᴩᴛɪᴍᴇ:** {uptime} \n**🐌 Cᴜʀʀᴇɴᴛ Pɪɴɢ:** `{time_taken_s:.3f} ᴍꜱ` \n**👭 Tᴏᴛᴀʟ Uꜱᴇʀꜱ:** `{total_users}`")
-
-
-# Auto Rename Command Handlers
-@Client.on_message(filters.private & filters.command("auto"))
-async def toggle_auto(client, message):
-    user_id = message.from_user.id
-    if user_id in Config.ADMIN:
-        command = message.text.split("/auto", 1)[1].strip().lower()
-        if command == "on":
-            Config.AUTO_RENAME = True
-            await message.reply_text("Auto rename is now enabled!")
-        elif command == "off":
-            Config.AUTO_RENAME = False
-            await message.reply_text("Auto rename is now disabled!")
-        else:
-            await message.reply_text("Invalid command. Use /auto on or /auto off.")
-    else:
-        await message.reply_text("You don't have permission to use this command.") 
 
 
 #Restart to cancell all process 
@@ -98,7 +97,7 @@ async def rename_file(client, message):
 
     if not format_template:
         return await message.reply_text("Please set a format template first using /add_format_template")
-
+     
     if db.auto_rename:
         return await message.reply_text("Auto rename is ON. Please disable it to manually rename files.")
 
