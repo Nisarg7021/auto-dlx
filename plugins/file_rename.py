@@ -14,14 +14,18 @@ from PIL import Image
 import os, time
 
 
-@Client.on_message(filters.private & filters.command("rename") & filters.reply & (filters.document | filters.audio | filters.video))
+@Client.on_message(filters.private & filters.command("rename", prefixes="/") & filters.reply & (filters.document | filters.audio | filters.video))
 async def rename_start(client, message):
+    print("Command received and filters passed.")
+    
     if message.media is None:
+        print("No media found in the replied-to message.")
         return await message.reply_text("This command requires a reply to a media message.")
     
     file = getattr(message, message.media.value)
     filename = file.file_name  
     if file.file_size > 2000 * 1024 * 1024:
+        print("File size is too big.")
         return await message.reply_text("Sorry, this bot doesn't support uploading files bigger than 2GB")
 	    
     try:
