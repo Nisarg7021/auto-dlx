@@ -14,7 +14,7 @@ from PIL import Image
 import os, time
 
 
-@Client.on_message(filters.private & filters.command("rename") & filters.reply)
+@Client.on_message(filters.private & filters.command("rename") & filters.reply & (filters.document | filters.audio | filters.video))
 async def rename_start(client, message):
     if message.media is None:
         return await message.reply_text("This command requires a reply to a media message.")
