@@ -37,20 +37,17 @@ def extract_episode_number(filename):
     
     # Pattern 4: Standalone Episode Number
     pattern4 = re.compile(r'(\d+)')
-    
-    # Try each pattern in order
-    for pattern in [pattern1, pattern2, pattern3, pattern4]:
-        match = re.search(pattern, filename)
-        if match:
-            return match.group(1)  # Extracted episode number
-    
-    # Return None if no pattern matches
-    return None
 
 # Example Usage:
 filename = "One Piece S1-07 [720p][Dual] @Anime_Edge.mkv"
 episode_number = extract_episode_number(filename)
 print(f"Extracted Episode Number: {episode_number}")
+
+try:
+    duration = get_duration(file_path)
+except Exception as e:
+    print(f"Error getting duration: {e}")
+    duration = 0
 
 # Assuming you have a command handler in Pyrogram
 @Client.on_message(filters.private & filters.command("autorename"))
