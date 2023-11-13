@@ -25,7 +25,7 @@ def get_duration(file_path):
         return 0
 
 # Example usage:
-duration = get_duration(file_path)
+duration = get_duration(downloads)
 print(f"Video Duration: {duration} seconds")
 
 def extract_episode_number(filename):
