@@ -49,6 +49,30 @@ async def restart_bot(b, m):
     os.execl(sys.executable, sys.executable, *sys.argv)
 
 
+# Inside the add_format_template handler
+@Client.on_message(filters.private & filters.command("add_format_template"))
+async def add_format_template(client, message):
+    user_id = message.from_user.id
+    format_template = message.text.split("/add_format_template", 1)[1].strip()
+
+    # Save the format template to the database
+    await db.set_format_template(user_id, format_template)
+
+    await message.reply_text("Format template added successfully!")
+
+# Inside the rename_file handler
+@Client.on_message(filters.private & filters.command("file"))
+async def rename_file(client, message):
+    user_id = message.from_user.id
+    format_template = await db.get_format_template(user_id)
+
+    if not format_template:
+        return await message.reply_text("Please set a format template first using /add_format_template")
+
+    # Your code to parse the format template and rename the file
+    pass
+
+
 @Client.on_message(filters.command("broadcast") & filters.user(Config.ADMIN) & filters.reply)
 async def broadcast_handler(bot: Client, m: Message):
     await bot.send_message(Config.LOG_CHANNEL, f"{m.from_user.mention} or {m.from_user.id} Iꜱ ꜱᴛᴀʀᴛᴇᴅ ᴛʜᴇ Bʀᴏᴀᴅᴄᴀꜱᴛ......")
