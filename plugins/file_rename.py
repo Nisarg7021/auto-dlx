@@ -33,6 +33,9 @@ async def rename_start(client, message):
             text=f"**__Please enter the new file name:__**\n\n**Old File Name:** `{filename}`",
             reply_markup=ForceReply(True)
         )
+        
+        # Allow more time for users to reply (e.g., 120 seconds)
+        await sleep(120)
     except FloodWait as e:
         await sleep(e.value)
         await message.reply_text(
@@ -40,7 +43,8 @@ async def rename_start(client, message):
             reply_markup=ForceReply(True)
         )
     except:
-        pass	    
+        pass
+	    
 
 
 @Client.on_message(filters.private & filters.reply)
