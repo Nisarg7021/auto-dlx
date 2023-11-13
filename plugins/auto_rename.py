@@ -4,11 +4,26 @@ from pyrogram import Client, filters
 from pyrogram.enums import MessageMediaType
 from pyrogram.errors import FloodWait
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
+from moviepy.editor import VideoFileClip
 from helper.database import db
 
 
 
 import re
+
+def get_duration(file_path):
+    try:
+        with VideoFileClip(file_path) as video:
+            return video.duration
+    except Exception as e:
+        print(f"Error getting duration: {e}")
+        return 0
+
+# Example usage:
+file_path = f"downloads/{new_file_name}"
+duration = get_duration(file_path)
+new_file_name = format_template.format(episode=episode_number)
+print(f"Video Duration: {duration} seconds")
 
 def extract_episode_number(filename):
     # Pattern 1: S1E01 or S01E01
@@ -89,9 +104,10 @@ async def docs(bot, update):
 
     duration = 0
     try:
-        # Your existing code for duration extraction
-        # ...
-
+    duration = get_duration(file_path)
+except Exception as e:
+    print(f"Error getting duration: {e}")
+    duration = 0
     except Exception as e:
         pass
 
