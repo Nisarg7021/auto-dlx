@@ -14,8 +14,8 @@ from PIL import Image
 import os, time
 
 
-@Client.on_message(filters.private & (filters.document | filters.audio | filters.video))
-async def rename_start(client, message):
+@Client.on_message(filters.private & filters.command("rename"))
+async def manual_rename(client, message):
     file = getattr(message, message.media.value)
     filename = file.file_name  
     if file.file_size > 2000 * 1024 * 1024:
