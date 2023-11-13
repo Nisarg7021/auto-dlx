@@ -25,9 +25,9 @@ def get_duration(file_path):
         return 0
 
 # Example usage:
+new_file_name = format_template.format(episode=episode_number)
 file_path = f"downloads/{new_file_name}"
 duration = get_duration(file_path)
-new_file_name = format_template.format(episode=episode_number)
 print(f"Video Duration: {duration} seconds")
 
 def extract_episode_number(filename):
