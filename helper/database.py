@@ -13,7 +13,8 @@ class Database:
         return dict(
             _id=int(id),                                   
             file_id=None,
-            caption=None
+            caption=None,
+            format_template=None  # Add this line for the format template
         )
 
     async def add_user(self, b, m):
@@ -52,5 +53,13 @@ class Database:
         user = await self.col.find_one({'_id': int(id)})
         return user.get('caption', None)
 
+    async def set_format_template(self, id, format_template):
+        await self.col.update_one({'_id': int(id)}, {'$set': {'format_template': format_template}})
+
+    async def get_format_template(self, id):
+        user = await self.col.find_one({'_id': int(id)})
+        return user.get('format_template', None)
+
 
 db = Database(Config.DB_URL, Config.DB_NAME)
+        
