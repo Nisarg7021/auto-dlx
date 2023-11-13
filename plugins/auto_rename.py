@@ -1,3 +1,4 @@
+import re
 from pyrogram import Client, filters
 from pyrogram.enums import MessageMediaType
 from pyrogram.errors import FloodWait
@@ -10,11 +11,6 @@ from helper.database import db
 
 from PIL import Image
 import os, time
-
-
-
-import re
-
 
 def extract_episode_number(filename):
     # Pattern 1: S1E01 or S01E01
@@ -39,7 +35,7 @@ print(f"Extracted Episode Number: {episode_number}")
 async def auto_rename_command(client, message):
     user_id = message.from_user.id
 
-    # Extract the format from the command
+    # Extracted the format from the command
     format_template = message.text.split("/autorename", 1)[1].strip()
 
     # Save the format template to the database
