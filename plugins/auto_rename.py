@@ -72,8 +72,12 @@ async def auto_rename_files(client, message):
             subtitle=extracted_info["Subtitle"],
             source_group=extracted_info["Source/Group"],
         )
-        
-        @Client.on_callback_query(filters.regex("upload"))
+
+        await message.reply_text(f"File renamed successfully to: {new_file_name}")
+    else:
+        await message.reply_text("Failed to extract information from the file name. Please check the format.")
+	  
+@Client.on_callback_query(filters.regex("upload"))
 async def doc(bot, update):    
     new_name = update.message.text
     new_filename = new_name.split(":-")[1]
