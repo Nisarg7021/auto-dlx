@@ -14,6 +14,17 @@ from PIL import Image
 import os, time
 
 
+@Client.on_message(filters.private & filters.command("add_format_template"))
+async def add_format_template(client, message):
+    # Your code to handle adding format template
+    pass
+
+@Client.on_message(filters.private & filters.command("file"))
+async def rename_file(client, message):
+    # Your code to handle file renaming
+    pass	
+
+
 @Client.on_message(filters.private & (filters.document | filters.audio | filters.video))
 async def rename_start(client, message):
     file = getattr(message, message.media.value)
