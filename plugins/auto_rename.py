@@ -35,17 +35,6 @@ def get_duration(file_path):
 duration = get_duration(file_path)
 print(f"Video Duration: {duration} seconds")
 
-def get_duration(file_path):
-    try:
-        with VideoFileClip(file_path) as video:
-            return video.duration
-    except Exception as e:
-        print(f"Error getting duration: {e}")
-        return 0
-
-# Example usage:
-duration = get_duration(downloads)
-print(f"Video Duration: {duration} seconds")
 
 def extract_episode_number(filename):
     # Pattern 1: S1E01 or S01E01
