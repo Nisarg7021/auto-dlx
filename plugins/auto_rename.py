@@ -26,7 +26,7 @@ def extract_episode_number(filename):
     pattern4 = re.compile(r'(\d+)')
 
 # Example Usage:
-filename = "One Piece S1-07 [720p][Dual] @Anime_Edge.mkv"
+filename = "[AC] Jujutsu kaisen S2 - E14 [720p] [Sub] @Anime_Campus.mkv"
 episode_number = extract_episode_number(filename)
 print(f"Extracted Episode Number: {episode_number}")
 
