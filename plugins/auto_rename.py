@@ -59,7 +59,29 @@ async def auto_rename_files(client, message):
 
     episode_number = extract_episode_number(file_name)
     print(f"Extracted Episode Number: {episode_number}")
+	
+# Inside your auto_rename_files handler after extracting the episode number
+if episode_number:
+    # Use the episode_number and format_template string to generate the new file name
+    new_file_name = format_template.format(episode=episode_number)
+    await message.reply_text(f"File renamed successfully to: {new_file_name}")
 
+    # Send a message with inline keyboard markup
+    keyboard = InlineKeyboardMarkup([
+        [InlineKeyboardButton("Upload", callback_data=f"upload_{new_file_name}")]
+    ])
+    await bot.send_message(user_id, "Do you want to upload the file now?", reply_markup=keyboard)
+
+    # Auto-activate the callback query "Upload"
+    await bot.send_callback_query(
+        chat_id=user_id,
+        message_id=message.message_id + 1,  # Assuming the message_id of the previous message
+        data=f"upload_{new_file_name}"
+    )
+else:
+    await message.reply_text("Failed to extract the episode number from the file name. Please check the format.")
+
+	
     if episode_number:
         # Use the episode_number and format_template string to generate the new file name
         new_file_name = format_template.format(episode=episode_number)
