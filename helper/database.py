@@ -4,13 +4,6 @@ from .utils import send_log
 
 class Database:
 
-    def __init__(self, uri, database_name):
-        self._client = motor.motor_asyncio.AsyncIOMotorClient(uri)
-        self.db = self._client[database_name]
-        self.col = self.db.user
-        self.format_templates = {}  # Add this line to initialize the dictionary
-        self.auto_rename = Config.AUTO_RENAME  # Add this line
-        
     def new_user(self, id):
         return dict(
             _id=int(id),                                   
