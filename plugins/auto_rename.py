@@ -1,11 +1,16 @@
-import os
-import re
 from pyrogram import Client, filters
 from pyrogram.enums import MessageMediaType
 from pyrogram.errors import FloodWait
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
 from moviepy.editor import VideoFileClip
+from hachoir.metadata import extractMetadata
+from hachoir.parser import createParser
+
+from helper.utils import progress_for_pyrogram, convert, humanbytes
 from helper.database import db
+
+from PIL import Image
+import os, time
 
 
 
@@ -101,11 +106,11 @@ async def docs(bot, update):
 
     duration = 0
     try:
-    duration = get_duration(file_path)
-except Exception as e:
-    print(f"Error getting duration: {e}")
-    duration = 0
+        duration = get_duration(file_path)
     except Exception as e:
+        print(f"Error getting duration: {e}")
+        duration = 0
+    finally:
         pass
 
     ph_path = None
@@ -147,3 +152,4 @@ except Exception as e:
     os.remove(file_path)
     if ph_path:
         os.remove(ph_path)
+    
