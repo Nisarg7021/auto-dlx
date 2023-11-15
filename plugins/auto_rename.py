@@ -112,4 +112,4 @@ async def docs(bot, update):
     except Exception as e:
         os.remove(file_path)
         if ph_path:
-            os.remove(ph_path
+            os.remove(ph_path)
