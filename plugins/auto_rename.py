@@ -1,5 +1,6 @@
 import os
 import re
+from bot import Bot
 from pyrogram import Client, filters
 from helper.database import db
 
