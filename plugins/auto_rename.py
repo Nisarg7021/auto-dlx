@@ -1,21 +1,14 @@
-import re
+import os
 from pyrogram import Client, filters
-from pyrogram.enums import MessageMediaType
-from pyrogram.errors import FloodWait
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, Message
+from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
+from helper.utils import progress_for_pyrogram, convert, humanbytes
+
+import re
+from PIL import Image
 from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
 
-from helper.utils import progress_for_pyrogram, convert, humanbytes
-from helper.database import db
-
-from PIL import Image
-import os, time
-
-import re
-
 def extract_episode_number(filename):
-    # Updated Pattern: [AV] Undead Unluck S01 - E06 [Sub] [480p] @Animes_Vault.mkv
     pattern = re.compile(r'S(\d+)[\s-]*E(\d+)', re.IGNORECASE)
     
     match = re.search(pattern, filename)
@@ -25,14 +18,13 @@ def extract_episode_number(filename):
 
     # Return None if no pattern matches
     return None
-	
 
 # Example Usage:
 filename = "[AV] Undead Unluck S01 - E06 [Sub] [480p] @Animes_Vault.mkv"
 episode_number = extract_episode_number(filename)
 print(f"Extracted Episode Number: {episode_number}")
 
-# Assuming you have a command handler in Pyrogram
+# Define a command handler for setting auto rename format
 @Client.on_message(filters.private & filters.command("autorename"))
 async def auto_rename_command(client, message):
     user_id = message.from_user.id
@@ -44,7 +36,8 @@ async def auto_rename_command(client, message):
     await db.set_format_template(user_id, format_template)
 
     await message.reply_text("Auto rename format updated successfully!")
-	
+
+# Define a message handler for auto renaming files
 @Client.on_message(filters.private & (filters.document | filters.video))
 async def auto_rename_files(client, message):
     user_id = message.from_user.id
@@ -59,35 +52,13 @@ async def auto_rename_files(client, message):
 
     episode_number = extract_episode_number(file_name)
     print(f"Extracted Episode Number: {episode_number}")
-	
-# Inside your auto_rename_files handler after extracting the episode number
-if episode_number:
-    # Use the episode_number and format_template string to generate the new file name
-    new_file_name = format_template.format(episode=episode_number)
-    await message.reply_text(f"File renamed successfully to: {new_file_name}")
 
-    # Send a message with inline keyboard markup
-    keyboard = InlineKeyboardMarkup([
-        [InlineKeyboardButton("Upload", callback_data=f"upload_{new_file_name}")]
-    ])
-    await bot.send_message(user_id, "Do you want to upload the file now?", reply_markup=keyboard)
-
-    # Auto-activate the callback query "Upload"
-    await bot.send_callback_query(
-        chat_id=user_id,
-        message_id=message.message_id + 1,  # Assuming the message_id of the previous message
-        data=f"upload_{new_file_name}"
-    )
-else:
-    await message.reply_text("Failed to extract the episode number from the file name. Please check the format.")
-
-	
     if episode_number:
         # Use the episode_number and format_template string to generate the new file name
         new_file_name = format_template.format(episode=episode_number)
         await message.reply_text(f"File renamed successfully to: {new_file_name}")
     else:
-        await message.reply_text("Failed to extract the episode number from the file name. Please check the format.")	    
+        await message.reply_text("Failed to extract the episode number from the file name. Please check the format.")
 
 # Define a callback handler for document upload
 @Client.on_callback_query(filters.regex("upload"))
@@ -106,12 +77,11 @@ async def docs(bot, update):
 
     duration = 0
     try:
-        duration = get_duration(file_path)
+        with VideoFileClip(file_path) as video:
+            duration = video.duration
     except Exception as e:
         print(f"Error getting duration: {e}")
         duration = 0
-    finally:
-        pass
 
     ph_path = None
     user_id = int(update.message.chat.id)
@@ -134,7 +104,7 @@ async def docs(bot, update):
             await bot.send_video(
                 update.message.chat.id,
                 video=file_path,
-                caption=caption,
+                caption=c_caption,
                 thumb=ph_path,
                 duration=duration,
                 progress=progress_for_pyrogram,
@@ -142,11 +112,4 @@ async def docs(bot, update):
     except Exception as e:
         os.remove(file_path)
         if ph_path:
-            os.remove(ph_path)
-        return await ms.edit(f"Error {e}")
-
-    await ms.delete()
-    os.remove(file_path)
-    if ph_path:
-        os.remove(ph_path)
-    
+            os.remove(ph_path
