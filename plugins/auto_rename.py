@@ -14,7 +14,7 @@ from hachoir.parser import createParser
 
 
 from helper.utils import progress_for_pyrogram, convert, humanbytes
-from helper.database import db
+from helper.database import db, Database
 
 # Create a Pyrogram client instance
 bot = Client("my_bot")
