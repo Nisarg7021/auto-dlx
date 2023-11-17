@@ -15,6 +15,9 @@ from hachoir.parser import createParser
 from helper.utils import progress_for_pyrogram, convert, humanbytes
 from helper.database import db
 
+# Create a Pyrogram client instance
+bot = Client("my_bot")
+
 def extract_episode_number(filename):
     # Pattern 1: S1E01 or S01E01
     pattern1 = re.compile(r'S(\d+)E(\d+)')
