@@ -55,7 +55,6 @@ async def auto_rename_command(client, message):
 
     await message.reply_text("Auto rename format updated successfully!")
 
-
 # Inside the handler for file uploads
 @Client.on_message(filters.private & (filters.document | filters.video | filters.audio))
 async def auto_rename_files(client, message):
@@ -66,7 +65,10 @@ async def auto_rename_files(client, message):
         return await message.reply_text("Please set an auto rename format first using /autorename")
 
     # Extract information from the incoming file name
-    file_name = message.document.file_name
+    file_name = message.document.file_name if message.document else None
+    if not file_name:
+        return await message.reply_text("Unsupported file type")
+
     print(f"Original File Name: {file_name}")
 
     episode_number = extract_episode_number(file_name)
@@ -84,7 +86,7 @@ async def auto_rename_files(client, message):
 
         ms = await message.reply("Trying to download...")
         try:
-            path = await client.download_media(message=file, file_name=file_path, progress=progress_for_pyrogram, progress_args=("Download Started....", ms, time.time()))
+            path = await client.download_media(message=file, file_name=file_path, progress=progress_for_pyrogram)
         except Exception as e:
             return await ms.edit(str(e))
 
@@ -103,7 +105,7 @@ async def auto_rename_files(client, message):
         # ... (your existing code for caption and thumbnail handling)
 
         await ms.edit("Trying to upload...")
-        type = file.media.document.mime_type.split("/")[0].lower()
+        type = message.document.mime_type.split("/")[0].lower()
         try:
             if type == "document":
                 await client.send_document(
@@ -111,8 +113,7 @@ async def auto_rename_files(client, message):
                     document=file_path,
                     thumb=ph_path, 
                     caption=c_caption, 
-                    progress=progress_for_pyrogram,
-                    progress_args=("Upload Started....", ms, time.time()))
+                    progress=progress_for_pyrogram)
             elif type in ["video", "audio"]:
                 await client.send_video(
                     message.chat.id,
@@ -120,8 +121,7 @@ async def auto_rename_files(client, message):
                     caption=c_caption,
                     thumb=ph_path,
                     duration=duration,
-                    progress=progress_for_pyrogram,
-                    progress_args=("Upload Started....", ms, time.time()))
+                    progress=progress_for_pyrogram)
         except Exception as e:
             os.remove(file_path)
             if ph_path:
@@ -134,3 +134,4 @@ async def auto_rename_files(client, message):
             os.remove(ph_path)
     else:
         await message.reply_text("Failed to extract the episode number from the file name. Please check the format.")
+        
