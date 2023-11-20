@@ -57,7 +57,7 @@ async def auto_rename_command(client, message):
 
 # Inside the handler for file uploads
 @Client.on_message(filters.private & (filters.document | filters.video | filters.audio))
-async def auto_rename_files(client, message, bot, update):
+async def auto_rename_files(client, message):
     user_id = message.from_user.id
     format_template = await db.get_format_template(user_id)
 
@@ -83,7 +83,7 @@ async def auto_rename_files(client, message, bot, update):
 
         ms = await message.reply("Trying to download...")
         try:
-            path = await bot.download_media(message=file, file_name=file_path, progress=progress_for_pyrogram, progress_args=("Download Started....", ms, time.time()))
+            path = await client.download_media(message=file, file_name=file_path, progress=progress_for_pyrogram, progress_args=("Download Started....", ms, time.time()))
         except Exception as e:
             return await ms.edit(str(e))
 
@@ -108,7 +108,7 @@ async def auto_rename_files(client, message, bot, update):
         type = file.media.document.mime_type.split("/")[0].lower()
         try:
             if type == "document":
-                await bot.send_document(
+                await client.send_document(
                     message.chat.id,
                     document=file_path,
                     thumb=ph_path, 
@@ -116,7 +116,7 @@ async def auto_rename_files(client, message, bot, update):
                     progress=progress_for_pyrogram,
                     progress_args=("Upload Started....", ms, time.time()))
             elif type in ["video", "audio"]:
-                await bot.send_video(
+                await client.send_video(
                     message.chat.id,
                     video=file_path,
                     caption=caption,
