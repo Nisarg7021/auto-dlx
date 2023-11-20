@@ -57,7 +57,7 @@ async def auto_rename_command(client, message):
 
 # Inside the handler for file uploads
 @Client.on_message(filters.private & (filters.document | filters.video | filters.audio))
-async def auto_rename_files(bot, update):
+async def auto_rename_files(bot, update, message, client):
     user_id = message.from_user.id
     format_template = await db.get_format_template(user_id)
 
