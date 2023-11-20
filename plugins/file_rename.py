@@ -55,7 +55,7 @@ async def auto_rename_command(client, message):
 
     await message.reply_text("Auto rename format updated successfully!")
 
- Inside the handler for file uploads
+# Inside the handler for file uploads
 @Client.on_message(filters.private & (filters.document | filters.video | filters.audio))
 async def auto_rename_files(client, message):
     user_id = message.from_user.id
@@ -133,3 +133,4 @@ async def auto_rename_files(client, message):
             os.remove(ph_path)
     else:
         await message.reply_text("Failed to extract the episode number from the file name. Please check the format.")
+        
