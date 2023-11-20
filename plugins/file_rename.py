@@ -106,7 +106,7 @@ async def auto_rename_files(client, message):
                     document=file_path,
                     thumb=ph_path, 
                     caption=caption, 
-                    progress=progress_for_pyrogram)
+                    progress=progress_for_pyrogram(ud_type, message, start))
             elif type in ["video", "audio"]:
                 await client.send_video(
                     chat_id=message.chat.id,
@@ -114,7 +114,7 @@ async def auto_rename_files(client, message):
                     caption=caption,
                     thumb=ph_path,
                     duration=duration,
-                    progress=progress_for_pyrogram)
+                    progress=progress_for_pyrogram(ud_type, message, start))
         except Exception as e:
             os.remove(file_path)
             if ph_path:
