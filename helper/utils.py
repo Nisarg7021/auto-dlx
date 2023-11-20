@@ -5,7 +5,7 @@ from config import Config, Txt
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup
 
 
-async def progress_for_pyrogram(current, total, ud_type, message, start):
+async def progress_for_pyrogram(current, total, ud_type, message, start, *args, **kwargs):
     now = time.time()
     diff = now - start
     if round(diff % 5.00) == 0 or current == total:        
