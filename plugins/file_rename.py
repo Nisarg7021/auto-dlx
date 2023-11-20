@@ -102,7 +102,7 @@ async def auto_rename_files(client, message):
         # ... (your existing code for caption and thumbnail handling)
 
         await ms.edit("Trying to upload...")
-        type = getattr(file, file.media).document.mime_type.split("/")[0].lower()
+        type = file.media.document.mime_type.split("/")[0].lower()
         try:
             if type == "document":
                 await client.send_document(
