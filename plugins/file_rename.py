@@ -12,6 +12,7 @@ from helper.database import db
 from asyncio import sleep
 from PIL import Image
 import os, time
+import re
 
 
 def extract_episode_number(filename):
