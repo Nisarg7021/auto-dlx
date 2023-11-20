@@ -55,7 +55,7 @@ async def auto_rename_command(client, message):
 
     await message.reply_text("Auto rename format updated successfully!")
 
-# Inside the handler for file uploads
+ Inside the handler for file uploads
 @Client.on_message(filters.private & (filters.document | filters.video | filters.audio))
 async def auto_rename_files(client, message):
     user_id = message.from_user.id
@@ -89,23 +89,20 @@ async def auto_rename_files(client, message):
 
         duration = 0
         try:
-            duration = get_duration(file_path)
+            metadata = extractMetadata(createParser(file_path))
+            if metadata.has("duration"):
+                duration = metadata.get('duration').seconds
         except Exception as e:
             print(f"Error getting duration: {e}")
-            duration = 0
-        finally:
-            pass
 
         ph_path = None
-        user_id = int(message.chat.id)
-        media = getattr(file, file.media.value)
         c_caption = await db.get_caption(message.chat.id)
         c_thumb = await db.get_thumbnail(message.chat.id)
 
         # ... (your existing code for caption and thumbnail handling)
 
         await ms.edit("Trying to upload...")
-        type = file.media.document.mime_type.split("/")[0].lower()
+        type = getattr(file, file.media).document.mime_type.split("/")[0].lower()
         try:
             if type == "document":
                 await client.send_document(
@@ -136,4 +133,3 @@ async def auto_rename_files(client, message):
             os.remove(ph_path)
     else:
         await message.reply_text("Failed to extract the episode number from the file name. Please check the format.")
-	    
