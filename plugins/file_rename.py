@@ -1,18 +1,16 @@
 from pyrogram import Client, filters
-from pyrogram.enums import MessageMediaType
 from pyrogram.errors import FloodWait
-from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ForceReply
+from pyrogram.types import InputMediaDocument
 
 from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
 
-from helper.utils import progress_for_pyrogram, convert, humanbytes
+from helper.utils import progress_for_pyrogram
 from helper.database import db
 
-from asyncio import sleep
-from PIL import Image
-import os, time
+import os
 import re
+import time
 
 
 def extract_episode_number(filename):
@@ -37,10 +35,12 @@ def extract_episode_number(filename):
     # Return None if no pattern matches
     return None
 
+
 # Example Usage:
 filename = "One Piece S1-07 [720p][Dual] @Anime_Edge.mkv"
 episode_number = extract_episode_number(filename)
 print(f"Extracted Episode Number: {episode_number}")
+
 
 # Assuming you have a command handler in Pyrogram
 @Client.on_message(filters.private & filters.command("autorename"))
@@ -54,6 +54,7 @@ async def auto_rename_command(client, message):
     await db.set_format_template(user_id, format_template)
 
     await message.reply_text("Auto rename format updated successfully!")
+
 
 # Inside the handler for file uploads
 @Client.on_message(filters.private & (filters.document | filters.video | filters.audio))
@@ -109,14 +110,14 @@ async def auto_rename_files(client, message):
                     message.chat.id,
                     document=file_path,
                     thumb=ph_path, 
-                    caption=caption, 
+                    caption=c_caption, 
                     progress=progress_for_pyrogram,
                     progress_args=("Upload Started....", ms, time.time()))
             elif type in ["video", "audio"]:
                 await client.send_video(
                     message.chat.id,
                     video=file_path,
-                    caption=caption,
+                    caption=c_caption,
                     thumb=ph_path,
                     duration=duration,
                     progress=progress_for_pyrogram,
@@ -133,4 +134,3 @@ async def auto_rename_files(client, message):
             os.remove(ph_path)
     else:
         await message.reply_text("Failed to extract the episode number from the file name. Please check the format.")
-        
