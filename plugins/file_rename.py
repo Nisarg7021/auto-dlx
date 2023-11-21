@@ -94,7 +94,7 @@ async def auto_rename_files(client, message):
 
         ms = await message.reply("Trying to download...")
         try:
-            path = await bot.download_media(message=file, file_name=file_path, progress=progress_for_pyrogram,progress_args=("Dᴏᴡɴʟᴏᴀᴅ Sᴛᴀʀᴛᴇᴅ....", ms, time.time()))                    
+            path = await client.download_media(message=file, file_name=file_path, progress=progress_for_pyrogram,progress_args=("Dᴏᴡɴʟᴏᴀᴅ Sᴛᴀʀᴛᴇᴅ....", ms, time.time()))                    
         except Exception as e:
             return await ms.edit(e)
 
