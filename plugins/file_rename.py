@@ -66,7 +66,18 @@ async def auto_rename_files(client, message):
         return await message.reply_text("Please set an auto rename format first using /autorename")
 
     # Extract information from the incoming file name
-    file_name = message.document.file_name
+    if message.document:
+        file_name = message.document.file_name
+        media_type = "document"
+    elif message.video:
+        file_name = f"{message.video.file_name}.mp4"
+        media_type = "video"
+    elif message.audio:
+        file_name = f"{message.audio.file_name}.mp3"
+        media_type = "audio"
+    else:
+        return await message.reply_text("Unsupported file type")
+
     print(f"Original File Name: {file_name}")
 
     episode_number = extract_episode_number(file_name)
@@ -80,11 +91,10 @@ async def auto_rename_files(client, message):
         # Assuming you have access to the required variables (format_template, episode_number, file_name)
         _, file_extension = os.path.splitext(file_name)
         file_path = f"downloads/{new_file_name}"
-        file = message
 
         ms = await message.reply("Trying to download...")
         try:
-            path = await client.download_media(message=file, file_name=file_path, progress=progress_for_pyrogram, progress_args=("Download Started....", ms, time.time()))
+            path = await client.download_media(message=message, file_name=file_path, progress=progress_for_pyrogram)
         except Exception as e:
             return await ms.edit(str(e))
 
@@ -100,28 +110,43 @@ async def auto_rename_files(client, message):
         c_caption = await db.get_caption(message.chat.id)
         c_thumb = await db.get_thumbnail(message.chat.id)
 
-        # ... (your existing code for caption and thumbnail handling)
+        caption = c_caption.format(filename=new_file_name, filesize=humanbytes(message.document.file_size), duration=convert(duration)) if c_caption else f"**{new_file_name}**"
+
+        if c_thumb:
+            ph_path = await client.download_media(c_thumb)
+        elif media_type == "video" and message.video.thumbs:
+            ph_path = await client.download_media(message.video.thumbs[0].file_id)
+
+        if ph_path:
+            Image.open(ph_path).convert("RGB").save(ph_path)
+            img = Image.open(ph_path)
+            img.resize((320, 320))
+            img.save(ph_path, "JPEG")
 
         await ms.edit("Trying to upload...")
-        type = file.media.document.mime_type.split("/")[0].lower()
         try:
-            if type == "document":
+            if media_type == "document":
                 await client.send_document(
-                    message.chat.id,
+                    chat_id=message.chat.id,
                     document=file_path,
-                    thumb=ph_path, 
-                    caption=c_caption, 
-                    progress=progress_for_pyrogram,
-                    progress_args=("Upload Started....", ms, time.time()))
-            elif type in ["video", "audio"]:
+                    thumb=ph_path,
+                    caption=caption,
+                    progress=progress_for_pyrogram)
+            elif media_type == "video":
                 await client.send_video(
-                    message.chat.id,
+                    chat_id=message.chat.id,
                     video=file_path,
-                    caption=c_caption,
+                    caption=caption,
                     thumb=ph_path,
                     duration=duration,
-                    progress=progress_for_pyrogram,
-                    progress_args=("Upload Started....", ms, time.time()))
+                    progress=progress_for_pyrogram)
+            elif media_type == "audio":
+                await client.send_audio(
+                    chat_id=message.chat.id,
+                    audio=file_path,
+                    caption=caption,
+                    duration=duration,
+                    progress=progress_for_pyrogram)
         except Exception as e:
             os.remove(file_path)
             if ph_path:
@@ -134,4 +159,4 @@ async def auto_rename_files(client, message):
             os.remove(ph_path)
     else:
         await message.reply_text("Failed to extract the episode number from the file name. Please check the format.")
-    
+        
