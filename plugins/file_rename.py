@@ -123,8 +123,8 @@ async def auto_rename_files(client, message):
             img.resize((320, 320))
             img.save(ph_path, "JPEG")
 
-        await ms.edit("Trying To Upload...")
-        
+        await ms.edit("Tʀyɪɴɢ Tᴏ Uᴩʟᴏᴀᴅɪɴɢ....")
+    type = update.data.split("_")[1]
     try:
         if type == "document":
             await client.send_document(
