@@ -123,40 +123,49 @@ async def auto_rename_files(client, message):
             img.resize((320, 320))
             img.save(ph_path, "JPEG")
 
-        await ms.edit("Trying to upload...")
-        try:
-            if media_type == "document":
-                await client.send_document(
-                    chat_id=message.chat.id,
-                    document=file_path,
-                    thumb=ph_path,
-                    caption=caption,
-                    progress=progress_for_pyrogram)
-            elif media_type == "video":
-                await client.send_video(
-                    chat_id=message.chat.id,
-                    video=file_path,
-                    caption=caption,
-                    thumb=ph_path,
-                    duration=duration,
-                    progress=progress_for_pyrogram)
-            elif media_type == "audio":
-                await client.send_audio(
-                    chat_id=message.chat.id,
-                    audio=file_path,
-                    caption=caption,
-                    duration=duration,
-                    progress=progress_for_pyrogram)
-        except Exception as e:
-            os.remove(file_path)
-            if ph_path:
-                os.remove(ph_path)
-            return await ms.edit(f"Error {e}")
+        await ms.edit("Trying To Upload...")
 
-        await ms.delete()
+    type = message.data.split("_")[1]
+
+    try:
+        if type == "document":
+            await client.send_document(
+                message.chat.id,
+                document=file_path,
+                thumb=ph_path,
+                caption=caption,
+                progress=progress_for_pyrogram,
+                progress_args=("Upload Started....", ms, time.time())
+            )
+        elif type == "video":
+            await client.send_video(
+                message.chat.id,
+                video=file_path,
+                caption=caption,
+                thumb=ph_path,
+                duration=duration,
+                progress=progress_for_pyrogram,
+                progress_args=("Upload Started....", ms, time.time())
+            )
+        elif type == "audio":
+            await client.send_audio(
+                message.chat.id,
+                audio=file_path,
+                caption=caption,
+                thumb=ph_path,
+                duration=duration,
+                progress=progress_for_pyrogram,
+                progress_args=("Upload Started....", ms, time.time())
+            )
+    except Exception as e:
         os.remove(file_path)
         if ph_path:
             os.remove(ph_path)
-    else:
-        await message.reply_text("Failed to extract the episode number from the file name. Please check the format.")
-        
+        return await ms.edit(f"Error: {e}")
+
+    await ms.delete()
+    os.remove(file_path)
+    if ph_path:
+        os.remove(ph_path)
+
+    
