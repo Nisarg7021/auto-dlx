@@ -124,17 +124,18 @@ async def auto_rename_files(client, message):
             img.resize((320, 320))
             img.save(ph_path, "JPEG")
 
-        await ms.edit("Trying to upload...")
-        type = getattr(file, file.media).document.mime_type.split("/")[0].lower()
-        try:
-            if type == "document":
-                await client.send_document(
-                    message.chat.id,
-                    document=file_path,
-                    thumb=ph_path,
-                    caption=caption,
-                    progress=progress_for_pyrogram,
-                    progress_args=("Upload Started....", ms, time.time())
+        await ms.edit("Tʀyɪɴɢ Tᴏ Uᴩʟᴏᴀᴅɪɴɢ....")
+    
+    try:
+        type = update.data.split("_")[1]
+        if type == "document":
+            await client.send_document(
+                message.chat.id,
+                document=file_path,
+                thumb=ph_path,
+                caption=caption,
+                progress=progress_for_pyrogram,
+                progress_args=("Upload Started....", ms, time.time())
             )
         elif type == "video":
             await client.send_video(
@@ -166,5 +167,3 @@ async def auto_rename_files(client, message):
     os.remove(file_path)
     if ph_path:
         os.remove(ph_path)
-
-    
