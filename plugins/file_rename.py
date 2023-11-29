@@ -111,7 +111,7 @@ async def auto_rename_files(client, message):
         c_caption = await db.get_caption(message.chat.id)
         c_thumb = await db.get_thumbnail(message.chat.id)
 
-        caption = c_caption.format(filename=new_file_name, filesize=humanbytes(message.document.file_size), duration=convert(duration)) if c_caption else f"**{new_file_name}**"
+        caption = c_caption.format(filename=new_file_name, filesize=humanbytes(message.document.file_size), duration=convert(duration)) if c_caption else f"**{new_file_name}"
 
         if c_thumb:
             ph_path = await client.download_media(c_thumb)
@@ -127,7 +127,9 @@ async def auto_rename_files(client, message):
         await ms.edit("Tʀyɪɴɢ Tᴏ Uᴩʟᴏᴀᴅɪɴɢ....")
     
     try:
-        type = update.data.split("_")[1]
+        # The variable 'update' is not used in this context, so I removed it
+        # type = update.data.split("_")[1]
+        type = media_type  # Use 'media_type' variable instead
         if type == "document":
             await client.send_document(
                 message.chat.id,
@@ -167,3 +169,4 @@ async def auto_rename_files(client, message):
     os.remove(file_path)
     if ph_path:
         os.remove(ph_path)
+        
