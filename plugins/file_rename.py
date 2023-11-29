@@ -1,11 +1,13 @@
 from pyrogram import Client, filters
 from pyrogram.errors import FloodWait
 from pyrogram.types import InputMediaDocument
+from PIL import Image
 
 from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
 
-from helper.utils import progress_for_pyrogram
+from helper.utils import progress_for_pyrogram, humanbytes, convert
+
 from helper.database import db
 
 import os
@@ -110,10 +112,10 @@ async def auto_rename_files(client, message):
         caption = c_caption.format(filename=new_file_name, filesize=humanbytes(message.document.file_size), duration=convert(duration)) if c_caption else f"**{new_file_name}"
 
             if c_thumb:
-        ph_path = await client.download_media(c_thumb)
-        print(f"Thumbnail downloaded successfully. Path: {ph_path}")
-    elif media_type == "video" and message.video.thumbs:
-        ph_path = await client.download_media(message.video.thumbs[0].file_id)
+    ph_path = await client.download_media(c_thumb)
+    print(f"Thumbnail downloaded successfully. Path: {ph_path}")
+elif media_type == "video" and message.video.thumbs:
+    ph_path = await client.download_media(message.video.thumbs[0].file_id)
 
     if ph_path:
         Image.open(ph_path).convert("RGB").save(ph_path)
