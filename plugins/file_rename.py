@@ -109,23 +109,21 @@ async def auto_rename_files(client, message):
 
         caption = c_caption.format(filename=new_file_name, filesize=humanbytes(message.document.file_size), duration=convert(duration)) if c_caption else f"**{new_file_name}"
 
-        if c_thumb:
-            ph_path = await client.download_media(c_thumb)
-            print(f"Thumbnail downloaded successfully. Path: {ph_path}")
-        elif media_type == "video" and message.video.thumbs:
-            ph_path = await client.download_media(message.video.thumbs[0].file_id)
+            if c_thumb:
+        ph_path = await client.download_media(c_thumb)
+        print(f"Thumbnail downloaded successfully. Path: {ph_path}")
+    elif media_type == "video" and message.video.thumbs:
+        ph_path = await client.download_media(message.video.thumbs[0].file_id)
 
-        if ph_path:
-            Image.open(ph_path).convert("RGB").save(ph_path)
-            img = Image.open(ph_path)
-            img.resize((320, 320))
-            img.save(ph_path, "JPEG")
+    if ph_path:
+        Image.open(ph_path).convert("RGB").save(ph_path)
+        img = Image.open(ph_path)
+        img.resize((320, 320))
+        img.save(ph_path, "JPEG")
 
-        await ms.edit("Tʀyɪɴɢ Tᴏ Uᴩʟᴏᴀᴅɪɴɢ....")
-    
+    await ms.edit("Tʀyɪɴɢ Tᴏ Uᴩʟᴏᴀᴅɪɴɢ....")
+
     try:
-        # The variable 'update' is not used in this context, so I removed it
-        # type = update.data.split("_")[1]
         type = media_type  # Use 'media_type' variable instead
         if type == "document":
             await client.send_document(
@@ -139,5 +137,30 @@ async def auto_rename_files(client, message):
         elif type == "video":
             await client.send_video(
                 message.chat.id,
-                video
-    
+                video=file_path,
+                caption=caption,
+                thumb=ph_path,
+                duration=duration,
+                progress=progress_for_pyrogram,
+                progress_args=("Upload Started....", ms, time.time())
+            )
+        elif type == "audio":
+            await client.send_audio(
+                message.chat.id,
+                audio=file_path,
+                caption=caption,
+                thumb=ph_path,
+                duration=duration,
+                progress=progress_for_pyrogram,
+                progress_args=("Upload Started....", ms, time.time())
+            )
+    except Exception as e:
+        os.remove(file_path)
+        if ph_path:
+            os.remove(ph_path)
+        return await ms.edit(f"Error: {e}")
+
+    await ms.delete()
+    os.remove(file_path)
+    if ph_path:
+        os.remove(ph_path)
