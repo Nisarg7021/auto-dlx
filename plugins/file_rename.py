@@ -7,7 +7,6 @@ from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
 
 from helper.utils import progress_for_pyrogram, humanbytes, convert
-
 from helper.database import db
 
 import os
@@ -110,59 +109,59 @@ async def auto_rename_files(client, message):
         c_thumb = await db.get_thumbnail(message.chat.id)
 
         caption = c_caption.format(filename=new_file_name, filesize=humanbytes(message.document.file_size), duration=convert(duration)) if c_caption else f"**{new_file_name}"
-        
+
         if c_thumb:
-    ph_path = await client.download_media(c_thumb)
-    print(f"Thumbnail downloaded successfully. Path: {ph_path}")
-elif media_type == "video" and message.video.thumbs:
-    ph_path = await client.download_media(message.video.thumbs[0].file_id)
+            ph_path = await client.download_media(c_thumb)
+            print(f"Thumbnail downloaded successfully. Path: {ph_path}")
+        elif media_type == "video" and message.video.thumbs:
+            ph_path = await client.download_media(message.video.thumbs[0].file_id)
 
-    if ph_path:
-        Image.open(ph_path).convert("RGB").save(ph_path)
-        img = Image.open(ph_path)
-        img.resize((320, 320))
-        img.save(ph_path, "JPEG")
+        if ph_path:
+            Image.open(ph_path).convert("RGB").save(ph_path)
+            img = Image.open(ph_path)
+            img.resize((320, 320))
+            img.save(ph_path, "JPEG")
 
-    await ms.edit("Tʀyɪɴɢ Tᴏ Uᴩʟᴏᴀᴅɪɴɢ....")
+        await ms.edit("Tʀyɪɴɢ Tᴏ Uᴩʟᴏᴀᴅɪɴɢ....")
 
-    try:
-        type = media_type  # Use 'media_type' variable instead
-        if type == "document":
-            await client.send_document(
-                message.chat.id,
-                document=file_path,
-                thumb=ph_path,
-                caption=caption,
-                progress=progress_for_pyrogram,
-                progress_args=("Upload Started....", ms, time.time())
-            )
-        elif type == "video":
-            await client.send_video(
-                message.chat.id,
-                video=file_path,
-                caption=caption,
-                thumb=ph_path,
-                duration=duration,
-                progress=progress_for_pyrogram,
-                progress_args=("Upload Started....", ms, time.time())
-            )
-        elif type == "audio":
-            await client.send_audio(
-                message.chat.id,
-                audio=file_path,
-                caption=caption,
-                thumb=ph_path,
-                duration=duration,
-                progress=progress_for_pyrogram,
-                progress_args=("Upload Started....", ms, time.time())
-            )
-    except Exception as e:
+        try:
+            type = media_type  # Use 'media_type' variable instead
+            if type == "document":
+                await client.send_document(
+                    message.chat.id,
+                    document=file_path,
+                    thumb=ph_path,
+                    caption=caption,
+                    progress=progress_for_pyrogram,
+                    progress_args=("Upload Started....", ms, time.time())
+                )
+            elif type == "video":
+                await client.send_video(
+                    message.chat.id,
+                    video=file_path,
+                    caption=caption,
+                    thumb=ph_path,
+                    duration=duration,
+                    progress=progress_for_pyrogram,
+                    progress_args=("Upload Started....", ms, time.time())
+                )
+            elif type == "audio":
+                await client.send_audio(
+                    message.chat.id,
+                    audio=file_path,
+                    caption=caption,
+                    thumb=ph_path,
+                    duration=duration,
+                    progress=progress_for_pyrogram,
+                    progress_args=("Upload Started....", ms, time.time())
+                )
+        except Exception as e:
+            os.remove(file_path)
+            if ph_path:
+                os.remove(ph_path)
+            return await ms.edit(f"Error: {e}")
+
+        await ms.delete()
         os.remove(file_path)
         if ph_path:
             os.remove(ph_path)
-        return await ms.edit(f"Error: {e}")
-
-    await ms.delete()
-    os.remove(file_path)
-    if ph_path:
-        os.remove(ph_path)
