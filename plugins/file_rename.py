@@ -114,7 +114,8 @@ async def auto_rename_files(client, message):
         caption = c_caption.format(filename=new_file_name, filesize=humanbytes(message.document.file_size), duration=convert(duration)) if c_caption else f"**{new_file_name}"
 
         if c_thumb:
-            ph_path = await client.download_media(c_thumb)
+    ph_path = await client.download_media(c_thumb)
+    print(f"Thumbnail downloaded successfully. Path: {ph_path}")
         elif media_type == "video" and message.video.thumbs:
             ph_path = await client.download_media(message.video.thumbs[0].file_id)
 
