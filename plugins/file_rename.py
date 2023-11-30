@@ -39,7 +39,7 @@ def extract_episode_and_quality(filename):
     
 # Example Usage:
 filename = "One Piece S1-07 [720p][Dual] @Anime_Edge.mkv"
-episode_number, quality = extract_episode_and_quality(file_name)
+episode_number, quality = extract_episode_and_quality(filename)
 print(f"Extracted Episode Number: {episode_number}")
 print(f"Extracted Quality: {quality}")
 
