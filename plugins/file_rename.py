@@ -13,46 +13,51 @@ import os
 import re
 import time
 
-def extract_episode_number(filename):
-    # Pattern 1: S1E01 or S01E01
-    pattern1 = re.compile(r'S(\d+)E(\d+)')
+def extract_episode_and_quality(filename):
+    # Pattern 1: S1E01 or S01E01 with quality
+    pattern1 = re.compile(r'S(\d+)E(\d+).*?(\d{3,4}p)')
     
-    # Pattern 2: S02 E01
-    pattern2 = re.compile(r'S(\d+) E(\d+)')
+    # Pattern 2: S02 E01 with quality
+    pattern2 = re.compile(r'S(\d+) E(\d+).*?(\d{3,4}p)')
     
-    # Pattern 3: Episode Number After "E" or "-"
-    pattern3 = re.compile(r'[E|-](\d+)')
+    # Pattern 3: Episode Number After "E" or "-" with quality
+    pattern3 = re.compile(r'[E|-](\d+).*?(\d{3,4}p)')
     
-    # Pattern 4: Standalone Episode Number
-    pattern4 = re.compile(r'(\d+)')
+    # Pattern 4: Standalone Episode Number with quality
+    pattern4 = re.compile(r'(\d+).*?(\d{3,4}p)')
     
     # Try each pattern in order
     for pattern in [pattern1, pattern2, pattern3, pattern4]:
         match = re.search(pattern, filename)
         if match:
-            return match.group(1)  # Extracted episode number
+            episode_number = match.group(1)  # Extracted episode number
+            quality = match.group(2)  # Extracted quality
+            return episode_number, quality
     
     # Return None if no pattern matches
-    return None
-
+    return None, None
+    
 # Example Usage:
 filename = "One Piece S1-07 [720p][Dual] @Anime_Edge.mkv"
-episode_number = extract_episode_number(filename)
+episode_number, quality = extract_episode_and_quality(file_name)
 print(f"Extracted Episode Number: {episode_number}")
+print(f"Extracted Quality: {quality}")
 
-# Assuming you have a command handler in Pyrogram
 @Client.on_message(filters.private & filters.command("autorename"))
 async def auto_rename_command(client, message):
     user_id = message.from_user.id
 
-    # Extract the format from the command
-    format_template = message.text.split("/autorename", 1)[1].strip()
+    # Extract the format and quality from the command
+    command_args = message.text.split("/autorename", 1)[1].strip().split()
+    format_template = command_args[0]
+    quality = command_args[1] if len(command_args) > 1 else None
 
-    # Save the format template to the database
+    # Save the format template and quality to the database
     await db.set_format_template(user_id, format_template)
+    await db.set_quality(user_id, quality)
 
-    await message.reply_text("Auto rename format updated successfully!")
-
+    await message.reply_text("Auto rename format and quality updated successfully!")
+    
 # Inside the handler for file uploads
 @Client.on_message(filters.private & (filters.document | filters.video | filters.audio))
 async def auto_rename_files(client, message):
