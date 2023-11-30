@@ -13,41 +13,22 @@ import os
 import re
 import time
 
-def extract_episode_and_quality(filename):
-    # Pattern 1: S1E01 or S01E01 with quality
-    pattern1 = re.compile(r'S(\d+)E(\d+).*?(\d{3,4}p)')
+def extract_info_from_filename(filename):
+    # Pattern 1: [AC] Eminence In Shadow S2 - E08 480p Dual @Anime_Campus.mkv
+    pattern = re.compile(r'\[([^\]]+)\]\s*([^S]+)\s*S(\d+)\s*-\s*E(\d+)\s*(\d{3,4}p)\s*([^\s]+)')
 
-    # Pattern 2: S02 E01 with quality
-    pattern2 = re.compile(r'S(\d+) E(\d+).*?(\d{3,4}p)')
-
-    # Pattern 3: Episode Number After "E" or "-" with quality
-    pattern3 = re.compile(r'[E|-](\d+).*?(\d{3,4}p)')
-
-    # Pattern 4: Standalone Episode Number with quality
-    pattern4 = re.compile(r'(\d+).*?(\d{3,4}p)')
-
-    # Try each pattern in order
-    for pattern in [pattern1, pattern2, pattern3, pattern4]:
-        match = re.search(pattern, filename)
-        if match:
-            episode_number = match.group(1)  # Extracted episode number
-            quality = match.group(2)  # Extracted quality
-            return episode_number, quality
+    match = re.search(pattern, filename)
+    if match:
+        group1 = match.group(1)  # Extra info
+        title = match.group(2).strip()  # Title
+        season_number = match.group(3)  # Season number
+        episode_number = match.group(4)  # Episode number
+        quality = match.group(5)  # Quality
+        audio_type = match.group(6)  # Audio type
+        return group1, title, season_number, episode_number, quality, audio_type
 
     # Return None if no pattern matches
-    return None, None
-
-@Client.on_message(filters.private & filters.command("autorename"))
-async def auto_rename_command(client, message):
-    user_id = message.from_user.id
-
-    # Extract the format from the command
-    format_template = message.text.split("/autorename", 1)[1].strip()
-
-    # Save the format template to the database
-    await db.set_format_template(user_id, format_template)
-
-    await message.reply_text("Auto rename format updated successfully!")
+    return None
 
 @Client.on_message(filters.private & (filters.document | filters.video | filters.audio))
 async def auto_rename_files(client, message):
@@ -72,13 +53,40 @@ async def auto_rename_files(client, message):
 
     print(f"Original File Name: {file_name}")
 
-    episode_number, quality = extract_episode_and_quality(file_name)
-    print(f"Extracted Episode Number: {episode_number}")
-    print(f"Extracted Quality: {quality}")
+    extracted_info = extract_info_from_filename(file_name)
 
-    if episode_number and quality:
-        new_file_name = format_template.format(episode=episode_number, quality=quality)
-        await message.reply_text(f"File renamed successfully to: {new_file_name}")
+    if extracted_info:
+        group1, title, season_number, episode_number, quality, audio_type = extracted_info
+        new_file_name = format_template.format(
+            group1=group1, title=title, season=season_number, episode=episode_number, quality=quality, audio=audio_type
+        )
+
+        await message.reply_text(
+            f"Extracted Information:\n"
+            f"Extra Info: {group1}\n"
+            f"Title: {title}\n"
+            f"Season: {season_number}\n"
+            f"Episode: {episode_number}\n"
+            f"Quality: {quality}\n"
+            f"Audio Type: {audio_type}\n"
+            f"Auto Renamed to: {new_file_name}"
+        )
+
+        # Rest of the code for downloading, etc.
+
+    else:
+        # Auto rename using the provided format if no information is extracted
+        new_file_name = format_template.format(
+            group1="", title="", season="", episode="", quality="", audio=""
+        )
+
+        await message.reply_text(
+            f"No information extracted. Auto Renamed to: {new_file_name}\n"
+            f"Please contact the admins if the issue persists."
+        )
+
+        # Rest of the code for downloading, etc.
+        
 
         _, file_extension = os.path.splitext(file_name)
         file_path = f"downloads/{new_file_name}"
