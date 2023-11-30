@@ -14,7 +14,6 @@ import re
 import time
 
 
-
 @Client.on_message(filters.private & filters.command("autorename"))
 async def auto_rename_command(client,def extract_episode_and_quality(filename):
     # Pattern 1: S1E01 or S01E01 with quality
