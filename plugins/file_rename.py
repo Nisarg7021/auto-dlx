@@ -16,16 +16,16 @@ import time
 def extract_episode_and_quality(filename):
     # Pattern 1: S1E01 or S01E01 with quality
     pattern1 = re.compile(r'S(\d+)E(\d+).*?(\d{3,4}p)')
-    
+
     # Pattern 2: S02 E01 with quality
     pattern2 = re.compile(r'S(\d+) E(\d+).*?(\d{3,4}p)')
-    
+
     # Pattern 3: Episode Number After "E" or "-" with quality
     pattern3 = re.compile(r'[E|-](\d+).*?(\d{3,4}p)')
-    
+
     # Pattern 4: Standalone Episode Number with quality
     pattern4 = re.compile(r'(\d+).*?(\d{3,4}p)')
-    
+
     # Try each pattern in order
     for pattern in [pattern1, pattern2, pattern3, pattern4]:
         match = re.search(pattern, filename)
@@ -33,16 +33,10 @@ def extract_episode_and_quality(filename):
             episode_number = match.group(1)  # Extracted episode number
             quality = match.group(2)  # Extracted quality
             return episode_number, quality
-    
+
     # Return None if no pattern matches
     return None, None
-    
-filename = message.document.file_name
-episode_number, quality = extract_episode_and_quality(filename)
-print(f"Extracted Episode Number: {episode_number}")
-print(f"Extracted Quality: {quality}")
 
-# Assuming you have a command handler in Pyrogram
 @Client.on_message(filters.private & filters.command("autorename"))
 async def auto_rename_command(client, message):
     user_id = message.from_user.id
