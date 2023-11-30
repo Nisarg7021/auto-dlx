@@ -26,28 +26,24 @@ def extract_episode_and_quality(filename):
     # Pattern 4: Standalone Episode Number with quality
     pattern4 = re.compile(r'(\d+).*?(\d{3,4}p)')
 
+    # Pattern 5: Extract Season Number
+    season_pattern = re.compile(r'S(\d+)')
+
     # Try each pattern in order
     for pattern in [pattern1, pattern2, pattern3, pattern4]:
         match = re.search(pattern, filename)
         if match:
             episode_number = match.group(1)  # Extracted episode number
             quality = match.group(2)  # Extracted quality
-            return episode_number, quality
+
+            # Extract Season Number using Pattern 5
+            season_match = re.search(season_pattern, filename)
+            season_number = season_match.group(1) if season_match else None
+
+            return episode_number, quality, season_number
 
     # Return None if no pattern matches
-    return None, None
-
-@Client.on_message(filters.private & filters.command("autorename"))
-async def auto_rename_command(client, message):
-    user_id = message.from_user.id
-
-    # Extract the format from the command
-    format_template = message.text.split("/autorename", 1)[1].strip()
-
-    # Save the format template to the database
-    await db.set_format_template(user_id, format_template)
-
-    await message.reply_text("Auto rename format updated successfully!")
+    return None, None, None
 
 # Inside the handler for file uploads
 @Client.on_message(filters.private & (filters.document | filters.video | filters.audio))
@@ -73,14 +69,15 @@ async def auto_rename_files(client, message):
 
     print(f"Original File Name: {file_name}")
 
-    episode_number, quality = extract_episode_and_quality(file_name)
+    episode_number, quality, season_number = extract_episode_and_quality(file_name)
     print(f"Extracted Episode Number: {episode_number}")
     print(f"Extracted Quality: {quality}")
+    print(f"Extracted Season Number: {season_number}")
 
     if episode_number and quality:
-        new_file_name = format_template.format(episode=episode_number, quality=quality)
+        new_file_name = format_template.format(episode=episode_number, quality=quality, season=season_number)
         await message.reply_text(f"File renamed successfully to: {new_file_name}")
-        
+    
         _, file_extension = os.path.splitext(file_name)
         file_path = f"downloads/{new_file_name}"
         file = message
