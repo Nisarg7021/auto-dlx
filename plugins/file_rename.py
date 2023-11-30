@@ -73,7 +73,7 @@ async def auto_rename_files(client, message):
 
     print(f"Original File Name: {file_name}")
 
-    episode_number, quality = extract_episode_and_quality(filename)
+    episode_number, quality = extract_episode_and_quality(file_name)
     print(f"Extracted Episode Number: {episode_number}")
     print(f"Extracted Quality: {quality}")
 
