@@ -1,4 +1,4 @@
-from pyrogram import Client, filters
+from pyrogram import Client, filters, Message
 from pyrogram.errors import FloodWait
 from pyrogram.types import InputMediaDocument
 from PIL import Image
