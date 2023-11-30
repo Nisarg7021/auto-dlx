@@ -45,6 +45,18 @@ def extract_episode_and_quality(filename):
     # Return None if no pattern matches
     return None, None, None
 
+@Client.on_message(filters.private & filters.command("autorename"))
+async def auto_rename_command(client, message):
+    user_id = message.from_user.id
+
+    # Extract the format from the command
+    format_template = message.text.split("/autorename", 1)[1].strip()
+
+    # Save the format template to the database
+    await db.set_format_template(user_id, format_template)
+
+    await message.reply_text("Auto rename format updated successfully!")
+
 # Inside the handler for file uploads
 @Client.on_message(filters.private & (filters.document | filters.video | filters.audio))
 async def auto_rename_files(client, message):
