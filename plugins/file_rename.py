@@ -13,27 +13,29 @@ import os
 import re
 import time
 
-def extract_episode_number(filename):
-    # Pattern 1: S1E01 or S01E01
-    pattern1 = re.compile(r'S(\d+)E(\d+)')
+def extract_episode_and_quality(filename):
+    # Pattern 1: S1E01 or S01E01 with quality
+    pattern1 = re.compile(r'S(\d+)E(\d+).*?(\d{3,4}p)')
     
-    # Pattern 2: S02 E01
-    pattern2 = re.compile(r'S(\d+) E(\d+)')
+    # Pattern 2: S02 E01 with quality
+    pattern2 = re.compile(r'S(\d+) E(\d+).*?(\d{3,4}p)')
     
-    # Pattern 3: Episode Number After "E" or "-"
-    pattern3 = re.compile(r'[E|-](\d+)')
+    # Pattern 3: Episode Number After "E" or "-" with quality
+    pattern3 = re.compile(r'[E|-](\d+).*?(\d{3,4}p)')
     
-    # Pattern 4: Standalone Episode Number
-    pattern4 = re.compile(r'(\d+)')
+    # Pattern 4: Standalone Episode Number with quality
+    pattern4 = re.compile(r'(\d+).*?(\d{3,4}p)')
     
     # Try each pattern in order
     for pattern in [pattern1, pattern2, pattern3, pattern4]:
         match = re.search(pattern, filename)
         if match:
-            return match.group(1)  # Extracted episode number
+            episode_number = match.group(1)  # Extracted episode number
+            quality = match.group(2)  # Extracted quality
+            return episode_number, quality
     
     # Return None if no pattern matches
-    return None
+    return None, None
 
 # Example Usage:
 filename = "One Piece S1-07 [720p][Dual] @Anime_Edge.mkv"
