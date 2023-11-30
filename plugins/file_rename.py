@@ -37,8 +37,9 @@ def extract_episode_number(filename):
 
 # Example Usage:
 filename = "One Piece S1-07 [720p][Dual] @Anime_Edge.mkv"
-episode_number = extract_episode_number(filename)
+episode_number, quality = extract_episode_and_quality(filename)
 print(f"Extracted Episode Number: {episode_number}")
+print(f"Extracted Quality: {quality}")
 
 # Assuming you have a command handler in Pyrogram
 @Client.on_message(filters.private & filters.command("autorename"))
@@ -82,7 +83,7 @@ async def auto_rename_files(client, message):
 
     if episode_number:
         # Use the episode_number and format_template string to generate the new file name
-        new_file_name = format_template.format(episode=episode_number)
+        new_file_name = format_template.format(episode=episode_number, quality=quality)
         await message.reply_text(f"File renamed successfully to: {new_file_name}")
 
         # Assuming you have access to the required variables (format_template, episode_number, file_name)
