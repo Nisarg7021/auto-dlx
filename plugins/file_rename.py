@@ -86,8 +86,8 @@ async def auto_rename_files(client, message):
     if episode_number and quality:
         new_file_name = format_template.format(episode=episode_number, quality=quality)
         await message.reply_text(f"File renamed successfully to: {new_file_name}")
-
-_, file_extension = os.path.splitext(file_name)
+        
+        _, file_extension = os.path.splitext(file_name)
         file_path = f"downloads/{new_file_name}"
         file = message
         
