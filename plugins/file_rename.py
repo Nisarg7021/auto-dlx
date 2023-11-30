@@ -43,18 +43,6 @@ print(f"Extracted Episode Number: {episode_number}")
 print(f"Extracted Quality: {quality}")
 
 # Assuming you have a command handler in Pyrogram
-@Client.on_message(filters.private & filters.command("autorename"))
-async def auto_rename_command(client, message):
-    user_id = message.from_user.id
-
-    # Extract the format from the command
-    format_template = message.text.split("/autorename", 1)[1].strip()
-
-    # Save the format template to the database
-    await db.set_format_template(user_id, format_template)
-
-    await message.reply_text("Auto rename format updated successfully!")
-
 @Client.on_message(filters.private & (filters.document | filters.video | filters.audio))
 async def auto_rename_files(client, message):
     user_id = message.from_user.id
