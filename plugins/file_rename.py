@@ -26,22 +26,21 @@ def extract_episode_and_quality(filename):
     # Pattern 4: Standalone Episode Number with quality
     pattern4 = re.compile(r'(\d+).*?(\d{3,4}p)')
 
-    # Pattern 5: Extract Season and Episode Number
-    pattern5 = re.compile(r'S(\d+)\s*[E|EP][^\d]*(\d+)')
+    # Pattern 5: Extract Season, Episode Number, and Quality
+    pattern5 = re.compile(r'S(\d+)\s*[E|EP]\s*(\d+).*?(\w+)(?=\d{3,4}p)')
 
     # Try each pattern in order
     for pattern in [pattern1, pattern2, pattern3, pattern4, pattern5]:
         match = re.search(pattern, filename)
         if match:
-            # Extracted season and episode numbers
+            # Extracted season, episode numbers, and quality
             season_number = match.group(1) or match.group(3)
             episode_number = match.group(2) or match.group(4)
             quality = match.group(5)  # Extracted quality
             return season_number, episode_number, quality
 
     # Return None if no pattern matches
-    return None, None, None
-    
+    return None, None, None   
     
 @Client.on_message(filters.private & filters.command("autorename"))
 async def auto_rename_command(client, message):
@@ -56,6 +55,30 @@ async def auto_rename_command(client, message):
     await message.reply_text("Auto rename format updated successfully!")
 
 # Inside the handler for file uploads
+
+        _, file_extension = os.path.splitext(file_name)
+        file_path = f"downloads/{new_file_name}"
+        file = message
+        
+        ms = await message.reply("Trying to download...")
+        try:
+            path = await client.download_media(message=file, file_name=file_path, progress=progress_for_pyrogram, progress_args=("Dᴏᴡɴʟᴏᴀᴅ Sᴛᴀʀᴛᴇᴅ....", ms, time.time()))                    
+        except Exception as e:
+            return await ms.edit(e)
+
+        duration = 0
+        try:
+            metadata = extractMetadata(createParser(file_path))
+            if metadata.has("duration"):
+                duration = metadata.get('duration').seconds
+        except Exception as e:
+            print(f"Error getting duration: {e}")
+
+        ph_path = None
+        c_caption = await db.get_caption(message.chat.id)
+        c_thumb = await db.get_thumbnail(message.chat.id)
+
+        capt# Inside the handler for file uploads
 @Client.on_message(filters.private & (filters.document | filters.video | filters.audio))
 async def auto_rename_files(client, message):
     user_id = message.from_user.id
@@ -79,38 +102,19 @@ async def auto_rename_files(client, message):
 
     print(f"Original File Name: {file_name}")
 
-    episode_number, quality, season_number = extract_episode_and_quality(file_name)
-    print(f"Extracted Episode Number: {episode_number}")
-    print(f"Extracted Quality: {quality}")
-    print(f"Extracted Season Number: {season_number}")
+    # Extract season, episode numbers, and quality
+    season_number, episode_number, quality = extract_episode_and_quality(file_name)
 
-    if episode_number and quality:
-        new_file_name = format_template.format(episode=episode_number, quality=quality, season=season_number)
+    if season_number and episode_number and quality:
+        # If any pattern matches, rename the file
+        new_file_name = format_template.format(season=season_number, episode=episode_number, quality=quality)
         await message.reply_text(f"File renamed successfully to: {new_file_name}")
-    
-        _, file_extension = os.path.splitext(file_name)
-        file_path = f"downloads/{new_file_name}"
-        file = message
-        
-        ms = await message.reply("Trying to download...")
-        try:
-            path = await client.download_media(message=file, file_name=file_path, progress=progress_for_pyrogram, progress_args=("Dᴏᴡɴʟᴏᴀᴅ Sᴛᴀʀᴛᴇᴅ....", ms, time.time()))                    
-        except Exception as e:
-            return await ms.edit(e)
 
-        duration = 0
-        try:
-            metadata = extractMetadata(createParser(file_path))
-            if metadata.has("duration"):
-                duration = metadata.get('duration').seconds
-        except Exception as e:
-            print(f"Error getting duration: {e}")
-
-        ph_path = None
-        c_caption = await db.get_caption(message.chat.id)
-        c_thumb = await db.get_thumbnail(message.chat.id)
-
-        caption = c_caption.format(filename=new_file_name, filesize=humanbytes(message.document.file_size), duration=convert(duration)) if c_caption else f"**{new_file_name}"
+        # Rest of your code for renaming the file...
+    else:
+        # If none of the patterns match, reply with the specified message
+        return await message.reply_text("Contact @Trippy_xt")
+    ion = c_caption.format(filename=new_file_name, filesize=humanbytes(message.document.file_size), duration=convert(duration)) if c_caption else f"**{new_file_name}"
 
         if c_thumb:
             ph_path = await client.download_media(c_thumb)
