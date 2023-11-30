@@ -1,4 +1,4 @@
-from pyrogram import Client, filters, Message
+from pyrogram import Client, filters
 from pyrogram.errors import FloodWait
 from pyrogram.types import InputMediaDocument
 from PIL import Image
@@ -55,7 +55,6 @@ async def auto_rename_command(client, message):
 
     await message.reply_text("Auto rename format updated successfully!")
 
-# Inside the handler for file uploads
 @Client.on_message(filters.private & (filters.document | filters.video | filters.audio))
 async def auto_rename_files(client, message):
     user_id = message.from_user.id
@@ -79,7 +78,7 @@ async def auto_rename_files(client, message):
 
     print(f"Original File Name: {file_name}")
 
-    episode_number, quality = extract_episode_and_quality(filename)
+    episode_number, quality = extract_episode_and_quality(file_name)
     print(f"Extracted Episode Number: {episode_number}")
     print(f"Extracted Quality: {quality}")
 
