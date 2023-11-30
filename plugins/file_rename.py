@@ -84,10 +84,9 @@ async def auto_rename_files(client, message):
 print(f"Extracted Episode Number: {episode_number}")
 print(f"Extracted Quality: {quality}")
 
-    if episode_number and quality:
-        # Use the episode_number and format_template string to generate the new file name
-        new_file_name = format_template.format(episode=episode_number, quality=quality)
-        await message.reply_text(f"File renamed successfully to: {new_file_name}")
+if episode_number and quality:
+    new_file_name = format_template.format(episode=episode_number, quality=quality)
+    await message.reply_text(f"File renamed successfully to: {new_file_name}")
 
         # Assuming you have access to the required variables (format_template, episode_number, file_name)
         _, file_extension = os.path.splitext(file_name)
