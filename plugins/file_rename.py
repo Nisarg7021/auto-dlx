@@ -26,25 +26,22 @@ def extract_episode_and_quality(filename):
     # Pattern 4: Standalone Episode Number with quality
     pattern4 = re.compile(r'(\d+).*?(\d{3,4}p)')
 
-    # Pattern 5: Extract Season Number
-    season_pattern = re.compile(r'S(\d+)')
+    # Pattern 5: Extract Season and Episode Number
+    pattern5 = re.compile(r'S(\d+)\s*E[^\d]*(\d+)|S(\d+)\s*EP[^\d]*(\d+)')
 
     # Try each pattern in order
-    for pattern in [pattern1, pattern2, pattern3, pattern4]:
+    for pattern in [pattern1, pattern2, pattern3, pattern4, pattern5]:
         match = re.search(pattern, filename)
         if match:
-            episode_number = match.group(1)  # Extracted episode number
-            quality = match.group(2)  # Extracted quality
-
-            # Extract Season Number using Pattern 5
-            season_match = re.search(season_pattern, filename)
-            season_number = season_match.group(1) if season_match else None
-
-            return episode_number, quality, season_number
+            # Extracted season and episode numbers
+            season_number = match.group(1) or match.group(3)
+            episode_number = match.group(2) or match.group(4)
+            quality = match.group(5)  # Extracted quality
+            return season_number, episode_number, quality
 
     # Return None if no pattern matches
     return None, None, None
-
+    
 @Client.on_message(filters.private & filters.command("autorename"))
 async def auto_rename_command(client, message):
     user_id = message.from_user.id
