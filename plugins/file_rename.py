@@ -13,23 +13,30 @@ import os
 import re
 import time
 
-def extract_info_from_filename(filename):
-    # Pattern 1: [AC] Eminence In Shadow S2 - E08 480p Dual @Anime_Campus.mkv
-    pattern = re.compile(r'\[([^\]]+)\]\s*([^S]+)\s*S(\d+)\s*-\s*E(\d+)\s*(\d{3,4}p)\s*([^\s]+)')
+def extract_episode_and_quality(filename):
+    # Pattern 1: S1E01 or S01E01 with quality
+    pattern1 = re.compile(r'S(\d+)E(\d+).*?(\d{3,4}p)')
 
-    match = re.search(pattern, filename)
-    if match:
-        group1 = match.group(1)  # Extra info
-        title = match.group(2).strip()  # Title
-        season_number = match.group(3)  # Season number
-        episode_number = match.group(4)  # Episode number
-        quality = match.group(5)  # Quality
-        audio_type = match.group(6)  # Audio type
-        return group1, title, season_number, episode_number, quality, audio_type
+    # Pattern 2: S02 E01 with quality
+    pattern2 = re.compile(r'S(\d+) E(\d+).*?(\d{3,4}p)')
+
+    # Pattern 3: Episode Number After "E" or "-" with quality
+    pattern3 = re.compile(r'[E|-](\d+).*?(\d{3,4}p)')
+
+    # Pattern 4: Standalone Episode Number with quality
+    pattern4 = re.compile(r'(\d+).*?(\d{3,4}p)')
+
+    # Try each pattern in order
+    for pattern in [pattern1, pattern2, pattern3, pattern4]:
+        match = re.search(pattern, filename)
+        if match:
+            episode_number = match.group(1)  # Extracted episode number
+            quality = match.group(2)  # Extracted quality
+            return episode_number, quality
 
     # Return None if no pattern matches
-    return None
-
+    return None, None
+    
 @Client.on_message(filters.private & (filters.document | filters.video | filters.audio))
 async def auto_rename_files(client, message):
     user_id = message.from_user.id
