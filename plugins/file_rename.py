@@ -36,7 +36,8 @@ def extract_episode_and_quality(filename):
     
     # Return None if no pattern matches
     return None, None
-
+    
+file_name = message.document.file_name
 filename = {file_name}
 episode_number, quality = extract_episode_and_quality(filename)
 print(f"Extracted Episode Number: {episode_number}")
