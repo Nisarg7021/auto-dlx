@@ -37,7 +37,7 @@ def extract_episode_and_quality(filename):
     # Return None if no pattern matches
     return None, None
 
-filename = One Piece.mkv
+filename = {file_name}
 episode_number, quality = extract_episode_and_quality(filename)
 print(f"Extracted Episode Number: {episode_number}")
 print(f"Extracted Quality: {quality}")
