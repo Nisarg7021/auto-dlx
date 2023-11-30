@@ -13,7 +13,10 @@ import os
 import re
 import time
 
-def extract_episode_and_quality(filename):
+
+
+@Client.on_message(filters.private & filters.command("autorename"))
+async def auto_rename_command(client,def extract_episode_and_quality(filename):
     # Pattern 1: S1E01 or S01E01 with quality
     pattern1 = re.compile(r'S(\d+)E(\d+).*?(\d{3,4}p)')
 
@@ -26,16 +29,21 @@ def extract_episode_and_quality(filename):
     # Pattern 4: Standalone Episode Number with quality
     pattern4 = re.compile(r'(\d+).*?(\d{3,4}p)')
 
+    # Pattern 5: Extract Season, Episode Number, and Quality
+    pattern5 = re.compile(r'S(\d+)\s*[E|EP]\s*(\d+).*?(\w+)(?=\d{3,4}p)')
+
     # Try each pattern in order
-    for pattern in [pattern1, pattern2, pattern3, pattern4]:
+    for pattern in [pattern1, pattern2, pattern3, pattern4, pattern5]:
         match = re.search(pattern, filename)
         if match:
-            episode_number = match.group(1)  # Extracted episode number
-            quality = match.group(2)  # Extracted quality
-            return episode_number, quality
+            # Extracted season, episode numbers, and quality
+            season_number = match.group(1) or match.group(3)
+            episode_number = match.group(2) or match.group(4)
+            quality = match.group(5)  # Extracted quality
+            return season_number, episode_number, quality
 
     # Return None if no pattern matches
-    return None, None
+    return None, None, None 
 
 @Client.on_message(filters.private & filters.command("autorename"))
 async def auto_rename_command(client, message):
@@ -73,13 +81,18 @@ async def auto_rename_files(client, message):
 
     print(f"Original File Name: {file_name}")
 
-    episode_number, quality = extract_episode_and_quality(file_name)
+    season_number, episode_number, quality = extract_episode_and_quality(file_name)
+
+    # Check if any of the extracted values are missing
+    if season_number is None or episode_number is None or quality is None:
+        return await message.reply_text("Contact @Trippy_xt")
+
+    print(f"Extracted Season Number: {season_number}")
     print(f"Extracted Episode Number: {episode_number}")
     print(f"Extracted Quality: {quality}")
 
-    if episode_number and quality:
-        new_file_name = format_template.format(episode=episode_number, quality=quality)
-        await message.reply_text(f"File renamed successfully to: {new_file_name}")
+    new_file_name = format_template.format(season=season_number, episode=episode_number, quality=quality)
+    await message.reply_text(f"File renamed successfully to: {new_file_name}")
         
         _, file_extension = os.path.splitext(file_name)
         file_path = f"downloads/{new_file_name}"
