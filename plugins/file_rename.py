@@ -37,7 +37,7 @@ def extract_episode_and_quality(filename):
             # Extracted season, episode numbers, and quality
             season_number = match.group(1) or match.group(3)
             episode_number = match.group(2) or match.group(4)
-            quality = match.group(5)  # Extracted quality
+            quality = match.group(1) or match.group(2) or match.group(3) match.group(4) or match.group(5) # Extracted quality
             return season_number, episode_number, quality
 
     # Return None if no pattern matches
