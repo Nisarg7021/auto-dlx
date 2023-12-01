@@ -77,7 +77,12 @@ async def auto_rename_files(client, message):
 
     print(f"Original File Name: {file_name}")
 
-    episode_number, quality = extract_episode_and_quality(file_name)
+    season_number, episode_number, quality = extract_episode_and_quality(file_name)
+
+    # Check if any of the extracted values are missing
+    if season_number is None or episode_number is None or quality is None:
+        return await message.reply_text("Contact @Trippy_xt")
+
     print(f"Extracted Season Number: {season_number}")
     print(f"Extracted Episode Number: {episode_number}")
     print(f"Extracted Quality: {quality}")
