@@ -11,47 +11,43 @@ from helper.database import db
 
 import os
 import re
-import time
+import re
 
 def extract_episode_and_quality(filename):
-    # Pattern 1: Quality in square brackets, episode number after "E" and season number after "S"
-    pattern1 = re.compile(r'S(\d+)\s*E0?(\d+).*?\[(\w+)\](?=\d{3,4}p)')
+    # Pattern 1: S1E01 or S01E01 with quality
+    pattern_season_episode_quality = re.compile(r'S(\d+)E(\d+).*?(\d{3,4}p)')
 
-    # Pattern 2: S1E01 or S01E01 with quality
-    pattern2 = re.compile(r'S(\d+)E(\d+).*?(\d{3,4}p)')
+    # Pattern 2: S02 E01 with quality
+    pattern_season_episode_space_quality = re.compile(r'S(\d+) E(\d+).*?(\d{3,4}p)')
 
-    # Pattern 3: S02 E01 with quality
-    pattern3 = re.compile(r'S(\d+) E(\d+).*?(\d{3,4}p)')
-   
-    # Pattern 4: Episode Number After "E" or "-" with quality
-    pattern4 = re.compile(r'[E|-](\d+).*?(\d{3,4}p)')
+    # Pattern 3: Episode Number After "E" or "-" with quality
+    pattern_episode_separator_quality = re.compile(r'[E|-](\d+).*?(\d{3,4}p)')
 
-    # Pattern 5: Standalone Episode Number with quality
-    pattern5 = re.compile(r'(\d+).*?(\d{3,4}p)')
+    # Pattern 4: Standalone Episode Number with quality
+    pattern_standalone_episode_quality = re.compile(r'(\d+).*?(\d{3,4}p)')
 
-    #Pattern 6: E or EP episode bo. extract
-    pattern6 = re.compile(r'S(\d+)\s*[E|EP]\s*(\d+).*?(\w+)(?=\d{3,4}p)')
-
-    # New Pattern: Extract Season Number after "S" or "S0"
-    pattern_season = re.compile(r'S(\d+)|S0(\d+)')
-    
-    # Try the new pattern
-    match_season = re.search(pattern_season, filename)
-    if match_season:
-        season_number = match_season.group(1) or match_season.group(2)
-    else:
-        season_number = None
+    # Pattern 5: Extract Season, Episode Number, and Quality
+    pattern_season_episode_quality_alt = re.compile(r'S(\d+)\s*[E|EP]\s*(\d+).*?(\w+)(?=\d{3,4}p)')
 
     # Try each pattern in order
-    for pattern in [pattern1, pattern2, pattern3, pattern4, pattern5, pattern6]:
+    for pattern in [
+        pattern_season_episode_quality,
+        pattern_season_episode_space_quality,
+        pattern_episode_separator_quality,
+        pattern_standalone_episode_quality,
+        pattern_season_episode_quality_alt
+    ]:
         match = re.search(pattern, filename)
         if match:
-            episode_number = match.group(1)  # Extracted episode number
-            quality = match.group(2)  # Extracted quality
-            return episode_number, quality, season_number
+            # Extracted season, episode numbers, and quality
+            season_number = match.group(1) or match.group(3)
+            episode_number = match.group(2) or match.group(4)
+            quality = match.group(3) or match.group(4)  # Extracted quality
+            return season_number, episode_number, quality
 
     # Return None if no pattern matches
     return None, None, None
+    
 
 @Client.on_message(filters.private & filters.command("autorename"))
 async def auto_rename_command(client, message):
