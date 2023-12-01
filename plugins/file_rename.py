@@ -32,6 +32,15 @@ def extract_episode_and_quality(filename):
     #Pattern 6: E or EP episode bo. extract
     pattern6 = re.compile(r'S(\d+)\s*[E|EP]\s*(\d+).*?(\w+)(?=\d{3,4}p)')
 
+    # New Pattern: Extract Season Number after "S" or "S0"
+    pattern_season = re.compile(r'S(\d+)|S0(\d+)')
+    
+    # Try the new pattern
+    match_season = re.search(pattern_season, filename)
+    if match_season:
+        season_number = match_season.group(1) or match_season.group(2)
+    else:
+        season_number = None
 
     # Try each pattern in order
     for pattern in [pattern1, pattern2, pattern3, pattern4, pattern5, pattern6]:
@@ -39,10 +48,10 @@ def extract_episode_and_quality(filename):
         if match:
             episode_number = match.group(1)  # Extracted episode number
             quality = match.group(2)  # Extracted quality
-            return episode_number, quality
+            return episode_number, quality, season_number
 
     # Return None if no pattern matches
-    return None, None
+    return None, None, None
 
 @Client.on_message(filters.private & filters.command("autorename"))
 async def auto_rename_command(client, message):
@@ -80,13 +89,15 @@ async def auto_rename_files(client, message):
 
     print(f"Original File Name: {file_name}")
 
-    episode_number, quality = extract_episode_and_quality(file_name)
+    episode_number, quality, season_number = extract_episode_and_quality(file_name)
+    print(f"Extracted Season Number: {season_number}")
     print(f"Extracted Episode Number: {episode_number}")
     print(f"Extracted Quality: {quality}")
 
-    if episode_number and quality:
-        new_file_name = format_template.format(episode=episode_number, quality=quality)
-        await message.reply_text(f"File renamed successfully to: {new_file_name}")
+    if episode_number or quality or season_number:
+        # Use season_number in the format template
+        new_file_name = format_template.format(season=season_number, episode=episode_number, quality=quality)
+        await message.reply_text(f"File renamed successfully to: {new_file_name}")                                 
         
         _, file_extension = os.path.splitext(file_name)
         file_path = f"downloads/{new_file_name}"
