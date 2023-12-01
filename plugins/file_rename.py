@@ -33,13 +33,17 @@ def extract_episode_and_quality(filename):
             season_number = match.group(1) if match.group(1) else "01"
             episode_number = match.group(2)
             quality = match.group(3)
+            
+            # Check if the season number is a digit, if not, use default "01"
+            season_number = "01" if not season_number.isdigit() else season_number
+
+            print(f"Matched Pattern: {pattern}")
             return episode_number, season_number, quality
 
     # Return None if no pattern matches
     return None, None, None
                        
        
-
 @Client.on_message(filters.private & filters.command("autorename"))
 async def auto_rename_command(client, message):
     user_id = message.from_user.id
