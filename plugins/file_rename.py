@@ -30,9 +30,14 @@ def extract_episode_and_quality(filename):
     for pattern in [pattern1, pattern2, pattern3, pattern4]:
         match = re.search(pattern, filename)
         if match:
-            episode_number = match.group(2)
             season_number = match.group(1) if match.group(1) else "01"
+            episode_number = match.group(2)
             quality = match.group(3)
+            
+            # Check if the season number is a digit, if not, use default "01"
+            season_number = "01" if not season_number.isdigit() else season_number
+
+            print(f"Matched Pattern: {pattern}")
             return episode_number, season_number, quality
 
     # Return None if no pattern matches
