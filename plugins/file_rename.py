@@ -99,7 +99,7 @@ async def auto_rename_files(client, message):
     await message.reply_text(f"File renamed successfully to: {new_file_name}")
     
     _, file_extension = os.path.splitext(file_name)
-        file_path = f"downloads/{new_file_name}"
+    file_path = f"downloads/{new_file_name}"
         file = message
 
         ms = await message.reply("Trying to download...")
