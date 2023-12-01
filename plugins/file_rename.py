@@ -26,17 +26,21 @@ def extract_episode_and_quality(filename):
     # Pattern 4: Standalone Episode Number with quality
     pattern4 = re.compile(r'(\d+).*?(\d{3,4}p)')
 
+    # Pattern 5: Season and Episode Number with quality
+    pattern5 = re.compile(r'S(\d+).*?E(\d+).*?(\d{3,4}p)')
+
     # Try each pattern in order
-    for pattern in [pattern1, pattern2, pattern3, pattern4]:
+    for pattern in [pattern1, pattern2, pattern3, pattern4, pattern5]:
         match = re.search(pattern, filename)
         if match:
-            episode_number = match.group(1)  # Extracted episode number
-            quality = match.group(2)  # Extracted quality
-            return episode_number, quality
+            season_number = match.group(1) if match.group(1) else "1"  # Extracted season number (default to 1 if not present)
+            episode_number = match.group(2)  # Extracted episode number
+            quality = match.group(3)  # Extracted quality
+            return season_number, episode_number, quality
 
     # Return None if no pattern matches
-    return None, None
-
+    return None, None, None
+            
 @Client.on_message(filters.private & filters.command("autorename"))
 async def auto_rename_command(client, message):
     user_id = message.from_user.id
@@ -74,19 +78,19 @@ async def auto_rename_files(client, message):
     print(f"Original File Name: {file_name}")
 
     episode_number, quality = extract_episode_and_quality(file_name)
+    print(f"Extracted Season Number: {season_number}")
     print(f"Extracted Episode Number: {episode_number}")
     print(f"Extracted Quality: {quality}")
 
-    if episode_number and quality:
-        new_file_name = format_template.format(episode=episode_number, quality=quality)
-        await message.reply_text(f"File renamed successfully to: {new_file_name}")
-        
-        _, file_extension = os.path.splitext(file_name)
-        file_path = f"downloads/{new_file_name}"
-        file = message
-        
-        ms = await message.reply("Trying to download...")
-        try:
+    new_file_name = format_template.format(season=season_number, episode=episode_number, quality=quality)
+    await message.reply_text(f"File renamed successfully to: {new_file_name}")
+    
+    _, file_extension = os.path.splitext(file_name)
+    file_path = f"downloads/{new_file_name}"
+    file = message
+    
+    ms = await message.reply("Trying to download...")
+    try:
             path = await client.download_media(message=file, file_name=file_path, progress=progress_for_pyrogram, progress_args=("Dᴏᴡɴʟᴏᴀᴅ Sᴛᴀʀᴛᴇᴅ....", ms, time.time()))                    
         except Exception as e:
             return await ms.edit(e)
