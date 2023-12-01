@@ -13,8 +13,6 @@ import os
 import time
 import re
 
-import re
-
 def extract_episode_and_quality(filename):
     # Pattern 1: S01E01 with quality
     pattern1 = re.compile(r'S(\d+)E(\d+).*?(\d{3,4}p)')
@@ -41,34 +39,7 @@ def extract_episode_and_quality(filename):
             return season_number, episode_number, quality
     
     # Return None if no pattern matches
-    return None, None, None
-    
-    # Try each pattern in order
-    for pattern in [pattern1, pattern2, pattern3, pattern4]:
-        match = re.search(pattern, filename)
-        if match:
-            episode_number = match.group(1)  # Extracted episode number
-            quality = match.group(2)  # Extracted quality
-            season_number = match.group(3) if len(match.groups()) > 2 else None  # Extracted season number
-            return episode_number, quality, season_number
-
-    # Return None if no pattern matches
-    return None, None, None
-    
-
-    # Try each pattern in order
-    for pattern in [pattern1, pattern2, pattern3, pattern4, pattern5]:
-        match = re.search(pattern, filename)
-        if match:
-            season_number = match.group(1) if match.group(1) else "1"  # Extracted season number (default to 1 if not present)
-            episode_number = match.group(2)  # Extracted episode number
-            quality = match.group(3)  # Extracted quality
-            return season_number, episode_number, quality
-
-    # Return None if no pattern matches
-    return None, None, None
-    
-    
+    return None, None, None           
 
 @Client.on_message(filters.private & filters.command("autorename"))
 async def auto_rename_command(client, message):
