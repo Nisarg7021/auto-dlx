@@ -15,7 +15,7 @@ import time
 
 def extract_episode_and_quality(filename):
     # Pattern 1: Quality in square brackets, episode number after "E" and season number after "S"
-    pattern1 = re.compile(r'S(\d+)\s*[-|EP]\s*(\d+).*?\[(\d{3,4}p)\]')
+    pattern1 = re.compile(r'S(\d+)\s*E0?(\d+).*?\[(\w+)\](?=\d{3,4}p)')
 
     # Pattern 2: S1E01 or S01E01 with quality
     pattern2 = re.compile(r'S(\d+)E(\d+).*?(\d{3,4}p)')
