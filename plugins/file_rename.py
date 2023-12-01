@@ -147,32 +147,32 @@ async def auto_rename_files(client, message):
                             progress_args=("Upload Started....", ms, time.time())
                         )
                     elif type == "video":
-            await client.send_video(
-                message.chat.id,
-                video=file_path,
-                caption=caption,
-                thumb=ph_path,
-                duration=duration,
-                progress=progress_for_pyrogram,
-                progress_args=("Upload Started....", ms, time.time())
-            )
-        elif type == "audio":
-            await client.send_audio(
-                message.chat.id,
-                audio=file_path,
-                caption=caption,
-                thumb=ph_path,
-                duration=duration,
-                progress=progress_for_pyrogram,
-                progress_args=("Upload Started....", ms, time.time())
-            )
-    except Exception as e:
-        os.remove(file_path)
-        if ph_path:
-            os.remove(ph_path)
-        return await ms.edit(f"Error: {e}")
-
-    await ms.delete()
-    os.remove(file_path)
-    if ph_path:
-        os.remove(ph_path)
+                        await client.send_video(
+                            message.chat.id,
+                            video=file_path,
+                            caption=caption,
+                            thumb=ph_path,
+                            duration=duration,
+                            progress=progress_for_pyrogram,
+                            progress_args=("Upload Started....", ms, time.time())
+                        )
+                    elif type == "audio":
+                        await client.send_audio(
+                            message.chat.id,
+                            audio=file_path,
+                            caption=caption,
+                            thumb=ph_path,
+                            duration=duration, 
+                            progress=progress_for_pyrogram,
+                            progress_args=("Upload Started....", ms, time.time())
+                        )
+                except Exception as e:
+                    os.remove(file_path)
+                    if ph_path:
+                        os.remove(ph_path)
+                        return await ms.edit(f"Error: {e}")
+                        
+                        await ms.delete()
+                        os.remove(file_path)
+                        if ph_path:
+                            os.remove(ph_path)
