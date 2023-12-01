@@ -30,7 +30,7 @@ def extract_episode_and_quality(filename):
     pattern5 = re.compile(r'S(\d+)\s*[E|EP]\s*(\d+).*?(\w+)(?=\d{3,4}p)')
     
     # Pattern 6: Quality in square brackets, episode number after "E" and season number after "S"
-pattern6 = re.compile(r'S(\d+)\s*[E|EP]\s*0?(\d+).*?\[(\w+)\](?=\d{3,4}p)')
+    pattern6 = re.compile(r'S(\d+)\s*[E|EP]\s*0?(\d+).*?\[(\w+)\](?=\d{3,4}p)')
 
     # Try each pattern in order
     for pattern in [pattern1, pattern2, pattern3, pattern4, pattern5, pattern6]:
