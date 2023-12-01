@@ -22,7 +22,7 @@ def extract_episode_and_quality(filename):
     pattern2 = re.compile(r'S(\d+)\D*(\d+).*?(\d{3,4}p)')
 
     # Pattern 3: Episode Number After "E" or "-" with quality
-    pattern3 = re.compile(r'E\D*(\d+).*?(\d{3,4}p)')
+    pattern3 = re.compile(r'[^\d]E\D*(\d+).*?(\d{3,4}p)')
 
     # Pattern 4: Standalone Episode Number with quality
     pattern4 = re.compile(r'(\d+).*?(\d{3,4}p)')
@@ -39,7 +39,6 @@ def extract_episode_and_quality(filename):
     # Return None if no pattern matches
     return None, None, None
     
-            
     
 
 @Client.on_message(filters.private & filters.command("autorename"))
