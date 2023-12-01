@@ -16,41 +16,29 @@ import re
 def extract_episode_and_quality(filename):
     # Pattern 1: S1E01 or S01E01 with quality
     pattern1 = re.compile(r'S(\d+)E(\d+).*?(\d{3,4}p)')
-    
-    # Pattern 1a: [S02-E06] with quality
-    pattern1a = re.compile(r'\[S(\d+)[^\d]*(\d+)[^\d]*\].*?(\d{3,4}p)')
 
     # Pattern 2: S02 E01 with quality
-    pattern2 = re.compile(r'S(\d+) E(\d+).*?(\d{3,4}p)')
-
-    # Pattern 2a: [S02 - E06] with quality
-    pattern2a = re.compile(r'\[S(\d+)[^\d]*[^\d]*(\d+)[^\d]*\].*?(\d{3,4}p)')
+    pattern2 = re.compile(r'S(\d+)\D*(\d+).*?(\d{3,4}p)')
 
     # Pattern 3: Episode Number After "E" or "-" with quality
     pattern3 = re.compile(r'[E|-](\d+).*?(\d{3,4}p)')
 
     # Pattern 4: Standalone Episode Number with quality
-    pattern4 = re.compile(r'(\d+)[^\dpP]+(\d{3,4}p)')
+    pattern4 = re.compile(r'(\d+).*?(\d{3,4}p)')
 
     # Try each pattern in order
-    for pattern in [pattern1, pattern1a, pattern2, pattern2a, pattern3, pattern4]:
+    for pattern in [pattern1, pattern2, pattern3, pattern4]:
         match = re.search(pattern, filename)
         if match:
-            season_number = match.group(1) if match.group(1) else "1"
+            season_number = match.group(1) if match.group(1) else "01"
             episode_number = match.group(2)
             quality = match.group(3)
-            return season_number, episode_number, quality
+            return episode_number, season_number, quality
 
     # Return None if no pattern matches
     return None, None, None
-
-# Example usage:
-filename = "One Piece S1-07 [720p][Dual] @Anime_Edge.mkv"
-season, episode, quality = extract_episode_and_quality(filename)
-print(f"Season: {season}, Episode: {episode}, Quality: {quality}")
-                    
-    
-    
+                       
+       
 
 @Client.on_message(filters.private & filters.command("autorename"))
 async def auto_rename_command(client, message):
