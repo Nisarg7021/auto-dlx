@@ -16,9 +16,9 @@ import time
 def extract_episode_and_quality(filename):
     # Pattern 1: S1E01 or S01E01 with quality
     pattern1 = re.compile(r'S(\d+)E(\d+).*?(\d{3,4}p)')
-
-    # Pattern 2: S02 E01 with quality
-    pattern2 = re.compile(r'S(\d+) E(\d+).*?(\d{3,4}p)')
+    
+    # Pattern 2: Quality in square brackets, episode number after "E" and season number after "S"
+    pattern2 = re.compile(r'S(\d+)\s*[-|EP]\s*(\d+).*?\[(\d{3,4}p)\]')
 
     # Pattern 3: Episode Number After "E" or "-" with quality
     pattern3 = re.compile(r'[E|-](\d+).*?(\d{3,4}p)')
@@ -28,9 +28,10 @@ def extract_episode_and_quality(filename):
 
     #Pattern 5: E or EP episode bo. extract
     pattern5 = re.compile(r'S(\d+)\s*[E|EP]\s*(\d+).*?(\w+)(?=\d{3,4}p)')
-    
-    # Pattern 6: Quality in square brackets, episode number after "E" and season number after "S"
-    pattern6 = re.compile(r'S(\d+)\s*[-|EP]\s*(\d+).*?\[(\d{3,4}p)\]')
+
+    # Pattern 6: S02 E01 with quality
+    pattern6 = re.compile(r'S(\d+) E(\d+).*?(\d{3,4}p)')
+   
 
     # Try each pattern in order
     for pattern in [pattern1, pattern2, pattern3, pattern4, pattern5, pattern6]:
