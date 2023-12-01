@@ -14,30 +14,33 @@ import time
 import re
 
 def extract_episode_and_quality(filename):
-    # Pattern 1: S01E01 with quality
+    # Pattern 1: S1E01 or S01E01 with quality
     pattern1 = re.compile(r'S(\d+)E(\d+).*?(\d{3,4}p)')
     
-    # Pattern 2: S01 E01 with quality
+    # Pattern 1a: [S02-E06] with quality
+    pattern1a = re.compile(r'\[S(\d+)[^\d]*(\d+)[^\d]*\].*?(\d{3,4}p)')
+
+    # Pattern 2: S02 E01 with quality
     pattern2 = re.compile(r'S(\d+) E(\d+).*?(\d{3,4}p)')
-    
-    # Pattern 3: Season and Episode with quality
-    pattern3 = re.compile(r'S(\d+)[^0-9E]+(\d+).*?(\d{3,4}p)')
-    
-    # Pattern 4: Episode Number with quality
-    pattern4 = re.compile(r'[E|-](\d+).*?(\d{3,4}p)')
-    
-    # Pattern 5: Standalone Episode Number with quality
-    pattern5 = re.compile(r'(\d+).*?(\d{3,4}p)')
-    
+
+    # Pattern 2a: [S02 - E06] with quality
+    pattern2a = re.compile(r'\[S(\d+)[^\d]*[^\d]*(\d+)[^\d]*\].*?(\d{3,4}p)')
+
+    # Pattern 3: Episode Number After "E" or "-" with quality
+    pattern3 = re.compile(r'[E|-](\d+).*?(\d{3,4}p)')
+
+    # Pattern 4: Standalone Episode Number with quality
+    pattern4 = re.compile(r'(\d+)[^\dpP]+(\d{3,4}p)')
+
     # Try each pattern in order
-    for pattern in [pattern1, pattern2, pattern3, pattern4, pattern5]:
+    for pattern in [pattern1, pattern1a, pattern2, pattern2a, pattern3, pattern4]:
         match = re.search(pattern, filename)
         if match:
-            season_number = match.group(1) if match.group(1) else "01"
+            season_number = match.group(1) if match.group(1) else "1"
             episode_number = match.group(2)
             quality = match.group(3)
             return season_number, episode_number, quality
-    
+
     # Return None if no pattern matches
     return None, None, None           
 
