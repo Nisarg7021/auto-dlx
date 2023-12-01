@@ -37,19 +37,7 @@ def extract_episode_and_quality(filename):
 
     # Return None if no pattern matches
     return None, None, None
-    
-
-    # Try each pattern in order
-    for pattern in [pattern1, pattern2, pattern3, pattern4]:
-        match = re.search(pattern, filename)
-        if match:
-            season_number = match.group(1) if match.group(1) else "01"
-            episode_number = match.group(2)
-            quality = match.group(3)
-            return episode_number, season_number, quality
-
-    # Return None if no pattern matches
-    return None, None, None
+            
     
 
 @Client.on_message(filters.private & filters.command("autorename"))
