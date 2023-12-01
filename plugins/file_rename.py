@@ -26,8 +26,18 @@ def extract_episode_and_quality(filename):
     # Pattern 4: Standalone Episode Number with quality
     pattern4 = re.compile(r'(\d+).*?(\d{3,4}p)')
 
-    # Pattern 5: Season and Episode Number with quality
-    pattern5 = re.compile(r'S(\d+).*?E(\d+).*?(\d{3,4}p)')
+    # Try each pattern in order
+    for pattern in [pattern1, pattern2, pattern3, pattern4]:
+        match = re.search(pattern, filename)
+        if match:
+            episode_number = match.group(1)  # Extracted episode number
+            quality = match.group(2)  # Extracted quality
+            season_number = match.group(3) if len(match.groups()) > 2 else None  # Extracted season number
+            return episode_number, quality, season_number
+
+    # Return None if no pattern matches
+    return None, None, None
+    
 
     # Try each pattern in order
     for pattern in [pattern1, pattern2, pattern3, pattern4, pattern5]:
