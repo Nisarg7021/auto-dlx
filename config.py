@@ -21,7 +21,7 @@ License Link : https://github.com/TEAM-PYRO-BOTZ/PYRO-RENAME-BOT/blob/main/LICEN
 """
 
 import re, os, time
-from Pyrogram imort Client, filters
+from pyrogram import Client, filters
 from helper.database import db
 
 
