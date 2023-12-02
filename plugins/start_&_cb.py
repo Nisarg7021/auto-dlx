@@ -103,31 +103,31 @@ async def cb_handler(client, query: CallbackQuery):
                 InlineKeyboardButton("Bᴀᴄᴋ", callback_data = "start")
             ]])          
         )
-
-  elif data == "filename":
-    user_id = message.from_user.id
-    format_template = await db.get_format_template(user_id)
-
-    if format_template:
+    
+    elif data == "filename":
+      user_id = message.from_user.id
+      format_template = await db.get_format_template(user_id)
+      
+      if format_template:
         await message.reply_text(f"`{format_template}`")
-    else:
+      else:
         await message.reply_text("None! please add a format using /autorename command")
-
-    await query.message.edit_text(
-        text=Txt.FILE_NAME_TXT,
-        disable_web_page_preview=True,
-        reply_markup=InlineKeyboardMarkup([[
+        
+        await query.message.edit_text(
+          text=Txt.FILE_NAME_TXT,
+          disable_web_page_preview=True,
+          reply_markup=InlineKeyboardMarkup([[
             #⚠️ don't change source code & source link ⚠️ #
             InlineKeyboardButton("Cʟᴏꜱᴇ", callback_data="close"),
             InlineKeyboardButton("Bᴀᴄᴋ", callback_data="about")
-        ]])
-    )
-
-elif data == "thumbnail":
-    # Assuming you have a method in your database to get the user's thumbnail
-    user_thumbnail = await db.get_thumbnail(user_id)
-
-    await query.message.edit_text(
+          ]])
+        )
+      
+    elif data == "thumbnail":
+      # Assuming you have a method in your database to get the user's thumbnail
+      user_thumbnail = await db.get_thumbnail(user_id)
+      
+      await query.message.edit_text(
         text=Txt.THUMB_TXT,
         disable_web_page_preview=True,
         reply_markup=InlineKeyboardMarkup([[
