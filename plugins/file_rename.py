@@ -41,7 +41,7 @@ def extract_episode_and_quality(filename):
         match = re.search(pattern, filename)
         if match:
             episode_number = match.group(1)  # Extracted episode number
-            quality = match.group(2) match.group(3) # Extracted quality
+            quality = match.group(2) or match.group(3) # Extracted quality
             return episode_number, quality
 
     # Return None if no pattern matches
