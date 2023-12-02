@@ -10,37 +10,40 @@ from helper.utils import progress_for_pyrogram, humanbytes, convert
 from helper.database import db
 
 import os
-import time
 import re
-
- # Define patterns with re.IGNORECASE flag
-pattern1 = re.compile(r'S(\d+)\s*-\s*E(\d+).*?(\bHDRIP\b)', re.IGNORECASE)
-pattern2 = re.compile(r'S?(\d+)\s*-\s*EP?(\d+).*?\[([0-9]{3,4}p)\]', re.IGNORECASE)
-pattern3 = re.compile(r'(\d+)\s*-\s*(.*?)\s*\[([0-9]{3,4}p)\]', re.IGNORECASE)
-pattern4 = re.compile(r'S(\d+)\s*(?:-\s*)?(\d+).*?\[([0-9]{3,4}p)\]', re.IGNORECASE)
-pattern5 = re.compile(r'\[E(\d+)\].*?\[([0-9Kk]+)\].*?(@[^.]+)', re.IGNORECASE)
-pattern6 = re.compile(r'\[EP-(\d+)\].*?\[([0-9]{3,4}p)\].*?(@[^.]+)', re.IGNORECASE)
-pattern7 = re.compile(r'[S0]*(\d+)E0*(\d+).*?\[([0-9]{3,4}p)\]', re.IGNORECASE)
+import time
 
 def extract_episode_and_quality(filename):
+    # Pattern 1: Quality in square brackets, episode number after "E" and season number after "S"
+    pattern1 = re.compile(r'S(\d+)\s*E0?(\d+).*?\[(\w+)\](?=\d{3,4}p)')
+
+    # Pattern 2: S1E01 or S01E01 with quality
+    pattern2 = re.compile(r'S(\d+)E(\d+).*?(\d{3,4}p)')
+
+    # Pattern 3: S02 E01 with quality
+    pattern3 = re.compile(r'S(\d+) E(\d+).*?(\d{3,4}p)')
+   
+    # Pattern 4: Episode Number After "E" or "-" with quality
+    pattern4 = re.compile(r'[E|-](\d+).*?(\d{3,4}p)')
+
+    # Pattern 5: Standalone Episode Number with quality
+    pattern5 = re.compile(r'(\d+).*?(\d{3,4}p)')
+
+    #Pattern 6: E or EP episode bo. extract
+    pattern6 = re.compile(r'S(\d+)\s*[E|EP]\s*(\d+).*?(\w+)(?=\d{3,4}p)')
+
+
     # Try each pattern in order
-    for pattern in [pattern1, pattern2, pattern3, pattern4, pattern5, pattern6, pattern7]:
+    for pattern in [pattern1, pattern2, pattern3, pattern4, pattern5, pattern6]:
         match = re.search(pattern, filename)
         if match:
-            season_number = match.group(1) if match.group(1) else "01"
-            episode_number = match.group(2)
-            quality = match.group(3).lower()  # Convert to lowercase for consistency
-
-            # Print the matched pattern
-            print(f"Matched Pattern: {pattern}")
-
-            return episode_number, season_number, quality
+            episode_number = match.group(1)  # Extracted episode number
+            quality = match.group(2)  # Extracted quality
+            return episode_number, quality
 
     # Return None if no pattern matches
-    return None, None, None
-            
-        
-       
+    return None, None
+
 @Client.on_message(filters.private & filters.command("autorename"))
 async def auto_rename_command(client, message):
     user_id = message.from_user.id
@@ -77,16 +80,13 @@ async def auto_rename_files(client, message):
 
     print(f"Original File Name: {file_name}")
 
-    episode_number, quality, season_number = extract_episode_and_quality(file_name)
-    print(f"Extracted Season Number: {season_number}")
+    episode_number, quality = extract_episode_and_quality(file_name)
     print(f"Extracted Episode Number: {episode_number}")
     print(f"Extracted Quality: {quality}")
 
-    if episode_number or quality or season_number:
-        # Use season_number in the format template
-        new_file_name = format_template.format(episode=episode_number, season=season_number, quality=quality)
-        
-        await message.reply_text(f"File renamed successfully to: {new_file_name}")                                 
+    if episode_number and quality:
+        new_file_name = format_template.format(episode=episode_number, quality=quality)
+        await message.reply_text(f"File renamed successfully to: {new_file_name}")
         
         _, file_extension = os.path.splitext(file_name)
         file_path = f"downloads/{new_file_name}"
@@ -167,3 +167,4 @@ async def auto_rename_files(client, message):
         os.remove(file_path)
         if ph_path:
             os.remove(ph_path)
+
