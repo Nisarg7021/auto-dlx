@@ -15,34 +15,34 @@ import re
 
 def extract_episode_and_quality(filename):
     # Pattern 1: S1E01 or S01E01 with quality
-    pattern1 = re.compile(r'S(\d+)E(\d+).*?([0-9]{3,4}p)')
+    pattern1 = re.compile(r'S(\d+)E(\d+).*?(\d{3,4}p)')
 
     # Updated Pattern 2: S02 E01 with quality
-    pattern2 = re.compile(r'S(\d+)\s*(\d+).*?([0-9]{3,4}p)')
+    pattern2 = re.compile(r'S(\d+)\s*(\d+).*?(\d{3,4}p)')
 
     # Pattern 3: Episode Number After "E" or "-" with quality
-    pattern3 = re.compile(r'[E|-](\d+).*?([0-9]{3,4}p)')
+    pattern3 = re.compile(r'[E|-](\d+).*?(\d{3,4}p)')
 
     # Pattern 4: Standalone Episode Number with quality
-    pattern4 = re.compile(r'(\d+).*?([0-9]{3,4}p)')
+    pattern4 = re.compile(r'(\d+).*?(\d{3,4}p)')
 
     # Try each pattern in order
     for pattern in [pattern1, pattern2, pattern3, pattern4]:
-        match = re.search(pattern, filename, re.IGNORECASE)
+        match = re.search(pattern, filename)
         if match:
-            season_number = match.group(1) if match.group(1) else "01"
-            episode_number = match.group(2)
-            quality = match.group(3).lower()  # Convert to lowercase for consistency
+            season_number = match.group(1)  # Extracted season number
+            episode_number = match.group(2)  # Extracted episode number
+            quality = match.group(3)  # Extracted quality     
 
-            # Print the matched pattern
+            # Check if the season number is a digit, if not, use default "01"
+            season_number = "01" if not season_number.isdigit() else season_number
+
             print(f"Matched Pattern: {pattern}")
-
             return episode_number, season_number, quality
 
     # Return None if no pattern matches
     return None, None, None
     
-                       
        
 @Client.on_message(filters.private & filters.command("autorename"))
 async def auto_rename_command(client, message):
