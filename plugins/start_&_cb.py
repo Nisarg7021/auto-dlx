@@ -142,17 +142,6 @@ if user_thumbnail:
 else:
   await message.reply_photo(Config.START_PIC)
       
-
-elif data == "dev":
-        await query.message.edit_text(
-            text=Txt.DEV_TXT,
-            disable_web_page_preview=True,
-            reply_markup=InlineKeyboardMarkup([[
-                #⚠️ don't change source code & source link ⚠️ #
-                InlineKeyboardButton("Cʟᴏꜱᴇ", callback_data = "close"),
-                InlineKeyboardButton("Bᴀᴄᴋ", callback_data = "start")
-            ]])          
-        )
 elif data == "close":
         try:
             await query.message.delete()
