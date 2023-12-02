@@ -141,10 +141,10 @@ async def cb_handler(client, query: CallbackQuery):
         await query.message.reply_photo(Config.START_PIC)
       
     elif data == "close":
-      try:
-        await query.message.delete()
-        await query.message.reply_to_message.delete()
-        await query.message.continue_propagation()
+        try:
+            await query.message.delete()
+            await query.message.reply_to_message.delete()
+            await query.message.continue_propagation()
         except:
-          await query.message.delete()
-          await query.message.continue_propagation()
+            await query.message.delete()
+            await query.message.continue_propagation()
