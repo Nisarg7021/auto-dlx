@@ -26,7 +26,10 @@ def extract_episode_and_quality(filename):
         if match:
             season_number = match.group(1) if match.group(1) else "01"
             episode_number = match.group(2)
-            quality = match.group(3).lower()  # Convert to lowercase for consistency
+            quality_match = match.group(3)
+
+            # Check if quality is present, otherwise default to "Unknown"
+            quality = quality_match.lower() if quality_match else "unknown"
 
             # Print the matched pattern
             print(f"Matched Pattern: {pattern}")
@@ -35,7 +38,7 @@ def extract_episode_and_quality(filename):
 
     # Return None if no pattern matches
     return None, None, None
-    
+        
        
 @Client.on_message(filters.private & filters.command("autorename"))
 async def auto_rename_command(client, message):
