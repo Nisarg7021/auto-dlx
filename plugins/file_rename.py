@@ -14,14 +14,15 @@ import time
 import re
 
 # Define patterns with re.IGNORECASE flag
-pattern1 = re.compile(r'S(\d+)E(\d+).*?([0-9]{3,4}p)', re.IGNORECASE)
-pattern2 = re.compile(r'S(\d+)\s*(\d+).*?([0-9]{3,4}p)', re.IGNORECASE)
-pattern3 = re.compile(r'[E|-](\d+).*?([0-9]{3,4}p)', re.IGNORECASE)
-pattern4 = re.compile(r'(\d+).*?([0-9]{3,4}p)', re.IGNORECASE)
+pattern1 = re.compile(r'S?(\d+)[E|-]?(\d+).*?([0-9]{3,4}p)', re.IGNORECASE)
+pattern2 = re.compile(r'S(\d+)E(\d+).*?([0-9]{3,4}p)', re.IGNORECASE)
+pattern3 = re.compile(r'S(\d+)\s*(\d+).*?([0-9]{3,4}p)', re.IGNORECASE)
+pattern4 = re.compile(r'[E|-](\d+).*?([0-9]{3,4}p)', re.IGNORECASE)
+pattern5 = re.compile(r'(\d+).*?([0-9]{3,4}p)', re.IGNORECASE)
 
 def extract_episode_and_quality(filename):
     # Try each pattern in order
-    for pattern in [pattern1, pattern2, pattern3, pattern4]:
+    for pattern in [pattern1, pattern2, pattern3, pattern4, pattern5]:
         match = re.search(pattern, filename)
         if match:
             season_number = match.group(1) if match.group(1) else "01"
