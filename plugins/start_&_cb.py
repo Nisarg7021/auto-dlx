@@ -43,13 +43,10 @@ async def start(client, message):
         InlineKeyboardButton('🛠️ Hᴇʟᴩ', callback_data='help')
     ]])
     if Config.START_PIC:
-      await message.reply_photo(Config.START_PIC, caption=f"{Txt.START_TXT.format(user.mention)}")
-                                  
-                                  
+        await message.reply_photo(Config.START_PIC, caption=Txt.START_TXT.format(user.mention), reply_markup=button)       
     else:
-        await message.reply_text(text=Txt.START_TXT.format(user.mention), reply_markup=button, disable_web_page_preview=True)
-   
-
+        await message.reply_text(text=Txt.START_TXT.format(user.mention), reply_markup=button, disable_web_page_preview=True)   
+                                  
 @Client.on_callback_query()
 async def cb_handler(client, query: CallbackQuery):
     data = query.data 
