@@ -13,7 +13,13 @@ import os
 import re
 import time
 
-def extract_episode_and_quality(filename):
+
+
+@Client.on_message(filters.private & filters.command("autorename"))
+async def auto_rename_command(client, message):
+    user_id = message.from_user.id
+
+    # Extract the format from the cdef extract_episode_and_quality(filename):
     # Pattern 1: Quality in square brackets, episode number after "E" and season number after "S"
     pattern1 = re.compile(r'S(\d+)\s*E0?(\d+).*?\[(\w+)\](?=\d{3,4}p)')
 
@@ -22,36 +28,30 @@ def extract_episode_and_quality(filename):
 
     # Pattern 3: S02 E01 with quality
     pattern3 = re.compile(r'S(\d+) E(\d+).*?(\d{3,4}p)')
-   
+
     # Pattern 4: Episode Number After "E" or "-" with quality
     pattern4 = re.compile(r'[E|-](\d+).*?(\d{3,4}p)')
 
     # Pattern 5: Standalone Episode Number with quality
     pattern5 = re.compile(r'(\d+).*?(\d{3,4}p)')
 
-    #Pattern 6: E or EP episode bo. extract
+    # Pattern 6: E or EP episode bo. extract
     pattern6 = re.compile(r'S(\d+)\s*[E|EP]\s*(\d+).*?(\w+)(?=\d{3,4}p)')
 
-    #Pattern 7: episode no. in start
+    # Pattern 7: Episode Number at the start
     pattern7 = re.compile(r'(\d+).*')
-
 
     # Try each pattern in order
     for pattern in [pattern1, pattern2, pattern3, pattern4, pattern5, pattern6, pattern7]:
         match = re.search(pattern, filename)
         if match:
-            episode_number = match.group(1)  # Extracted episode number
-            quality = match.group(2) or match.group(3) # Extracted quality
+            episode_number = match.group(1) if match.group(1) else "01"  # Extracted episode number
+            quality = match.group(2) if match.groups() and len(match.groups()) > 2 else "Unknown"  # Extracted quality
             return episode_number, quality
 
     # Return None if no pattern matches
     return None, None
-
-@Client.on_message(filters.private & filters.command("autorename"))
-async def auto_rename_command(client, message):
-    user_id = message.from_user.id
-
-    # Extract the format from the command
+    ommand
     format_template = message.text.split("/autorename", 1)[1].strip()
     # Save the format template to the database
     await db.set_format_template(user_id, format_template)
