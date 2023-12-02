@@ -21,9 +21,6 @@ License Link : https://github.com/TEAM-PYRO-BOTZ/PYRO-RENAME-BOT/blob/main/LICEN
 """
 
 import re, os, time
-from pyrogram import Client, filters
-from helper.database import db
-
 
 id_pattern = re.compile(r'^.\d+$') 
 
@@ -50,13 +47,6 @@ class Config(object):
 
 class Txt(object):
     # part of text configuration
-    user_id = message.from_user.id
-    format_template = await db.get_format_template(user_id)
-
-    if format_template:
-        await message.reply_text(f"Your current auto rename format: `{format_template}`")
-    else:
-        await message.reply_text("None! please add a format using /autorename command")
         
     START_TXT = """Hello {}
 
@@ -72,7 +62,21 @@ class Txt(object):
 
 🚀 𝐋𝐄𝐓'𝐒 𝐆𝐄𝐓 𝐒𝐓𝐀𝐑𝐓𝐄𝐃! 🚀"""
     
+    FILE_NAME_TXT = """
+    <u><b>SETUP AUTO RENAME FORMAT</b></u>
 
+    Use These Keywords To Setup Custom File Name
+
+    ➝ {episode} - to replace episode number
+    ➝ {quality} - to replace video resolution 
+
+    ‣ <b>Example :</b> /autorename [AX] S02 - EP{episode} Spy X Family [{quality}] [Sub] @Animes_XYZ.mkv
+
+    ‣ Your Current Rename Format :</b> {format_template}
+    """
+
+    THUMB_TXT = """just send the image nigga"""
+    
     ABOUT_TXT = f"""
 <b>╔════════════⦿
 ├⋗ ᴄʀᴇᴀᴛᴏʀ : <a href='tg://user?id={6446763201}'>⚚ 𝐓𝐑𝐈𝐏𝐏𝐘 ❄️ </a>
@@ -84,17 +88,7 @@ class Txt(object):
 ╚═════════════════⦿</b>
 """
 
-    FILE_NAME_TXT = """<u><b>SETUP AUTO RENAME FORMAT</b></u>
-
-Use These Keywords To Setup Custom File Name
-
-➝ {episode} - to replace episode number
-➝ {quality} - to replace video resolution 
-
-‣ <b>Example :</b> /autorename [AX] S02 - EP{episode} Spy X Family [{quality}] [Sub] @Animes_XYZ.mkv
-
-‣ Your Current Rename Format :</b> {format_template}"""
-
+    
     THUMB_TXT = """ just send the image nigga"""
 
     PREMIUM_TXT = """ premium ke liye rates btao guyz"""
