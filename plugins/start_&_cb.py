@@ -131,17 +131,17 @@ async def cb_handler(client, query: CallbackQuery):
         text=Txt.THUMB_TXT,
         disable_web_page_preview=True,
         reply_markup=InlineKeyboardMarkup([[
-            InlineKeyboardButton("Cʟᴏꜱᴇ", callback_data="close"),
-            InlineKeyboardButton("Bᴀᴄᴋ", callback_data="start"),
+          InlineKeyboardButton("Cʟᴏꜱᴇ", callback_data="close"),
+          InlineKeyboardButton("Bᴀᴄᴋ", callback_data="start"),
         ]]),
     )
 
     # If the user has a thumbnail set, include it in the reply_markup
     if user_thumbnail:
-        await message.reply_photo(user_thumbnail)
+        await query.message.reply_photo(user_thumbnail)
     else:
-        await message.reply_photo(Config.START_PIC)
-    
+        await query.message.reply_photo(Config.START_PIC)
+
 elif data == "close":
     try:
         await query.message.delete()
