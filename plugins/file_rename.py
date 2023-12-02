@@ -27,21 +27,22 @@ def extract_episode_and_quality(filename):
     pattern4 = re.compile(r'(\d+).*?(\d{3,4}p)')
 
     # Try each pattern in order
-for pattern in [pattern1, pattern2, pattern3, pattern4, pattern5, pattern6]:
-    match = re.search(pattern, filename)
-    if match:
-        season_number = match.group(1)  # Extracted season number
-        episode_number = match.group(2)  # Extracted episode number
-        quality = match.group(3)  # Extracted quality     
-        
-        # Check if the season number is a digit, if not, use default "01"
-        season_number = "01" if not season_number.isdigit() else season_number
-        
-        print(f"Matched Pattern: {pattern}")
-        return episode_number, season_number, quality
-        
+    for pattern in [pattern1, pattern2, pattern3, pattern4]:
+        match = re.search(pattern, filename)
+        if match:
+            season_number = match.group(1)  # Extracted season number
+            episode_number = match.group(2)  # Extracted episode number
+            quality = match.group(3)  # Extracted quality     
+
+            # Check if the season number is a digit, if not, use default "01"
+            season_number = "01" if not season_number.isdigit() else season_number
+
+            print(f"Matched Pattern: {pattern}")
+            return episode_number, season_number, quality
+
     # Return None if no pattern matches
-return None, None, None
+    return None, None, None
+    
                        
        
 @Client.on_message(filters.private & filters.command("autorename"))
