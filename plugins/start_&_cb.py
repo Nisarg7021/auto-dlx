@@ -141,7 +141,7 @@ async def cb_handler(client, query: CallbackQuery):
         await message.reply_photo(user_thumbnail)
     else:
         await message.reply_photo(Config.START_PIC)
-
+    
 elif data == "close":
     try:
         await query.message.delete()
