@@ -45,7 +45,6 @@ class Config(object):
     WEBHOOK = bool(os.environ.get("WEBHOOK", "True"))
 
 
-
 class Txt(object):
     # part of text configuration
     START_TXT = """Hello {}
