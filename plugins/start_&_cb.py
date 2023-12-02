@@ -124,10 +124,10 @@ async def cb_handler(client, query: CallbackQuery):
         )
       
     elif data == "thumbnail":
-      # Assuming you have a method in your database to get the user's thumbnail
-      user_thumbnail = await db.get_thumbnail(user_id)
-      
-      await query.message.edit_text(
+    # Assuming you have a method in your database to get the user's thumbnail
+    user_thumbnail = await db.get_thumbnail(user_id)
+    
+    await query.message.edit_text(
         text=Txt.THUMB_TXT,
         disable_web_page_preview=True,
         reply_markup=InlineKeyboardMarkup([[
@@ -137,16 +137,17 @@ async def cb_handler(client, query: CallbackQuery):
     )
 
     # If the user has a thumbnail set, include it in the reply_markup
-if user_thumbnail:
-  await message.reply_photo(user_thumbnail)
-else:
-  await message.reply_photo(Config.START_PIC)
+    if user_thumbnail:
+        await message.reply_photo(user_thumbnail)
+    else:
+        await message.reply_photo(Config.START_PIC)
 
 elif data == "close":
-try:
-  await query.message.delete()
-  await query.message.reply_to_message.delete()
-  await query.message.continue_propagation()
-  except:
-    await query.message.delete()
-    await query.message.continue_propagation()
+    try:
+        await query.message.delete()
+        await query.message.reply_to_message.delete()
+        await query.message.continue_propagation()
+    except:
+        await query.message.delete()
+        await query.message.continue_propagation()
+      
