@@ -14,36 +14,44 @@ import time
 import re
 
 def extract_episode_and_quality(filename):
-    # Pattern 1: Quality in square brackets, episode number after "E" and season number after "S"
-    pattern1 = re.compile(r'S(\d+)\s*E0?(\d+).*?\[(\w+)\](?=\d{3,4}p)')
+    # Pattern 1: S1E01 or S01E01 with quality
+    pattern1 = re.compile(r'S(\d+)E(\d+).*?([0-9]{3,4}p)')
 
-    # Pattern 2: S1E01 or S01E01 with quality
-    pattern2 = re.compile(r'S(\d+)E(\d+).*?(\d{3,4}p)')
+    # Updated Pattern 2: S02 E01 with quality
+    pattern2 = re.compile(r'S(\d+)\s*(\d+).*?([0-9]{3,4}p)')
 
-    # Pattern 3: S02 E01 with quality
-    pattern3 = re.compile(r'S(\d+) E(\d+).*?(\d{3,4}p)')
-   
-    # Pattern 4: Episode Number After "E" or "-" with quality
-    pattern4 = re.compile(r'[E|-](\d+).*?(\d{3,4}p)')
+    # Pattern 3: Episode Number After "E" or "-" with quality
+    pattern3 = re.compile(r'[E|-](\d+).*?([0-9]{3,4}p)')
 
-    # Pattern 5: Standalone Episode Number with quality
-    pattern5 = re.compile(r'(\d+).*?(\d{3,4}p)')
+    # Pattern 4: Standalone Episode Number with quality
+    pattern4 = re.compile(r'(\d+).*?([0-9]{3,4}p)')
 
-    #Pattern 6: E or EP episode bo. extract
-    pattern6 = re.compile(r'S(\d+)\s*[E|EP]\s*(\d+).*?(\w+)(?=\d{3,4}p)')
+    # Pattern 5: Season at the beginning
+    pattern5 = re.compile(r'S(\d+).*?([0-9]{3,4}p)')
 
+    # Try each pattern in both possible orders
+    for episode_pattern, quality_pattern, season_pattern in [
+        (pattern1, pattern2, pattern5),
+        (pattern3, pattern4, pattern5)
+    ]:
+        episode_match = re.search(episode_pattern, filename, re.IGNORECASE)
+        quality_match = re.search(quality_pattern, filename, re.IGNORECASE)
+        season_match = re.search(season_pattern, filename, re.IGNORECASE)
 
-    # Try each pattern in order
-    for pattern in [pattern1, pattern2, pattern3, pattern4, pattern5, pattern6]:
-        match = re.search(pattern, filename)
-        if match:
-            season_number = match.group(1) or match.group(2) or match.group(3) or match.group(4) or match.group(5) or match.group (6)
-            episode_number = match.group(1) or match.group(2) or match.group(3) or match.group(4) or match.group(5) or match.group (6)  # Extracted episode number
-            quality = match.group(1) or match.group(2) or match.group(3) or match.group(4) or match.group(5) or match.group (6)  # Extracted quality
-            return episode_number, season_number, quality, 
+        if episode_match and quality_match and season_match:
+            season_number = episode_match.group(1) if episode_match.group(1) else season_match.group(1)
+            episode_number = episode_match.group(2)
+            quality = quality_match.group(3).lower()  # Convert to lowercase for consistency
+
+            # Print the matched patterns
+            print(f"Matched Episode Pattern: {episode_pattern}")
+            print(f"Matched Quality Pattern: {quality_pattern}")
+            print(f"Matched Season Pattern: {season_pattern}")
+
+            return episode_number, season_number, quality
 
     # Return None if no pattern matches
-    return None, None
+    return None, None, None   
     
     
        
