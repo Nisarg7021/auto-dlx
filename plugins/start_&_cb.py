@@ -124,7 +124,6 @@ async def cb_handler(client, query: CallbackQuery):
         )
       
     elif data == "thumbnail":
-      # Assuming you have a method in your database to get the user's thumbnail
       user_thumbnail = await db.get_thumbnail(user_id)
       
       await query.message.edit_text(
@@ -134,20 +133,19 @@ async def cb_handler(client, query: CallbackQuery):
           InlineKeyboardButton("Cʟᴏꜱᴇ", callback_data="close"),
           InlineKeyboardButton("Bᴀᴄᴋ", callback_data="start"),
         ]]),
-    )
-
-    # If the user has a thumbnail set, include it in the reply_markup
-    if user_thumbnail:
+      )
+      
+      if user_thumbnail:
         await query.message.reply_photo(user_thumbnail)
-    else:
+      else:
         await query.message.reply_photo(Config.START_PIC)
-
-elif data == "close":
-    try:
+      
+    elif data == "close":
+      try:
         await query.message.delete()
         await query.message.reply_to_message.delete()
         await query.message.continue_propagation()
-    except:
-        await query.message.delete()
-        await query.message.continue_propagation()
+        except:
+          await query.message.delete()
+          await query.message.continue_propagation()
       
