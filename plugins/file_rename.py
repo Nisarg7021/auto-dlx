@@ -13,25 +13,32 @@ import os
 import time
 import re
 
+ # Define patterns with re.IGNORECASE flag
+pattern1 = re.compile(r'S?(\d+)\s*-\s*E?(\d+).*?(\bHDRIP\b)', re.IGNORECASE)
+pattern2 = re.compile(r'S?(\d+)\s*-\s*EP?(\d+).*?\[([0-9]{3,4}p)\]', re.IGNORECASE)
+pattern3 = re.compile(r'(\d+)\s*-\s*(.*?)\s*\[([0-9]{3,4}p)\]', re.IGNORECASE)
+pattern4 = re.compile(r'S?(\d+)\s*(?:-\s*)?(\d+).*?\[([0-9]{3,4}p)\]', re.IGNORECASE)
+pattern5 = re.compile(r'\[E?(\d+)\].*?\[([0-9Kk]+)\].*?(@[^.]+)', re.IGNORECASE)
+pattern6 = re.compile(r'\[EP?-(\d+)\].*?\[([0-9]{3,4}p)\].*?(@[^.]+)', re.IGNORECASE)
+pattern7 = re.compile(r'[S0]*(\d+)E0*(\d+).*?\[([0-9]{3,4}p)\]', re.IGNORECASE)
+
 def extract_episode_and_quality(filename):
-    # Assuming episode_pattern is a compiled pattern created with re.compile
-    episode_pattern = re.compile(r'S(\d+)\s*[E|EP]\s*(\d+).*?(\w+)(?=\d{3,4}p)', re.IGNORECASE)
+    # Try each pattern in order
+    for pattern in [pattern1, pattern2, pattern3, pattern4, pattern5, pattern6, pattern7]:
+        match = re.search(pattern, filename)
+        if match:
+            season_number = match.group(1) if match.group(1) else "01"
+            episode_number = match.group(2)
+            quality = match.group(3).lower()  # Convert to lowercase for consistency
 
-    # Try to find the pattern in the filename
-    episode_match = episode_pattern.search(filename)
+            # Print the matched pattern
+            print(f"Matched Pattern: {pattern}")
 
-    # Check if there's a match
-    if episode_match:
-        # Extract information from the match
-        episode_number = episode_match.group(1) or episode_match.group(2)
-        quality = episode_match.group(3)
-        season_number = episode_match.group(3)  # You may need to adjust this depending on your pattern
-
-        return episode_number, quality, season_number
+            return episode_number, season_number, quality
 
     # Return None if no pattern matches
     return None, None, None
-    
+            
         
        
 @Client.on_message(filters.private & filters.command("autorename"))
