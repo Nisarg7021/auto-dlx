@@ -53,7 +53,7 @@ class Txt(object):
 
 ➝  Allow me to introduce the Advanced Rename Bot – your go-to solution for automating file renaming with custom captions, thumbnails, and seamless sequencing.
 ────────────────────
-✨ Tʜɪs Bᴏᴛ ɪs Cʀᴇᴀᴛᴇᴅ ʙʏ <a href='tg://user?id={6446763201}'>Tʀɪᴘᴘʏ</a>
+✨ Tʜɪs Bᴏᴛ ɪs Cʀᴇᴀᴛᴇᴅ ʙʏ Tʀɪᴘᴘʏ
 ────────────────────
 ➝  For assistance or more How to use me, use the " /Tutorial "command or you can use the below "Support" button to contact us.
 
