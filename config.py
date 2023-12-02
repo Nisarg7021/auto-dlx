@@ -74,8 +74,6 @@ class Txt(object):
 
     ‣ Your Current Rename Format :</b> {format_template}
     """
-
-    THUMB_TXT = """just send the image nigga"""
     
     ABOUT_TXT = f"""
 <b>╔════════════⦿
