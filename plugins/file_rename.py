@@ -15,9 +15,9 @@ import re
 
 def extract_episode_and_quality(filename):
     # Pattern 1: S1E01 or S01E01 with quality
-    pattern1 = re.compile(r'S(\d+)E(\d+).*?(\d{3,4}p)')
+    pattern1 = re.compile(r'S(\d+)\D*(\d+).*?(\d{3,4}p)')
 
-    # Updated Pattern 2: S02 E01 with quality
+    # Pattern 2: S02 E01 with quality
     pattern2 = re.compile(r'S(\d+)\s*E(\d+).*?(\d{3,4}p)')
 
     # Pattern 3: Episode Number After "E" or "-" with quality
@@ -36,13 +36,14 @@ def extract_episode_and_quality(filename):
             
             # Check if the season number is a digit, if not, use default "01"
             season_number = "01" if not season_number.isdigit() else season_number
-
+            
             print(f"Matched Pattern: {pattern}")
             return episode_number, season_number, quality
 
     # Return None if no pattern matches
     return None, None, None
     
+
                        
        
 @Client.on_message(filters.private & filters.command("autorename"))
