@@ -21,6 +21,9 @@ License Link : https://github.com/TEAM-PYRO-BOTZ/PYRO-RENAME-BOT/blob/main/LICEN
 """
 
 import re, os, time
+from Pyrogram imort Client, filters
+from helper.database import db
+
 
 id_pattern = re.compile(r'^.\d+$') 
 
@@ -47,11 +50,19 @@ class Config(object):
 
 class Txt(object):
     # part of text configuration
+    user_id = message.from_user.id
+    format_template = await db.get_format_template(user_id)
+
+    if format_template:
+        await message.reply_text(f"Your current auto rename format: `{format_template}`")
+    else:
+        await message.reply_text("None! please add a format using /autorename command")
+        
     START_TXT = """Hello {}
 
 ⚡ 𝐖𝐄𝐋𝐂𝐎𝐌𝐄 𝐓𝐎 𝐍𝐀𝐓𝐈𝐎𝐍'𝐒 𝐀𝐃𝐕𝐀𝐍𝐂𝐄𝐃 𝐑𝐄𝐍𝐀𝐌𝐄 𝐁𝐎𝐓! ⚡
 
-➝  Allow me to introduce the Advanced Rename Bot – your go-to solution for automating file renaming with custom captions, thumbnails, and seamless sequencing.
+➝  Introducing Advanced Rename Bot – your ultimate solution for effortless file renaming, featuring customizable captions, thumbnails, and seamless sequencing.
 ────────────────────
 ✨ Tʜɪs Bᴏᴛ ɪs Cʀᴇᴀᴛᴇᴅ ʙʏ <a href='https://t.me/Trippy_xt'>Tʀɪᴘᴘʏ</a>
 ────────────────────
@@ -73,18 +84,24 @@ class Txt(object):
 ╚═════════════════⦿</b>
 """
 
-    HELP_TXT = """ premium ke liye rates btao guyz"""
+    FILE_NAME_TXT = """<u><b>SETUP AUTO RENAME FORMAT</b></u>
+
+Use These Keywords To Setup Custom File Name
+
+➝ {episode} - to replace episode number
+➝ {quality} - to replace video resolution 
+
+‣ <b>Example :</b> /autorename [AX] S02 - EP{episode} Spy X Family [{quality}] [Sub] @Animes_XYZ.mkv
+
+‣ Your Current Rename Format :</b> {format_template}"""
+
+    THUMB_TXT = """ just send the image nigga"""
+
+    PREMIUM_TXT = """ premium ke liye rates btao guyz"""
 
 #⚠️ Dᴏɴ'ᴛ Rᴇᴍᴏᴠᴇ Oᴜʀ Cʀᴇᴅɪᴛꜱ @ᴩyʀᴏ_ʙᴏᴛᴢ🙏🥲
-    DEV_TXT = """<b><u>Sᴩᴇᴄɪᴀʟ Tʜᴀɴᴋꜱ & Dᴇᴠᴇʟᴏᴩᴇʀꜱ</b></u>
-» 𝗦𝗢𝗨𝗥𝗖𝗘 𝗖𝗢𝗗𝗘 : <a href=https://github.com/TEAM-PYRO-BOTZ/PYRO-RENAME-BOT>𝐏𝐘𝐑𝐎 𝐑𝐄𝐍𝐀𝐌𝐄 𝐁𝐎𝐓</a>
-» 𝗛𝗢𝗪 𝗧𝗢 𝗗𝗘𝗣𝗟𝗢𝗬 : <a href=https://youtu.be/GfulqsSnTv4>MᴏTᴇᴄʜ Yᴛ</a>
-• ❣️ <a href=https://github.com/lntechnical2>𝗟𝗡 𝗧𝗘𝗖𝗛𝗡𝗜𝗖</a>
-• ❣️ <a href=https://t.me/Mhd_rzn>𝗠𝗵𝗱_𝗿𝘇𝗻</a>
-• ❣️ <a href=https://youtu.be/GfulqsSnTv4>𝗠𝗼𝗧𝗲𝗰𝗵 𝗬𝗧</a>
-• ❣️ <a href=https://t.me/mr_MKN>𝗠𝗿.𝗠𝗞𝗡 𝗧𝗚</a>
-• ❣️ <a href=https://t.me/GitHub_noob>𝗚𝗶𝘁𝗛𝘂𝗯 𝗡𝗢𝗢𝗕</a>
-• ❣️ <a href=https://t.me/about_jeol>𝗝𝗲𝗼𝗹 𝗣𝗮𝘂𝗹</a> """
+    COMMANDS_TXT = """<b><u>Sᴩᴇᴄɪᴀʟ Tʜᴀɴᴋꜱ & Dᴇᴠᴇʟᴏᴩᴇʀꜱ</b></u>
+    """
 
     PROGRESS_BAR = """<b>\n
 ╭━━━━❰ᴘʀᴏɢʀᴇss ʙᴀʀ❱━➣
