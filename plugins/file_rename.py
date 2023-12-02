@@ -14,12 +14,12 @@ import time
 import re
 
  # Define patterns with re.IGNORECASE flag
-pattern1 = re.compile(r'S?(\d+)\s*-\s*E?(\d+).*?(\bHDRIP\b)', re.IGNORECASE)
-pattern2 = re.compile(r'S?(\d+)\s*-\s*EP?(\d+).*?\[([0-9]{3,4}p)\]', re.IGNORECASE)
+pattern1 = re.compile(r'S(\d+)\s*-\s*E(\d+).*?(\bHDRIP\b)', re.IGNORECASE)
+pattern2 = re.compile(r'S(\d+)\s*-\s*EP(\d+).*?\[([0-9]{3,4}p)\]', re.IGNORECASE)
 pattern3 = re.compile(r'(\d+)\s*-\s*(.*?)\s*\[([0-9]{3,4}p)\]', re.IGNORECASE)
-pattern4 = re.compile(r'S?(\d+)\s*(?:-\s*)?(\d+).*?\[([0-9]{3,4}p)\]', re.IGNORECASE)
-pattern5 = re.compile(r'\[E?(\d+)\].*?\[([0-9Kk]+)\].*?(@[^.]+)', re.IGNORECASE)
-pattern6 = re.compile(r'\[EP?-(\d+)\].*?\[([0-9]{3,4}p)\].*?(@[^.]+)', re.IGNORECASE)
+pattern4 = re.compile(r'S(\d+)\s*(?:-\s*)?(\d+).*?\[([0-9]{3,4}p)\]', re.IGNORECASE)
+pattern5 = re.compile(r'\[E(\d+)\].*?\[([0-9Kk]+)\].*?(@[^.]+)', re.IGNORECASE)
+pattern6 = re.compile(r'\[EP-(\d+)\].*?\[([0-9]{3,4}p)\].*?(@[^.]+)', re.IGNORECASE)
 pattern7 = re.compile(r'[S0]*(\d+)E0*(\d+).*?\[([0-9]{3,4}p)\]', re.IGNORECASE)
 
 def extract_episode_and_quality(filename):
