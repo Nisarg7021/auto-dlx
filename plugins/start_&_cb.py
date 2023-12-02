@@ -34,13 +34,13 @@ async def start(client, message):
     user = message.from_user
     await db.add_user(client, message)                
     button = InlineKeyboardMarkup([[
-        InlineKeyboardButton("⚡ Commands ⚡", callback_data='dev')
+        InlineKeyboardButton("⚡ 𝖢𝗈𝗆𝗆𝖺𝗇𝖽𝗌 ⚡", callback_data='commands')
         ],[
-        InlineKeyboardButton('📯 Uᴩᴅᴀᴛᴇꜱ', url='https://t.me/PYRO_BOTZ'),
-        InlineKeyboardButton('💁‍♂️ Sᴜᴩᴩᴏʀᴛ', url='https://t.me/PYRO_BOTZ_CHAT')
+        InlineKeyboardButton('Uᴩᴅᴀᴛᴇꜱ', url='https://t.me/PYRO_BOTZ'),
+        InlineKeyboardButton('Sᴜᴩᴩᴏʀᴛ', url='https://t.me/PYRO_BOTZ_CHAT')
         ],[
-        InlineKeyboardButton('🎛️ Aʙᴏᴜᴛ', callback_data='about'),
-        InlineKeyboardButton('🛠️ Hᴇʟᴩ', callback_data='help')
+        InlineKeyboardButton('Aʙᴏᴜᴛ', callback_data='about'),
+        InlineKeyboardButton('Pʀᴇᴍɪᴜᴍ', callback_data='premium')
     ]])
     if Config.START_PIC:
         await message.reply_photo(Config.START_PIC, caption=Txt.START_TXT.format(user.mention), reply_markup=button)       
@@ -55,27 +55,25 @@ async def cb_handler(client, query: CallbackQuery):
             text=Txt.START_TXT.format(query.from_user.mention),
             disable_web_page_preview=True,
             reply_markup = InlineKeyboardMarkup([[
-                InlineKeyboardButton("⚡ Commands ⚡", callback_data='dev')
+                InlineKeyboardButton("⚡ 𝖢𝗈𝗆𝗆𝖺𝗇𝖽𝗌 ⚡", callback_data='dev')
                 ],[
-                InlineKeyboardButton('📯 Uᴩᴅᴀᴛᴇꜱ', url='https://t.me/PYRO_BOTZ'),
-                InlineKeyboardButton('💁‍♂️ Sᴜᴩᴩᴏʀᴛ', url='https://t.me/PYRO_BOTZ_CHAT')
+                InlineKeyboardButton('Uᴩᴅᴀᴛᴇꜱ', url='https://t.me/Nation_Bots'),
+                InlineKeyboardButton('Sᴜᴩᴩᴏʀᴛ', url='https://t.me/Nation_Support')
                 ],[
-                InlineKeyboardButton('🎛️ Aʙᴏᴜᴛ', callback_data='about'),
-                InlineKeyboardButton('🛠️ Hᴇʟᴩ', callback_data='help')
+                InlineKeyboardButton('Hᴇʟᴘ', callback_data='about'),
+                InlineKeyboardButton('Pʀᴇᴍɪᴜᴍ', callback_data='help')
             ]])
         )
-    elif data == "help":
+    elif data == "premium":
         await query.message.edit_text(
-            text=Txt.HELP_TXT,
+            text=Txt.PREMIUM_TXT,
             disable_web_page_preview=True,
             reply_markup=InlineKeyboardMarkup([[
-                #⚠️ don't change source code & source link ⚠️ #
-                InlineKeyboardButton("❣️ Sᴏᴜʀᴄᴇ Cᴏᴅᴇ", url="https://github.com/TEAM-PYRO-BOTZ/PYRO-RENAME-BOT")
+                #⚠️ don't change source code & source link ⚠️ #   
+                InlineKeyboardButton('Bᴜʏ Nᴏᴡ ⚡', url='https://t.me/Trippy_xt')
                 ],[
-                InlineKeyboardButton("❤️‍🔥 Hᴏᴡ Tᴏ Uꜱᴇ❤️‍🔥", url='https://youtu.be/4ZfvMSDXBVg')
-                ],[
-                InlineKeyboardButton("🔒 Cʟᴏꜱᴇ", callback_data = "close"),
-                InlineKeyboardButton("◀️ Bᴀᴄᴋ", callback_data = "start")
+                InlineKeyboardButton("Cʟᴏꜱᴇ", callback_data = "close"),
+                InlineKeyboardButton("Bᴀᴄᴋ", callback_data = "start")
             ]])            
         )
     elif data == "about":
@@ -84,29 +82,78 @@ async def cb_handler(client, query: CallbackQuery):
             disable_web_page_preview = True,
             reply_markup=InlineKeyboardMarkup([[
                 #⚠️ don't change source code & source link ⚠️ #
-                InlineKeyboardButton("❣️ Sᴏᴜʀᴄᴇ Cᴏᴅᴇ", url="https://github.com/TEAM-PYRO-BOTZ/PYRO-RENAME-BOT")
+                InlineKeyboardButton("Sᴇᴛᴜᴘ Aᴜᴛᴏʀᴇɴᴀᴍᴇ Fᴏʀᴍᴀᴛ", callback_data='filename')
                 ],[
-                InlineKeyboardButton("🖥️ Hᴏᴡ Tᴏ Mᴀᴋᴇ", url="https://youtu.be/GfulqsSnTv4")
+                InlineKeyboardButton('Tʜᴜᴍʙɴᴀɪʟ', callback_data='thumbnail'),
+                InlineKeyboardButton('Sᴇǫᴜᴇɴᴄᴇ', url='https://t.me/File_Sequencer_Bot')
                 ],[
-                InlineKeyboardButton("🔒 Cʟᴏꜱᴇ", callback_data = "close"),
-                InlineKeyboardButton("◀️ Bᴀᴄᴋ", callback_data = "start")
-            ]])            
+                InlineKeyboardButton('Pʀᴇᴍɪᴜᴍ', callback_data='premium'),
+                InlineKeyboardButton('Aʙᴏᴜᴛ', callback_data='about')
+                ],[
+                InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start')
+            ]])
+              )
+    elif data == "commands":
+        await query.message.edit_text(
+            text=Txt.COMMANDS_TXT,
+            disable_web_page_preview=True,
+            reply_markup=InlineKeyboardMarkup([[
+                #⚠️ don't change source code & source link ⚠️ #
+                InlineKeyboardButton("Cʟᴏꜱᴇ", callback_data = "close"),
+                InlineKeyboardButton("Bᴀᴄᴋ", callback_data = "start")
+            ]])          
         )
-    elif data == "dev":
+
+  elif data == "filename":
+    user_id = message.from_user.id
+    format_template = await db.get_format_template(user_id)
+
+    if format_template:
+        await message.reply_text(f"`{format_template}`")
+    else:
+        await message.reply_text("None! please add a format using /autorename command")
+
+    await query.message.edit_text(
+        text=Txt.FILE_NAME_TXT,
+        disable_web_page_preview=True,
+        reply_markup=InlineKeyboardMarkup([[
+            #⚠️ don't change source code & source link ⚠️ #
+            InlineKeyboardButton("Cʟᴏꜱᴇ", callback_data="close"),
+            InlineKeyboardButton("Bᴀᴄᴋ", callback_data="about")
+        ]])
+    )
+
+elif data == "thumbnail":
+    # Assuming you have a method in your database to get the user's thumbnail
+    user_thumbnail = await db.get_thumbnail(user_id)
+
+    await query.message.edit_text(
+        text=Txt.THUMB_TXT,
+        disable_web_page_preview=True,
+        reply_markup=InlineKeyboardMarkup([[
+            InlineKeyboardButton("Cʟᴏꜱᴇ", callback_data="close"),
+            InlineKeyboardButton("Bᴀᴄᴋ", callback_data="start"),
+        ]]),
+    )
+
+    # If the user has a thumbnail set, include it in the reply_markup
+if user_thumbnail:
+  await message.reply_photo(user_thumbnail)
+else:
+  await message.reply_photo(Config.START_PIC)
+      
+
+elif data == "dev":
         await query.message.edit_text(
             text=Txt.DEV_TXT,
             disable_web_page_preview=True,
             reply_markup=InlineKeyboardMarkup([[
                 #⚠️ don't change source code & source link ⚠️ #
-                InlineKeyboardButton("❣️ Sᴏᴜʀᴄᴇ Cᴏᴅᴇ", url="https://github.com/TEAM-PYRO-BOTZ/PYRO-RENAME-BOT")
-                ],[
-                InlineKeyboardButton("🖥️ Hᴏᴡ Tᴏ Mᴀᴋᴇ", url="https://youtu.be/GfulqsSnTv4")
-                ],[
-                InlineKeyboardButton("🔒 Cʟᴏꜱᴇ", callback_data = "close"),
-                InlineKeyboardButton("◀️ Bᴀᴄᴋ", callback_data = "start")
+                InlineKeyboardButton("Cʟᴏꜱᴇ", callback_data = "close"),
+                InlineKeyboardButton("Bᴀᴄᴋ", callback_data = "start")
             ]])          
         )
-    elif data == "close":
+elif data == "close":
         try:
             await query.message.delete()
             await query.message.reply_to_message.delete()
