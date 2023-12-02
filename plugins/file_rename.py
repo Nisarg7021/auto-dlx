@@ -32,9 +32,12 @@ def extract_episode_and_quality(filename):
     #Pattern 6: E or EP episode bo. extract
     pattern6 = re.compile(r'S(\d+)\s*[E|EP]\s*(\d+).*?(\w+)(?=\d{3,4}p)')
 
+    #Pattern 7: episode no. in start
+    pattern7 = re.compile(r'(\d+).*')
+
 
     # Try each pattern in order
-    for pattern in [pattern1, pattern2, pattern3, pattern4, pattern5, pattern6]:
+    for pattern in [pattern1, pattern2, pattern3, pattern4, pattern5, pattern6, pattern7]:
         match = re.search(pattern, filename)
         if match:
             episode_number = match.group(1)  # Extracted episode number
