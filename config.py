@@ -70,7 +70,7 @@ class Txt(object):
     ➝ episode - to replace episode number
     ➝ quality - to replace video resolution 
 
-    ‣ <b>Example :</b> /autorename [AX] S02 - EP{episode} Spy X Family [{quality}] [Sub] @Animes_XYZ.mkv
+    ‣ <b>Example :</b> /autorename [AX] S02 - EPepisode Spy X Family [quality] [Sub] @Animes_XYZ.mkv
 
     ‣ Your Current Rename Format :</b> {format_template}
     """
