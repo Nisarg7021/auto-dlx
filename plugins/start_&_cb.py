@@ -34,13 +34,13 @@ async def start(client, message):
     user = message.from_user
     await db.add_user(client, message)                
     button = InlineKeyboardMarkup([[
-        InlineKeyboardButton("⚡ 𝖢𝗈𝗆𝗆𝖺𝗇𝖽𝗌 ⚡", callback_data='commands')
-        ],[
-        InlineKeyboardButton('Uᴩᴅᴀᴛᴇꜱ', url='https://t.me/PYRO_BOTZ'),
-        InlineKeyboardButton('Sᴜᴩᴩᴏʀᴛ', url='https://t.me/PYRO_BOTZ_CHAT')
-        ],[
-        InlineKeyboardButton('Aʙᴏᴜᴛ', callback_data='about'),
-        InlineKeyboardButton('Pʀᴇᴍɪᴜᴍ', callback_data='premium')
+      InlineKeyboardButton("⚡ 𝖢𝗈𝗆𝗆𝖺𝗇𝖽𝗌 ⚡", callback_data='commands')
+    ],[
+      InlineKeyboardButton('Uᴩᴅᴀᴛᴇꜱ', url='https://t.me/Nation_Bots'),
+      InlineKeyboardButton('Sᴜᴩᴩᴏʀᴛ', url='https://t.me/Nation_Support')
+    ],[
+      InlineKeyboardButton('Hᴇʟᴘ', callback_data='about'),
+      InlineKeyboardButton('Pʀᴇᴍɪᴜᴍ', callback_data='premium')
     ]])
     if Config.START_PIC:
         await message.reply_photo(Config.START_PIC, caption=Txt.START_TXT.format(user.mention), reply_markup=button)       
@@ -61,7 +61,7 @@ async def cb_handler(client, query: CallbackQuery):
                 InlineKeyboardButton('Sᴜᴩᴩᴏʀᴛ', url='https://t.me/Nation_Support')
                 ],[
                 InlineKeyboardButton('Hᴇʟᴘ', callback_data='about'),
-                InlineKeyboardButton('Pʀᴇᴍɪᴜᴍ', callback_data='help')
+                InlineKeyboardButton('Pʀᴇᴍɪᴜᴍ', callback_data='premium')
             ]])
         )
     elif data == "premium":
@@ -73,7 +73,7 @@ async def cb_handler(client, query: CallbackQuery):
                 InlineKeyboardButton('Bᴜʏ Nᴏᴡ ⚡', url='https://t.me/Trippy_xt')
                 ],[
                 InlineKeyboardButton("Cʟᴏꜱᴇ", callback_data = "close"),
-                InlineKeyboardButton("Bᴀᴄᴋ", callback_data = "start")
+                InlineKeyboardButton("Bᴀᴄᴋ", callback_data = "about")
             ]])            
         )
     elif data == "about":
@@ -131,7 +131,7 @@ async def cb_handler(client, query: CallbackQuery):
         disable_web_page_preview=True,
         reply_markup=InlineKeyboardMarkup([[
           InlineKeyboardButton("Cʟᴏꜱᴇ", callback_data="close"),
-          InlineKeyboardButton("Bᴀᴄᴋ", callback_data="start"),
+          InlineKeyboardButton("Bᴀᴄᴋ", callback_data="about"),
         ]]),
       )
       
