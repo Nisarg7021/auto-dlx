@@ -102,46 +102,45 @@ async def cb_handler(client, query: CallbackQuery):
             ]])          
         )
     
-    elif data == "filename":
-        print("Handling filename callback")
-        # Add more print statements for debugging
-    format_template = await db.get_format_template(user_id)
-    print("Format template:", format_template)
-    
-    if format_template:
-        text_to_show = Txt.FILE_NAME_TXT.format(format_template=format_template)
-    else:
-        text_to_show = "None! Please add a format using /autorename command"
+    elif data == "file_names":
+        format_template = await db.get_format_template(user_id)
+
+        if format_template:
+            await query.message.reply_text(f"`{format_template}`")
+        else:
+            await query.message.reply_text("None! please add a format using /autorename command")
+
+            await query.message.edit_text(
+                text=Txt.FILE_NAME_TXT,
+                disable_web_page_preview=True,
+                reply_markup=InlineKeyboardMarkup([[
+                    InlineKeyboardButton("Cʟᴏꜱᴇ", callback_data="close"),
+                    InlineKeyboardButton("Bᴀᴄᴋ", callback_data="start")
+                ]])
+            )
+      
+    elif data == "thumbnail":
+        user_thumbnail = await db.get_thumbnail(user_id)
+
         await query.message.edit_text(
-            text=text_to_show,
+            text=Txt.THUMB_TXT,
             disable_web_page_preview=True,
             reply_markup=InlineKeyboardMarkup([[
                 InlineKeyboardButton("Cʟᴏꜱᴇ", callback_data="close"),
-                InlineKeyboardButton("Bᴀᴄᴋ", callback_data="start")
-            ]])
-        )    
-    elif data == "thumbnail":
-    user_thumbnail = await db.get_thumbnail(user_id)
-    
-    await query.message.edit_text(
-        text=Txt.THUMB_TXT,
-        disable_web_page_preview=True,
-        reply_markup=InlineKeyboardMarkup([[
-            InlineKeyboardButton("Cʟᴏꜱᴇ", callback_data="close"),
-            InlineKeyboardButton("Bᴀᴄᴋ", callback_data="about"),
-        ]]),
-    )
-    if user_thumbnail:
-        await query.message.reply_photo(user_thumbnail)
-    else:
-        await query.message.reply_photo(Config.START_PIC)
-    
-elif data == "close"
-    try:
-        await query.message.delete()
-        await query.message.reply_to_message.delete()
-        await query.message.continue_propagation()
-    except:
-        await query.message.delete()
-        await query.message.continue_propagation()
+                InlineKeyboardButton("Bᴀᴄᴋ", callback_data="about"),
+            ]]),
+        )
+
+        if user_thumbnail:
+            await query.message.reply_photo(user_thumbnail)
+        else:
+            await query.message.reply_photo(Config.START_PIC)
       
+    elif data == "close":
+        try:
+            await query.message.delete()
+            await query.message.reply_to_message.delete()
+            await query.message.continue_propagation()
+        except:
+            await query.message.delete()
+            await query.message.continue_propagation()
