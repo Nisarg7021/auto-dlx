@@ -67,8 +67,8 @@ class Txt(object):
 
     Use These Keywords To Setup Custom File Name
 
-    ➝ {episode} - to replace episode number
-    ➝ {quality} - to replace video resolution 
+    ➝ episode - to replace episode number
+    ➝ quality - to replace video resolution 
 
     ‣ <b>Example :</b> /autorename [AX] S02 - EP{episode} Spy X Family [{quality}] [Sub] @Animes_XYZ.mkv
 
