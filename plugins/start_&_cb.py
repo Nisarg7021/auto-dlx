@@ -27,7 +27,6 @@ from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ForceReply, CallbackQuery, Message
 from helper.database import db
 from config import Config, Txt  
-  
 
 @Client.on_message(filters.private & filters.command("start"))
 async def start(client, message):
@@ -46,15 +45,17 @@ async def start(client, message):
         await message.reply_photo(Config.START_PIC, caption=Txt.START_TXT.format(user.mention), reply_markup=button)       
     else:
         await message.reply_text(text=Txt.START_TXT.format(user.mention), reply_markup=button, disable_web_page_preview=True)   
-                                  
+
 @Client.on_callback_query()
 async def cb_handler(client, query: CallbackQuery):
     data = query.data 
+    user_id = query.from_user.id  # Fix here
+    
     if data == "start":
         await query.message.edit_text(
             text=Txt.START_TXT.format(query.from_user.mention),
             disable_web_page_preview=True,
-            reply_markup = InlineKeyboardMarkup([[
+            reply_markup=InlineKeyboardMarkup([[
                 InlineKeyboardButton("⚡ 𝖢𝗈𝗆𝗆𝖺𝗇𝖽𝗌 ⚡", callback_data='commands')
                 ],[
                 InlineKeyboardButton('Uᴩᴅᴀᴛᴇꜱ', url='https://t.me/Nation_Bots'),
@@ -69,19 +70,17 @@ async def cb_handler(client, query: CallbackQuery):
             text=Txt.PREMIUM_TXT,
             disable_web_page_preview=True,
             reply_markup=InlineKeyboardMarkup([[
-                #⚠️ don't change source code & source link ⚠️ #   
                 InlineKeyboardButton('Bᴜʏ Nᴏᴡ ⚡', url='https://t.me/Trippy_xt')
                 ],[
-                InlineKeyboardButton("Cʟᴏꜱᴇ", callback_data = "close"),
-                InlineKeyboardButton("Bᴀᴄᴋ", callback_data = "about")
+                InlineKeyboardButton("Cʟᴏꜱᴇ", callback_data="close"),
+                InlineKeyboardButton("Bᴀᴄᴋ", callback_data="about")
             ]])            
         )
     elif data == "about":
         await query.message.edit_text(
             text=Txt.ABOUT_TXT.format(client.mention),
-            disable_web_page_preview = True,
+            disable_web_page_preview=True,
             reply_markup=InlineKeyboardMarkup([[
-                #⚠️ don't change source code & source link ⚠️ #
                 InlineKeyboardButton("Sᴇᴛᴜᴘ Aᴜᴛᴏʀᴇɴᴀᴍᴇ Fᴏʀᴍᴀᴛ", callback_data='filename')
                 ],[
                 InlineKeyboardButton('Tʜᴜᴍʙɴᴀɪʟ', callback_data='thumbnail'),
@@ -92,53 +91,50 @@ async def cb_handler(client, query: CallbackQuery):
                 ],[
                 InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start')
             ]])
-              )
+        )
     elif data == "commands":
         await query.message.edit_text(
             text=Txt.COMMANDS_TXT,
             disable_web_page_preview=True,
             reply_markup=InlineKeyboardMarkup([[
-                #⚠️ don't change source code & source link ⚠️ #
-                InlineKeyboardButton("Cʟᴏꜱᴇ", callback_data = "close"),
-                InlineKeyboardButton("Bᴀᴄᴋ", callback_data = "start")
+                InlineKeyboardButton("Cʟᴏꜱᴇ", callback_data="close"),
+                InlineKeyboardButton("Bᴀᴄᴋ", callback_data="start")
             ]])          
         )
     
     elif data == "filename":
-      user_id = message.from_user.id
-      format_template = await db.get_format_template(user_id)
-      
-      if format_template:
-        await message.reply_text(f"`{format_template}`")
-      else:
-        await message.reply_text("None! please add a format using /autorename command")
-        
-        await query.message.edit_text(
-          text=Txt.FILE_NAME_TXT,
-          disable_web_page_preview=True,
-          reply_markup=InlineKeyboardMarkup([[
-            #⚠️ don't change source code & source link ⚠️ #
-            InlineKeyboardButton("Cʟᴏꜱᴇ", callback_data="close"),
-            InlineKeyboardButton("Bᴀᴄᴋ", callback_data="start")
-          ]])
-        )
+        format_template = await db.get_format_template(user_id)
+
+        if format_template:
+            await query.message.reply_text(f"`{format_template}`")
+        else:
+            await query.message.reply_text("None! please add a format using /autorename command")
+
+            await query.message.edit_text(
+                text=Txt.FILE_NAME_TXT,
+                disable_web_page_preview=True,
+                reply_markup=InlineKeyboardMarkup([[
+                    InlineKeyboardButton("Cʟᴏꜱᴇ", callback_data="close"),
+                    InlineKeyboardButton("Bᴀᴄᴋ", callback_data="start")
+                ]])
+            )
       
     elif data == "thumbnail":
-      user_thumbnail = await db.get_thumbnail(user_id)
-      
-      await query.message.edit_text(
-        text=Txt.THUMB_TXT,
-        disable_web_page_preview=True,
-        reply_markup=InlineKeyboardMarkup([[
-          InlineKeyboardButton("Cʟᴏꜱᴇ", callback_data="close"),
-          InlineKeyboardButton("Bᴀᴄᴋ", callback_data="about"),
-        ]]),
-      )
-      
-      if user_thumbnail:
-        await query.message.reply_photo(user_thumbnail)
-      else:
-        await query.message.reply_photo(Config.START_PIC)
+        user_thumbnail = await db.get_thumbnail(user_id)
+
+        await query.message.edit_text(
+            text=Txt.THUMB_TXT,
+            disable_web_page_preview=True,
+            reply_markup=InlineKeyboardMarkup([[
+                InlineKeyboardButton("Cʟᴏꜱᴇ", callback_data="close"),
+                InlineKeyboardButton("Bᴀᴄᴋ", callback_data="about"),
+            ]]),
+        )
+
+        if user_thumbnail:
+            await query.message.reply_photo(user_thumbnail)
+        else:
+            await query.message.reply_photo(Config.START_PIC)
       
     elif data == "close":
         try:
@@ -148,3 +144,4 @@ async def cb_handler(client, query: CallbackQuery):
         except:
             await query.message.delete()
             await query.message.continue_propagation()
+      
