@@ -81,7 +81,7 @@ async def cb_handler(client, query: CallbackQuery):
             text=Txt.ABOUT_TXT.format(client.mention),
             disable_web_page_preview=True,
             reply_markup=InlineKeyboardMarkup([[
-                InlineKeyboardButton("Sᴇᴛᴜᴘ Aᴜᴛᴏʀᴇɴᴀᴍᴇ Fᴏʀᴍᴀᴛ", callback_data='filename')
+                InlineKeyboardButton("Sᴇᴛᴜᴘ Aᴜᴛᴏʀᴇɴᴀᴍᴇ Fᴏʀᴍᴀᴛ", callback_data='file_names')
                 ],[
                 InlineKeyboardButton('Tʜᴜᴍʙɴᴀɪʟ', callback_data='thumbnail'),
                 InlineKeyboardButton('Sᴇǫᴜᴇɴᴄᴇ', url='https://t.me/File_Sequencer_Bot')
@@ -103,9 +103,12 @@ async def cb_handler(client, query: CallbackQuery):
         )
     
     elif data == "filename":
-        format_template = await db.get_format_template(user_id)
-        
-        if format_template:
+        print("Handling filename callback")
+        # Add more print statements for debugging
+    format_template = await db.get_format_template(user_id)
+    print("Format template:", format_template)
+    
+    if format_template:
             text_to_show = Txt.FILE_NAME_TXT.format(format_template=format_template)
         else:
             text_to_show = "None! Please add a format using /autorename command"
