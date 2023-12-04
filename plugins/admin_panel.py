@@ -31,7 +31,7 @@ import os, sys, time, asyncio, logging, datetime
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
-@Client.on_message(filters.private & filters.command("tutorial")
+@Client.on_message(filters.private & filters.command("tutorial"))
 async def tutioral_bot(b, m):
     await m.reply_text("For sasti god level assistance message @Trippy_xt")
 
