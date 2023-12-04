@@ -31,6 +31,10 @@ import os, sys, time, asyncio, logging, datetime
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
+@Client.on_message(filters.private & filters.command("tutorial")
+async def restart_bot(b, m):
+    await m.reply_text("For sasti god level assistance message @Trippy_xt")
+
 @Client.on_message(filters.command(["stats", "status"]) & filters.user(Config.ADMIN))
 async def get_stats(bot, message):
     total_users = await db.total_users_count()
