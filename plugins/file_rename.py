@@ -12,37 +12,43 @@ from helper.database import db
 import os
 import re
 import time
+import re
 
-def extract_episode_and_quality(filename):
-    # Pattern 1: Quality in square brackets, episode number after "E" and season number after "S"
-    pattern1 = re.compile(r'S(\d+)\s*E0?(\d+).*?\[(\w+)\](?=\d{3,4}p)')
+def extract_episode_number(filename):
+    # Pattern 1: S1E01 or S01E01 Extraction
+    pattern1 = re.compile(r'S(\d+)\s*[E|EP]\s*(\d+)', re.IGNORECASE)
 
-    # Pattern 2: S1E01 or S01E01 with quality
-    pattern2 = re.compile(r'S(\d+)E(\d+).*?(\d{3,4}p)')
+    # Pattern 2: S02 E01 Extraction
+    pattern2 = re.compile(r'S(\d+)\s*-\s*[E|EP]\s*(\d+)', re.IGNORECASE)
 
-    # Pattern 3: S02 E01 with quality
-    pattern3 = re.compile(r'S(\d+) E(\d+).*?(\d{3,4}p)')
-   
-    # Pattern 4: Episode Number After "E" or "-" with quality
-    pattern4 = re.compile(r'[E|-](\d+).*?(\d{3,4}p)')
+    # Pattern 3: Episode Number After "E" or "-"
+    pattern3 = re.compile(r'[E|-]\s*(\d+)', re.IGNORECASE)
 
-    # Pattern 5: Standalone Episode Number with quality
-    pattern5 = re.compile(r'(\d+).*?(\d{3,4}p)')
-
-    #Pattern 6: E or EP episode bo. extract
-    pattern6 = re.compile(r'S(\d+)\s*[E|EP]\s*(\d+).*?(\w+)(?=\d{3,4}p)')
-
+    # Pattern 4: Standalone Episode Number
+    pattern4 = re.compile(r'(\d+)', re.IGNORECASE)
 
     # Try each pattern in order
-    for pattern in [pattern1, pattern2, pattern3, pattern4, pattern5, pattern6]:
+    for pattern in [pattern1, pattern2, pattern3, pattern4]:
         match = re.search(pattern, filename)
         if match:
-            episode_number = match.group(1)  # Extracted episode number
-            quality = match.group(2)  # Extracted quality
-            return episode_number, quality
+            episode_number = match.group(2)  # Extracted episode number
+            return episode_number
 
     # Return None if no pattern matches
-    return None, None
+    return None
+
+# Test the function with examples
+filenames = [
+    "S02 - EP19 Jujutsu Kaisen [1080p] [Sub] @Animes_Xyz.mkv",
+    "Another Example S1E05.mkv",
+    "One Piece S1-07 [720p][Dual] @Anime_Edge.mkv",
+    "One Piece 2000 @Anime_Edge.mkv"
+]
+
+for filename in filenames:
+    episode_number = extract_episode_number(filename)
+    print(f"Filename: {filename}, Extracted Episode Number: {episode_number}")
+    
 
 @Client.on_message(filters.private & filters.command("autorename"))
 async def auto_rename_command(client, message):
@@ -80,7 +86,7 @@ async def auto_rename_files(client, message):
 
     print(f"Original File Name: {file_name}")
 
-    episode_number, quality = extract_episode_and_quality(file_name)
+    episode_number, quality = extract_episode_number(file_name)
     print(f"Extracted Episode Number: {episode_number}")
     print(f"Extracted Quality: {quality}")
 
