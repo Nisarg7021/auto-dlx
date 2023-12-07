@@ -10,7 +10,6 @@ from helper.utils import progress_for_pyrogram, humanbytes, convert
 from helper.database import db
 
 import os
-import re
 import time
 import re
 
@@ -27,8 +26,14 @@ def extract_episode_number(filename):
     # Pattern 4: Standalone Episode Number
     pattern4 = re.compile(r'(\d+)', re.IGNORECASE)
 
+    # Pattern 5: Episode Number After "E" or "EP" with words
+    pattern5 = re.compile(r'[E|EP]\s*(\d+)', re.IGNORECASE)
+
+    # Pattern 6: Episode Number After "-"
+    pattern6 = re.compile(r'-\s*(\d+)', re.IGNORECASE)
+
     # Try each pattern in order
-    for pattern in [pattern1, pattern2, pattern3, pattern4]:
+    for pattern in [pattern1, pattern2, pattern3, pattern4, pattern5, pattern6]:
         match = re.search(pattern, filename)
         if match:
             episode_number = match.group(2)  # Extracted episode number
@@ -42,7 +47,10 @@ filenames = [
     "S02 - EP19 Jujutsu Kaisen [1080p] [Sub] @Animes_Xyz.mkv",
     "Another Example S1E05.mkv",
     "One Piece S1-07 [720p][Dual] @Anime_Edge.mkv",
-    "One Piece 2000 @Anime_Edge.mkv"
+    "One Piece 2000 @Anime_Edge.mkv",
+    "EP03 Example Anime.mkv",
+    "Anime - EP15 - Title.mkv",
+    "Anime Title - 05 - Subs.mkv"
 ]
 
 for filename in filenames:
@@ -86,12 +94,11 @@ async def auto_rename_files(client, message):
 
     print(f"Original File Name: {file_name}")
 
-    episode_number, quality = extract_episode_number(file_name)
+    episode_number = extract_episode_number(file_name)
     print(f"Extracted Episode Number: {episode_number}")
-    print(f"Extracted Quality: {quality}")
 
-    if episode_number and quality:
-        new_file_name = format_template.format(episode=episode_number, quality=quality)
+    if episode_number :
+        new_file_name = format_template.format(episode=episode_number)
         await message.reply_text(f"File renamed successfully to: {new_file_name}")
         
         _, file_extension = os.path.splitext(file_name)
