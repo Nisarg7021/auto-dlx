@@ -14,7 +14,7 @@ import time
 import re
 
 def extract_episode_number(filename):
-    #Pattern 1: S1E01 or S01E01 Extraction
+    # Pattern 1: S1E01 or S01E01 Extraction
     pattern1 = re.compile(r'S(\d+)\s*[E|EP]\s*(\d+)', re.IGNORECASE)
 
     # Pattern 2: S02 E01 Extraction
@@ -35,12 +35,11 @@ def extract_episode_number(filename):
     # Pattern 7: Standalone Episode Number
     pattern7 = re.compile(r'(\d+)', re.IGNORECASE)
 
-
     # Try each pattern in order
     for pattern in [pattern1, pattern2, pattern3, pattern4, pattern5, pattern6, pattern7]:
         match = re.search(pattern, filename)
         if match:
-            episode_number = match.group(1)  # Extracted episode number
+            episode_number = match.group(2)  # Extracted episode number
             return episode_number
 
     # Return None if no pattern matches
@@ -62,7 +61,7 @@ filenames = [
 for filename in filenames:
     episode_number = extract_episode_number(filename)
     print(f"Filename: {filename}, Extracted Episode Number: {episode_number}")
-    
+
 @Client.on_message(filters.private & filters.command("autorename"))
 async def auto_rename_command(client, message):
     user_id = message.from_user.id
@@ -107,12 +106,13 @@ async def auto_rename_files(client, message):
         for placeholder in placeholders:
             format_template = format_template.replace(placeholder, str(episode_number), 1)
 
-        await message.reply_text(f"File renamed successfully to: {format_template}") 
+        await message.reply_text(f"File renamed successfully to: {format_template}")
         
         _, file_extension = os.path.splitext(file_name)
+        new_file_name = f"{format_template}{file_extension}"
         file_path = f"downloads/{new_file_name}"
         file = message
-        
+
         ms = await message.reply("Trying to download...")
         try:
             path = await client.download_media(message=file, file_name=file_path, progress=progress_for_pyrogram, progress_args=("Dᴏᴡɴʟᴏᴀᴅ Sᴛᴀʀᴛᴇᴅ....", ms, time.time()))                    
@@ -188,4 +188,4 @@ async def auto_rename_files(client, message):
         os.remove(file_path)
         if ph_path:
             os.remove(ph_path)
-
+    
