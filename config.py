@@ -63,16 +63,7 @@ class Txt(object):
 🚀 𝐋𝐄𝐓'𝐒 𝐆𝐄𝐓 𝐒𝐓𝐀𝐑𝐓𝐄𝐃! 🚀"""
     
     FILE_NAME_TXT = """
-    <u><b>SETUP AUTO RENAME FORMAT</b></u>
-
-    Use These Keywords To Setup Custom File Name
-
-    ➝ episode - to replace episode number
-    ➝ quality - to replace video resolution 
-
-    ‣ <b>Example :</b> /autorename [AX] S02 - EPepisode Spy X Family [quality] [Sub] @Animes_XYZ.mkv
-
-    ‣ Your Current Rename Format :</b> {format_template}
+    <u><b>SETUP AUTO RENAME FORMAT</b></u>\n\nUse These Keywords To Setup Custom File Name\n\n➝ episode :- to replace episode number\n➝ quality :- to replace video resolution\n\n‣ <b>Example :</b> /autorename [AX] S02 - EPepisode Spy X Family [quality] [Sub] @Animes_XYZ.mkv\n\n‣ <b>Your Current Rename Format :</b> {format_template}
     """
     
     ABOUT_TXT = f"""
