@@ -49,7 +49,7 @@ def extract_episode_number(filename):
 # Test the function with examples
 filenames = [
     "Steins Gate 0 - S2 E17 [Dual] 2160p @Anime_Fair.mkv",
-    "S02 - EP20 Jujutsu Kaisen [480p] [Sub] @Animes_Xyz.mkv" 
+    "S02 - EP20 Jujutsu Kaisen [480p] [Sub] @Animes_Xyz.mkv",
     "S02 - EP19 Jujutsu Kaisen [1080p] [Sub] @Animes_Xyz.mkv",
     "Another Example S1E05.mkv",
     "One Piece S1-07 [720p][Dual] @Anime_Edge.mkv",
@@ -102,8 +102,8 @@ async def auto_rename_files(client, message):
     episode_number = extract_episode_number(file_name)
     print(f"Extracted Episode Number: {episode_number}")
 
-    if episode_number :
-        new_file_name = format_template.format(episode=episode_number)
+    if episode_number:
+        new_file_name = format_template.replace("episode", episode_number)
         await message.reply_text(f"File renamed successfully to: {new_file_name}")
         
         _, file_extension = os.path.splitext(file_name)
