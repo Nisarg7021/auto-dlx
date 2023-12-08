@@ -104,12 +104,6 @@ async def cb_handler(client, query: CallbackQuery):
     
     elif data == "file_names":
         format_template = await db.get_format_template(user_id)
-
-        if format_template:
-            await query.message.reply_text(f"`{format_template}`")
-        else:
-            await query.message.reply_text("None! please add a format using /autorename command")
-
             await query.message.edit_text(
                 text=Txt.FILE_NAME_TXT,
                 disable_web_page_preview=True,
