@@ -14,33 +14,20 @@ import time
 import re
 
 def extract_episode_number(filename):
-    # Pattern 1: S1E01 or S01E01 Extraction
-    pattern1 = re.compile(r'S(\d+)\s*[E|EP]\s*(\d+)', re.IGNORECASE)
+    # Pattern 1: S1 E01 or S01 E01 Extraction
+    pattern1 = re.compile(r'S(\d+)\s*E\s*0?(\d+)', re.IGNORECASE)
 
-    # Pattern 2: S02 E01 Extraction
-    pattern2 = re.compile(r'S(\d+)\s*-\s*[E|EP]\s*(\d+)', re.IGNORECASE)
+    # Pattern 2: Standalone Episode Number with leading zeros
+    pattern2 = re.compile(r'E\s*0?(\d+)', re.IGNORECASE)
 
-    # Pattern 3: Episode Number After "E" or "EP" with words
-    pattern3 = re.compile(r'[E|EP]\s*(\d+)', re.IGNORECASE)
-
-    # Pattern 4: Episode Number After "-"
-    pattern4 = re.compile(r'-\s*(\d+)', re.IGNORECASE)
-
-    # Pattern 5: Steins Gate 0 - S2 E17 [Dual] 2160p @Anime_Fair.mkv
-    pattern5 = re.compile(r'S\d+\s*[E|EP]\s*(\d+)', re.IGNORECASE)
-
-    # Pattern 6: S02 - EP20 Jujutsu Kaisen [480p] [Sub] @Animes_Xyz.mkv
-    pattern6 = re.compile(r'S(\d+)\s*-\s*[E|EP]\s*(\d+)', re.IGNORECASE)
-
-    # Pattern 7: Standalone Episode Number
-    pattern7 = re.compile(r'(\d+)', re.IGNORECASE)
-
+    # Pattern 3: Standalone Episode Number without leading zeros
+    pattern3 = re.compile(r'E\s*(\d+)', re.IGNORECASE)
 
     # Try each pattern in order
-    for pattern in [pattern1, pattern2, pattern3, pattern4, pattern5, pattern6, pattern7]:
+    for pattern in [pattern1, pattern2, pattern3]:
         match = re.search(pattern, filename)
         if match:
-            episode_number = match.group(1)  # Extracted episode number
+            episode_number = match.group(2)  # Extracted episode number
             return episode_number
 
     # Return None if no pattern matches
@@ -48,21 +35,15 @@ def extract_episode_number(filename):
 
 # Test the function with examples
 filenames = [
-    "Steins Gate 0 - S2 E17 [Dual] 2160p @Anime_Fair.mkv",
-    "S02 - EP20 Jujutsu Kaisen [480p] [Sub] @Animes_Xyz.mkv" 
-    "S02 - EP19 Jujutsu Kaisen [1080p] [Sub] @Animes_Xyz.mkv",
-    "Another Example S1E05.mkv",
-    "One Piece S1-07 [720p][Dual] @Anime_Edge.mkv",
-    "One Piece 2000 @Anime_Edge.mkv",
-    "EP03 Example Anime.mkv",
-    "Anime - EP15 - Title.mkv",
-    "Anime Title - 05 - Subs.mkv"
+    "S1 E04 - Chainsaw Man [Dual] 2160p @Anime_Fair",
+    "Bleach - S17 E01 [Dual] 1080p @Anime_Fair",
+    "S1 E10 - Attack On Titan [Dual] 1080p @Anime_Fair"
 ]
 
 for filename in filenames:
     episode_number = extract_episode_number(filename)
-    print(f"Filename: {filename}, Extracted Episode Number: {episode_number}")
-    
+    print(f"Filename: {filename}, Extracted Episode Number: {episode_number}")    
+
 @Client.on_message(filters.private & filters.command("autorename"))
 async def auto_rename_command(client, message):
     user_id = message.from_user.id
