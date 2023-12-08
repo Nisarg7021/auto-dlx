@@ -103,7 +103,7 @@ async def auto_rename_files(client, message):
     print(f"Extracted Episode Number: {episode_number}")
 
     if episode_number:
-        placeholders = ["episode", "Episode", "EPISODE"]
+        placeholders = ["episode", "Episode", "EPISODE", "{episode}"]
         for placeholder in placeholders:
             format_template = format_template.replace(placeholder, str(episode_number), 1)
 
