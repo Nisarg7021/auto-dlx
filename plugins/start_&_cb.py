@@ -104,15 +104,15 @@ async def cb_handler(client, query: CallbackQuery):
     
     elif data == "file_names":
         format_template = await db.get_format_template(user_id)
-            await query.message.edit_text(
-                text=Txt.FILE_NAME_TXT,
-                disable_web_page_preview=True,
-                reply_markup=InlineKeyboardMarkup([[
-                    InlineKeyboardButton("Cʟᴏꜱᴇ", callback_data="close"),
-                    InlineKeyboardButton("Bᴀᴄᴋ", callback_data="start")
-                ]])
-            )
-      
+        await query.message.edit_text(
+            text=Txt.FILE_NAME_TXT,
+            disable_web_page_preview=True,
+            reply_markup=InlineKeyboardMarkup([[
+                InlineKeyboardButton("Cʟᴏꜱᴇ", callback_data="close"),
+                InlineKeyboardButton("Bᴀᴄᴋ", callback_data="start")
+            ]])
+        )      
+    
     elif data == "thumbnail":
         user_thumbnail = await db.get_thumbnail(user_id)
 
