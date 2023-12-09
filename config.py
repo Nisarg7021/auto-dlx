@@ -58,7 +58,7 @@ class Txt(object):
 ────────────────────
 ➝  For assistance or more How to use me, use the " /Tutorial "command or you can use the below "Support" button to contact us.
 
-‼️ Explore my commands by clicking on the '⚡ Commands⚡' button to use me more precisely " ‼️
+‼️ Explore my commands by clicking on the "⚡ Commands ⚡" button to use me more precisely " ‼️
 
 🚀 𝐋𝐄𝐓'𝐒 𝐆𝐄𝐓 𝐒𝐓𝐀𝐑𝐓𝐄𝐃! 🚀"""
     
