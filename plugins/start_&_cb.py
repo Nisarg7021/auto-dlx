@@ -120,14 +120,15 @@ async def cb_handler(client, query: CallbackQuery):
     # Edit the message to show text and buttons
         await query.message.edit_media(
             media=InputMediaPhoto(user_thumbnail),
-            text=Txt.THUMB_TXT,  # Assuming you want to set a caption
         )
-        await query.message.edit_reply_markup(
+        await query.message.edit_caption(
+            caption=Txt.THUMB_TXT,
             reply_markup=InlineKeyboardMarkup([[
                 InlineKeyboardButton("Cʟᴏꜱᴇ", callback_data="close"),
                 InlineKeyboardButton("Bᴀᴄᴋ", callback_data="about"),
-            ]])
+            ]]),
         )
+    
     
     elif data == "close":
         try:
