@@ -115,21 +115,20 @@ async def cb_handler(client, query: CallbackQuery):
         )      
     
     elif data == "thumbnail":
-    user_thumbnail = await db.get_thumbnail(user_id)
-    
-    # Edit the message to show text and buttons
-    await query.message.edit_media(
-        media=InputMediaPhoto(user_thumbnail),
-        caption=Txt.THUMB_TXT,  # Assuming you want to set a caption
-    )
-    await query.message.edit_reply_markup(
-        reply_markup=InlineKeyboardMarkup([[
-            InlineKeyboardButton("Cʟᴏꜱᴇ", callback_data="close"),
-            InlineKeyboardButton("Bᴀᴄᴋ", callback_data="about"),
-        ]])
-    )
-    
+        user_thumbnail = await db.get_thumbnail(user_id)
         
+    # Edit the message to show text and buttons
+        await query.message.edit_media(
+            media=InputMediaPhoto(user_thumbnail),
+            caption=Txt.THUMB_TXT,  # Assuming you want to set a caption
+        )
+        await query.message.edit_reply_markup(
+            reply_markup=InlineKeyboardMarkup([[
+                InlineKeyboardButton("Cʟᴏꜱᴇ", callback_data="close"),
+                InlineKeyboardButton("Bᴀᴄᴋ", callback_data="about"),
+            ]])
+        )
+    
     elif data == "close":
         try:
             await query.message.delete()
