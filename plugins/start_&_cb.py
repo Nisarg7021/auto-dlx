@@ -109,27 +109,35 @@ async def cb_handler(client, query: CallbackQuery):
             disable_web_page_preview=True,
             reply_markup=InlineKeyboardMarkup([[
                 InlineKeyboardButton("Cʟᴏꜱᴇ", callback_data="close"),
-                InlineKeyboardButton("Bᴀᴄᴋ", callback_data="start")
+                InlineKeyboardButton("Bᴀᴄᴋ", callback_data="about")
             ]])
         )      
     
     elif data == "thumbnail":
-        user_thumbnail = await db.get_thumbnail(user_id)
+    user_thumbnail = await db.get_thumbnail(user_id)
 
-        await query.message.edit_text(
-            text=Txt.THUMB_TXT,
-            disable_web_page_preview=True,
+    # Edit the message to show text and buttons
+    await query.message.edit_text(
+        text=Txt.THUMB_TXT,
+        disable_web_page_preview=True,
+        reply_markup=InlineKeyboardMarkup([[
+            InlineKeyboardButton("Cʟᴏꜱᴇ", callback_data="close"),
+            InlineKeyboardButton("Bᴀᴄᴋ", callback_data="about"),
+        ]]),
+    )
+
+    # If the user has set a custom thumbnail, edit the message to replace the photo
+    if user_thumbnail:
+        await query.message.edit_media(
+            media=InputMediaPhoto(user_thumbnail),
             reply_markup=InlineKeyboardMarkup([[
                 InlineKeyboardButton("Cʟᴏꜱᴇ", callback_data="close"),
                 InlineKeyboardButton("Bᴀᴄᴋ", callback_data="about"),
             ]]),
         )
-
-        if user_thumbnail:
-            await query.message.reply_photo(user_thumbnail)
-        else:
-            await query.message.reply_photo(Config.START_PIC)
-      
+    else:
+        await query.message.reply_photo(Config.START_PIC)
+        
     elif data == "close":
         try:
             await query.message.delete()
