@@ -131,6 +131,7 @@ async def cb_handler(client, query: CallbackQuery):
         if user_thumbnail:
             await query.message.edit_media(
                 media=InputMediaPhoto(user_thumbnail),
+                text=Txt.THUMB_TXT,
                 reply_markup=InlineKeyboardMarkup([[
                     InlineKeyboardButton("Cʟᴏꜱᴇ", callback_data="close"),
                     InlineKeyboardButton("Bᴀᴄᴋ", callback_data="about"),
