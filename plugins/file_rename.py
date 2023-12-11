@@ -13,11 +13,9 @@ import os
 import time
 import re
 
-import re
-
 def extract_episode_number(filename):
     # Pattern 1: S1E1 or S01E1 Extraction
-    pattern1 = re.compile(r'S(\d{0,2})\s*[E|EP](\d{1,2})', re.IGNORECASE)
+    pattern1 = re.compile(r'S(\d{0,2})[E|EP]?(\d{1,2})', re.IGNORECASE)
 
     # Pattern 2: S02 E1 Extraction
     pattern2 = re.compile(r'S(\d{0,2})\s*-\s*[E|EP](\d{1,2})', re.IGNORECASE)
@@ -33,6 +31,7 @@ def extract_episode_number(filename):
         match = re.search(pattern, filename)
         if match:
             episode_number = match.group(1) or match.group(2)  # Extracted episode number
+            print(f"Pattern {pattern.pattern} matched. Extracted episode number: {episode_number}")
             return episode_number
 
     # Return None if no pattern matches
@@ -47,11 +46,15 @@ filenames = [
     "One Piece S1-7",
     "One Piece S1-07",
     "One Piece 2000",
+    "E07 Example Anime",
+    "Anime - EP15 - Title.mkv",
+    "Another Example - 05.mkv",
 ]
 
 for filename in filenames:
     episode_number = extract_episode_number(filename)
     print(f"Filename: {filename}, Extracted Episode Number: {episode_number}")
+    
 
 @Client.on_message(filters.private & filters.command("autorename"))
 async def auto_rename_command(client, message):
