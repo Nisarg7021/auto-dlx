@@ -18,38 +18,33 @@ def extract_episode_number(filename):
     season_pattern = re.compile(r'S(\d+)', re.IGNORECASE)
     episode_pattern = re.compile(r'E(\d+)|EP(\d+)|(\d+)', re.IGNORECASE)
     title_pattern = re.compile(r'[\[\(](.*?)[\]\)]', re.IGNORECASE)
-    audio_pattern = re.compile(r'Dual|Su', re.IGNORECASE)
+    audio_pattern = re.compile(r'Dual|Sub', re.IGNORECASE)
     quality_pattern = re.compile(r'1080p|720p|2k|4k|2160p|480p', re.IGNORECASE)
     channel_pattern = re.compile(r'@(\w+)', re.IGNORECASE)
-    extension_pattern = re.compile(r'\.(mkv|mp4|mp3)', re.IGNORECASE)
+    extension_pattern = re.compile(r'\.(.mkv|.mp4|.mp3)', re.IGNORECASE)
 
     # Initialize variables to store extracted information
     season = episode = title = audio = quality = channel = extension = None
 
     # Search for patterns in the filename
-    season_match = re.search(season_pattern, filename)
-    episode_match = re.search(episode_pattern, filename)
-    title_match = re.search(title_pattern, filename)
-    audio_match = re.search(audio_pattern, filename)
-    quality_match = re.search(quality_pattern, filename)
-    channel_match = re.search(channel_pattern, filename)
-    extension_match = re.search(extension_pattern, filename)
+    matches = re.findall(r'(S\d+)?[ _-]*(E\d+|EP\d+|\d+)?[ _-]*([^\[\]\(\)]+)?[ _-]*(Dual|Su)?[ _-]*(1080p|720p|2k|4k|2160p|480p)?[ _-]*(@\w+)?[^\w]?(\.(mkv|mp4|mp3))?', filename)
 
-    # Extract information if a match is found
-    if season_match:
-        season = season_match.group(1)
-    if episode_match:
-        episode = next(x for x in episode_match.groups() if x)
-    if title_match:
-        title = title_match.group(1)
-    if audio_match:
-        audio = audio_match.group(0)
-    if quality_match:
-        quality = quality_match.group(0)
-    if channel_match:
-        channel = channel_match.group(1)
-    if extension_match:
-        extension = extension_match.group(1)
+    # Extract information if matches are found
+    for match in matches:
+        if match[0]:
+            season = match[0][1:]
+        if match[1]:
+            episode = next(x for x in match[1:3] if x)
+        if match[2]:
+            title = match[2]
+        if match[3]:
+            audio = match[3]
+        if match[4]:
+            quality = match[4]
+        if match[5]:
+            channel = match[5][1:]
+        if match[7]:
+            extension = match[7][1:]
 
     return {
         'season': season,
@@ -81,6 +76,7 @@ for filename in filenames:
     print(f"Filename: {filename}")
     print("Extracted Info:", info)
     print("=" * 50)
+    
     
 @Client.on_message(filters.private & filters.command("autorename"))
 async def auto_rename_command(client, message):
