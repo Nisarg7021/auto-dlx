@@ -12,16 +12,27 @@ from helper.database import db
 import os
 import time
 import re
+import re
 
 def extract_episode_number(filename):
     # Improved Pattern for Episode Number Extraction
     pattern = re.compile(r'S(\d{1,2})[^\d]|(\d{1,2})(?![\d\s]*[E|EP]|-[^\d]|[^E|EP|-])', re.IGNORECASE)
+
+    # Additional Pattern for "High_School_DxD_S2_01_1080pDual_@Anime_Crimson@Anime_Sensei_Network.mkv"
+    pattern_additional = re.compile(r'_(\d{1,2})_', re.IGNORECASE)
 
     match = re.search(pattern, filename)
     if match:
         episode_number = match.group(1) or match.group(2)  # Extracted episode number
         print(f"Pattern {pattern.pattern} matched. Extracted episode number: {episode_number}")
         return episode_number
+
+    # Check the additional pattern
+    match_additional = re.search(pattern_additional, filename)
+    if match_additional:
+        episode_number_additional = match_additional.group(1)
+        print(f"Pattern {pattern_additional.pattern} matched. Extracted episode number: {episode_number_additional}")
+        return episode_number_additional
 
     # Return None if no pattern matches
     return None
@@ -42,7 +53,8 @@ filenames = [
     "Steins Gate 0 - S2 E17 [Dual] 2160p @Anime_Fair.mkv",
     "Attack On Titan - S1 E10 [Dual] 1080p @Anime_Fair.mkv",
     "S1 E04 - Chainsaw Man [Dual] 2160p @Anime_Fair.mkv",
-    "Bleach - S17 E01 [Dual] 1080p @Anime_Fair.mkv"
+    "Bleach - S17 E01 [Dual] 1080p @Anime_Fair.mkv",
+    "High_School_DxD_S2_01_1080pDual_@Anime_Crimson@Anime_Sensei_Network.mkv"
 ]
 
 for filename in filenames:
