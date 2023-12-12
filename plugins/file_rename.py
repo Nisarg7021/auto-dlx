@@ -77,7 +77,7 @@ filenames = [
 ]
 
 for filename in filenames:
-    info = extract_episode_info(filename)
+    info = extract_episode_number(filename)
     print(f"Filename: {filename}")
     print("Extracted Info:", info)
     print("=" * 50)
