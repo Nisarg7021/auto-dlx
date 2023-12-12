@@ -12,8 +12,6 @@ from helper.database import db
 import os
 import time
 import re
-import spacy
-import en_core_web_sm
 
 def extract_episode_number(file_name):
     # Define the regex pattern
