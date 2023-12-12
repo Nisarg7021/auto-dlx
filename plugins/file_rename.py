@@ -13,82 +13,15 @@ import os
 import time
 import re
 
-def extract_episode_number(filename):
-    # Define regular expressions for each piece of information
-    season_pattern = re.compile(r'S(\d+)', re.IGNORECASE)
-    episode_pattern = re.compile(r'E(\d+)|EP(\d+)|(\d+)', re.IGNORECASE)
-    title_pattern = re.compile(r'[\[\(](.*?)[\]\)]', re.IGNORECASE)
-    audio_pattern = re.compile(r'Dual|Su', re.IGNORECASE)
-    quality_pattern = re.compile(r'1080p|720p|2k|4k|2160p|480p', re.IGNORECASE)
-    channel_pattern = re.compile(r'@(\w+)', re.IGNORECASE)
-    extension_pattern = re.compile(r'\.(mkv|mp4|mp3)', re.IGNORECASE)
-
-    # Initialize variables to store extracted information
-    season = episode = title = audio = quality = channel = extension = extra = None
-
-    # Search for patterns in the filename
-    season_match = re.search(season_pattern, filename)
-    episode_match = re.search(episode_pattern, filename)
-    title_match = re.search(title_pattern, filename)
-    audio_match = re.search(audio_pattern, filename)
-    quality_match = re.search(quality_pattern, filename)
-    channel_match = re.search(channel_pattern, filename)
-    extension_match = re.search(extension_pattern, filename)
-
-    # Extract information if a match is found
-    if season_match:
-        season = season_match.group(1)
-    if episode_match:
-        episode = next(x for x in episode_match.groups() if x)
-    if title_match:
-        title = title_match.group(1)
-    if audio_match:
-        audio = audio_match.group(0)
-    if quality_match:
-        quality = quality_match.group(0)
-    if channel_match:
-        channel = channel_match.group(1)
-    if extension_match:
-        extension = extension_match.group(1)
-
-    # Extract the remaining text as "extra"
-    if extension_match:
-        extension_start = extension_match.end()
-        extra = filename[extension_start:].strip()
-
-    return {
-        'season': season,
-        'episode': episode,
-        'title': title,
-        'audio': audio,
-        'quality': quality,
-        'channel': channel,
-        'extension': extension,
-        'extra': extra
-    }
-
-# Test the function with examples
-filenames = [
-    "[AL] Returner S1 - E10 480p Sub @Anime_Locus.mkv",
-    "S1 E03 - Chainsaw Man [Dual] 480p @Anime_Fair.mkv",
-    "103 - Migration Season.nov",
-    "[AC] Spy x Family S02 E08 [480p] [Sub] @Anime_Campus.mkv",
-    "179 - Bleach [Dual] [480p] @Anime_Wars.mkv",
-    "[HG] Jujutsu Kaisen - S2E20 [Hdrip][Sub] @HG_Anime.mkv",
-    "[E10] [480p] Under Ninja [Sub] @The_NightOwls.mkv",
-    "High_School_DxD_S1_04_1080pDual_@Anime_Crimson@Anime_Sensei_Network.mkv",
-    "Steins Gate 0 - S2 E17 [Dual] 2160p @Anime_Fair.nov",
-    "[AR] My Hero Academia S1 - 02 [720p] [Dual].mkv",
-    "[S02-E12] ClassRoom of the Elite [2k] [Dual] @Anime_Alliance.mkv",
-    "[@Anime_RTX] Jujutsu kaisen S2E20 [4K×264][Sub].mkv"
-]
-
-for filename in filenames:
-    info = extract_episode_number(filename)
-    print(f"Filename: {filename}")
-    print("Extracted Info:", info)
-    print("=" * 50)
+def extract_episode_number(text):
+    pattern = r"episode\s*(\d+)"  # Regular expression pattern to match episode numbers
+    match = re.search(pattern, text, re.IGNORECASE)
     
+    if match:
+        episode_number = match.group(1)
+        return int(episode_number)
+    else:
+        return None   
     
 @Client.on_message(filters.private & filters.command("autorename"))
 async def auto_rename_command(client, message):
