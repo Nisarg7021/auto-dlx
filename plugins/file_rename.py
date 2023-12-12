@@ -14,14 +14,16 @@ import time
 import re
 
 def extract_episode_number(text):
-    pattern = r"episode\s*(\d+)"  # Regular expression pattern to match episode numbers
-    match = re.search(pattern, text, re.IGNORECASE)
+    pattern = r"\b(\d+)\b"  # Regular expression pattern to match any standalone digits
+    matches = re.findall(pattern, text)
     
-    if match:
-        episode_number = match.group(1)
-        return int(episode_number)
-    else:
-        return None   
+    if matches:
+        for match in matches:
+            episode_number = int(match)
+            if episode_number > 0:
+                return episode_number
+    
+    return None
     
 @Client.on_message(filters.private & filters.command("autorename"))
 async def auto_rename_command(client, message):
