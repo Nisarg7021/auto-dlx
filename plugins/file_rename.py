@@ -16,53 +16,18 @@ import spacy
 import en_core_web_sm
 
 def extract_episode_number(file_name):
-    # Regular expressions to match different elements
-    season_pattern = r"(?i)S(\d+)"
-    episode_pattern = r"(?i)(E|EP)(\d+)"
-    title_pattern = r"[a-zA-Z\s]+"
-    audio_pattern = r"(?i)(Dual|Sub)"
-    quality_pattern = r"\d+p"
-    channel_pattern = r"@\w+"
-    extension_pattern = r"\.\w+"
+    # Define the regex pattern
+    pattern = r"(E|EP)[0-9]+"
+    
+# Search for the pattern in the file name
+match = re.search(pattern, file_name)
 
-    # Initialize NLP model
-    nlp = spacy.load("en_core_web_sm")
-
-    # Apply regular expressions to extract elements
-    season_match = re.search(season_pattern, file_name)
-    episode_match = re.search(episode_pattern, file_name)
-    title_match = re.search(title_pattern, file_name)
-    audio_match = re.search(audio_pattern, file_name)
-    quality_match = re.search(quality_pattern, file_name)
-    channel_match = re.search(channel_pattern, file_name)
-    extension_match = re.search(extension_pattern, file_name)
-
-    # Extract the elements
-    season_number = int(season_match.group(1)) if season_match else None
-    episode_number = int(episode_match.group(2)) if episode_match else None
-    title = title_match.group(0) if title_match else None
-    audio = audio_match.group(0) if audio_match else None
-    quality = quality_match.group(0) if quality_match else None
-    channel = channel_match.group(0) if channel_match else None
-    extension = extension_match.group(0) if extension_match else None
-
-    # Use NLP to extract any extra information
-    extra_info = []
-    doc = nlp(file_name)
-    for token in doc:
-        if not token.is_stop and not token.is_punct and not token.is_digit:
-            extra_info.append(token.text)
-
-    return {
-        "Season Number": season_number,
-        "Episode Number": episode_number,
-        "Title": title,
-        "Audio": audio,
-        "Quality": quality,
-        "Channel": channel,
-        "Extension": extension,
-        "Extra Information": extra_info
-    }
+if match:
+    episode_number = match.group()
+    print("Episode number:", episode_number)
+else:
+    print("No episode number found.")
+    
     
 @Client.on_message(filters.private & filters.command("autorename"))
 async def auto_rename_command(client, message):
