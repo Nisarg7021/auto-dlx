@@ -14,7 +14,7 @@ import time
 import re
 import spacy
 
-def extract_info(file_name):
+def extract_episode_number(file_name):
     # Regular expressions to match different elements
     season_pattern = r"(?i)S(\d+)"
     episode_pattern = r"(?i)(E|EP)(\d+)"
