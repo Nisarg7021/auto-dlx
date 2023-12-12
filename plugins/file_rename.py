@@ -38,11 +38,17 @@ filenames = [
     "E07 Example Anime",
     "Anime - EP15 - Title.mkv",
     "Another Example - 05.mkv",
+    "S02 - EP20 Jujutsu Kaisen [480p] [Sub] @Animes_Xyz.mkv",
+    "Steins Gate 0 - S2 E17 [Dual] 2160p @Anime_Fair.mkv",
+    "Attack On Titan - S1 E10 [Dual] 1080p @Anime_Fair.mkv",
+    "S1 E04 - Chainsaw Man [Dual] 2160p @Anime_Fair.mkv",
+    "Bleach - S17 E01 [Dual] 1080p @Anime_Fair.mkv"
 ]
 
 for filename in filenames:
     episode_number = extract_episode_number(filename)
     print(f"Filename: {filename}, Extracted Episode Number: {episode_number}")
+    
 
 @Client.on_message(filters.private & filters.command("autorename"))
 async def auto_rename_command(client, message):
