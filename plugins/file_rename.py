@@ -13,7 +13,7 @@ import os
 import time
 import re
 
-def extract_episode_info(filename):
+def extract_episode_number(filename):
     # Define regular expressions for each piece of information
     season_pattern = re.compile(r'S(\d+)', re.IGNORECASE)
     episode_pattern = re.compile(r'E(\d+)|EP(\d+)|(\d+)', re.IGNORECASE)
