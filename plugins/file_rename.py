@@ -13,18 +13,32 @@ import os
 import time
 import re
 
-def extract_episode_number(file_name):
-    # Define the regex pattern
-    pattern1 = r"(E|EP)[0-9]+"
+def extract_episode_number(filename):
+    # Pattern 1: S1E01 or S01E01
+    pattern1 = re.compile(r'S(\d+)E(\d+)')
     
-# Search for the pattern in the file name
-match = re.search(pattern1, file_name)
+    # Pattern 2: S02 E01
+    pattern2 = re.compile(r'S(\d+) E(\d+)')
+    
+    # Pattern 3: Episode Number After "E" or "-"
+    pattern3 = re.compile(r'[E|-](\d+)')
+    
+    # Pattern 4: Standalone Episode Number
+    pattern4 = re.compile(r'(\d+)')
+    
+    # Try each pattern in order
+    for pattern in [pattern1, pattern2, pattern3, pattern4]:
+        match = re.search(pattern, filename)
+        if match:
+            return match.group(1)  # Extracted episode number
+    
+    # Return None if no pattern matches
+    return None
 
-if match:
-    episode_number = match.group()
-    print("Episode number:", episode_number)
-else:
-    print("No episode number found.")
+# Example Usage:
+filename = "One Piece S1-07 [720p][Dual] @Anime_Edge.mkv"
+episode_number = extract_episode_number(filename)
+print(f"Extracted Episode Number: {episode_number}")                   
     
     
 @Client.on_message(filters.private & filters.command("autorename"))
