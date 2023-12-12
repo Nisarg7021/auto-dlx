@@ -27,7 +27,7 @@ def extract_episode_number(filename):
     season = episode = title = audio = quality = channel = extension = None
 
     # Search for patterns in the filename
-    matches = re.findall(r'(S\d+)?[ _-]*(E\d+|EP\d+|\d+)?[ _-]*([^\[\]\(\)]+)?[ _-]*(Dual|Su)?[ _-]*(1080p|720p|2k|4k|2160p|480p)?[ _-]*(@\w+)?[^\w]?(\.(mkv|mp4|mp3))?', filename)
+    matches = re.findall(r'(S\d+)?[ _-]*(E\d+|EP\d+|\d+)?[ _-]*([^\[\]\(\)]+)?[ _-]*(Dual|Sub)?[ _-]*(1080p|720p|2k|4k|2160p|480p)?[ _-]*(@\w+)?[^\w]?(\.(.mkv|.mp4|.mp3))?', filename)
 
     # Extract information if matches are found
     for match in matches:
