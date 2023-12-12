@@ -15,10 +15,10 @@ import re
 
 def extract_episode_number(file_name):
     # Define the regex pattern
-    pattern = r"(E|EP)[0-9]+"
+    pattern1 = r"(E|EP)[0-9]+"
     
 # Search for the pattern in the file name
-match = re.search(pattern, file_name)
+match = re.search(pattern1, file_name)
 
 if match:
     episode_number = match.group()
