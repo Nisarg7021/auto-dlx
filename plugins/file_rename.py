@@ -13,6 +13,7 @@ import os
 import time
 import re
 import spacy
+import en_core_web_sm
 
 def extract_episode_number(file_name):
     # Regular expressions to match different elements
