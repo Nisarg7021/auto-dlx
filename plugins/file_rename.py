@@ -16,10 +16,10 @@ import re
 
 def extract_episode_number(filename):
     # Improved Pattern for Episode Number Extraction
-    pattern = re.compile(r'S(\d{1,2})[^\d]|(\d{1,2})(?![\d\s]*[E|EP]|-[^\d]|[^E|EP|-])', re.IGNORECASE)
+    pattern_additional = re.compile(r'S(\d{1,2})[^\d]|(\d{1,2})(?![\d\s]*[E|EP]|-[^\d]|[^E|EP|-])', re.IGNORECASE)
 
     # Additional Pattern for "High_School_DxD_S2_01_1080pDual_@Anime_Crimson@Anime_Sensei_Network.mkv"
-    pattern_additional = re.compile(r'_(\d{1,2})_', re.IGNORECASE)
+    pattern = re.compile(r'_(\d{1,2})_', re.IGNORECASE)
 
     match = re.search(pattern, filename)
     if match:
