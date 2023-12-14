@@ -14,7 +14,7 @@ import time
 import re
 
 # Modified Pattern 1: S1 E01 or S01 E01
-pattern1 = re.compile(r'S(\d+) E(\d+)')
+pattern1 = re.compile(r'S(\d+) (?:E|EP)(\d+)')
 
 # Modified Pattern 2: S02 E01
 pattern2 = re.compile(r'S(\d+) E(\d+)')
