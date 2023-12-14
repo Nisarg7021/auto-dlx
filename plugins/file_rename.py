@@ -14,13 +14,13 @@ import time
 import re
 
 # Modified Pattern 1: S1 E01 or S01 E01
-pattern1 = re.compile(r'S(\d+) E|EP(\d+)')
+pattern1 = re.compile(r'S(\d+) E(\d+)')
 
 # Modified Pattern 2: S02 E01
-pattern2 = re.compile(r'S(\d+) E|EP(\d+)')
+pattern2 = re.compile(r'S(\d+) E(\d+)')
 
 # Modified Pattern 3: Episode Number After "E" or "-"
-pattern3 = re.compile(r'[E|-](\d+)')
+pattern3 = re.compile(r'[E|-|EP](\d+)')
 
 # Modified Pattern 4: Standalone Episode Number
 pattern4 = re.compile(r'(\d+)')
