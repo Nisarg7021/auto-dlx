@@ -15,7 +15,7 @@ import re
 
 def extract_episode_number(filename):
     # Pattern 1: S1E01 or S01E01
-    pattern1 = re.compile(r'S(\d+)E(\d+)')
+    pattern1 = re.compile(r'S[0-9]*E(\d+)')
     
     # Pattern 2: S02 E01
     pattern2 = re.compile(r'S(\d+) E(\d+)')
