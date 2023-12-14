@@ -13,24 +13,38 @@ import os
 import time
 import re
 
+# Modified Pattern 1: S1 E01 or S01 E01
+pattern1 = re.compile(r'S(\d+) E(\d+)')
+
+# Modified Pattern 2: S02 E01
+pattern2 = re.compile(r'S(\d+) E(\d+)')
+
+# Modified Pattern 3: Episode Number After "E" or "-"
+pattern3 = re.compile(r'[E|-](\d+)')
+
+# Modified Pattern 4: Standalone Episode Number
+pattern4 = re.compile(r'(\d+)')
+
 def extract_episode_number(filename):
-    # Modified Pattern 1: S1 E01 or S01 E01
-    pattern1 = re.compile(r'S(\d+)E(\d+)')
+    # Try Pattern 1
+    match = re.search(pattern1, filename)
+    if match:
+        return match.group(2)  # Extracted episode number
     
-    # Pattern 2: S02 E01
-    pattern2 = re.compile(r'S(\d+) E(\d+)')
-    
-    # Pattern 3: Episode Number After "E" or "-"
-    pattern3 = re.compile(r'[E|-](\d+)')
-    
-    # Pattern 4: Standalone Episode Number
-    pattern4 = re.compile(r'(\d+)')
-    
-    # Try each pattern in order
-    for pattern in [pattern1, pattern2, pattern3, pattern4]:
-        match = re.search(pattern, filename)
-        if match:
-            return match.group(1)  # Extracted episode number
+    # Try Pattern 2
+    match = re.search(pattern2, filename)
+    if match:
+        return match.group(2)  # Extracted episode number
+
+    # Try Pattern 3
+    match = re.search(pattern3, filename)
+    if match:
+        return match.group(1)  # Extracted episode number
+
+    # Try Pattern 4
+    match = re.search(pattern4, filename)
+    if match:
+        return match.group(1)  # Extracted episode number
     
     # Return None if no pattern matches
     return None
@@ -38,8 +52,8 @@ def extract_episode_number(filename):
 # Example Usage:
 filename = "One Piece S1-07 [720p][Dual] @Anime_Edge.mkv"
 episode_number = extract_episode_number(filename)
-print(f"Extracted Episode Number: {episode_number}")                   
-    
+print(f"Extracted Episode Number: {episode_number}")
+
     
 @Client.on_message(filters.private & filters.command("autorename"))
 async def auto_rename_command(client, message):
