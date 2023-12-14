@@ -15,7 +15,7 @@ import re
 
 def extract_episode_number(filename):
     # Modified Pattern 1: S1 E01 or S01 E01
-    pattern1 = re.compile(r'S(\d*)E(\d*)')
+    pattern1 = re.compile(r'S(\d+)E(\d+)')
     
     # Pattern 2: S02 E01
     pattern2 = re.compile(r'S(\d+) E(\d+)')
@@ -30,7 +30,7 @@ def extract_episode_number(filename):
     for pattern in [pattern1, pattern2, pattern3, pattern4]:
         match = re.search(pattern, filename)
         if match:
-            return match.group(2)  # Extracted episode number
+            return match.group(1)  # Extracted episode number
     
     # Return None if no pattern matches
     return None
