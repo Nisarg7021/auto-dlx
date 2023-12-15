@@ -17,7 +17,7 @@ import re
 pattern1 = re.compile(r'S(\d+) (?:E|EP)(\d+)')
 
 # Modified Pattern 2: S02 E01
-pattern2 = re.compile(r'S(\d+) E(\d+)')
+pattern2 = re.compile(r'S(\d+) (?:E|EP)(\d+)')
 
 # Modified Pattern 3: Episode Number After "E" or "-"
 pattern3 = re.compile(r'[E|-|EP](\d+)')
@@ -67,11 +67,22 @@ async def auto_rename_command(client, message):
 
     await message.reply_text("Auto rename format updated successfully!")
 
+@Client.on_message(filters.private & filters.command("setmedia"))
+async def set_media_command(client, message):
+    user_id = message.from_user.id
+    media_type = message.text.split("/setmedia", 1)[1].strip().lower()
+
+    # Save the preferred media type to the database
+    await db.set_media_preference(user_id, media_type)
+
+    await message.reply_text(f"Media preference set to: {media_type}")
+
 # Inside the handler for file uploads
 @Client.on_message(filters.private & (filters.document | filters.video | filters.audio))
 async def auto_rename_files(client, message):
     user_id = message.from_user.id
     format_template = await db.get_format_template(user_id)
+    media_preference = await db.get_media_preference(user_id)
 
     if not format_template:
         return await message.reply_text("Please set an auto rename format first using /autorename")
@@ -79,13 +90,13 @@ async def auto_rename_files(client, message):
     # Extract information from the incoming file name
     if message.document:
         file_name = message.document.file_name
-        media_type = "document"
+        media_type = media_preference or "document"  # Use preferred media type or default to document
     elif message.video:
         file_name = f"{message.video.file_name}.mp4"
-        media_type = "video"
+        media_type = media_preference or "video"  # Use preferred media type or default to video
     elif message.audio:
         file_name = f"{message.audio.file_name}.mp3"
-        media_type = "audio"
+        media_type = media_preference or "audio"  # Use preferred media type or default to audio
     else:
         return await message.reply_text("Unsupported file type")
 
@@ -100,7 +111,7 @@ async def auto_rename_files(client, message):
             format_template = format_template.replace(placeholder, str(episode_number), 1)
 
         await message.reply_text(f"File renamed successfully to: {format_template}")
-        
+
         _, file_extension = os.path.splitext(file_name)
         new_file_name = f"{format_template}{file_extension}"
         file_path = f"downloads/{new_file_name}"
@@ -108,7 +119,7 @@ async def auto_rename_files(client, message):
 
         ms = await message.reply("Trying to download...")
         try:
-            path = await client.download_media(message=file, file_name=file_path, progress=progress_for_pyrogram, progress_args=("Dᴏᴡɴʟᴏᴀᴅ Sᴛᴀʀᴛᴇᴅ....", ms, time.time()))                    
+            path = await client.download_media(message=file, file_name=file_path, progress=progress_for_pyrogram, progress_args=("Dᴏᴡɴʟᴏᴀᴅ Sᴛᴀʀᴛᴇᴅ....", ms, time.time()))
         except Exception as e:
             return await ms.edit(e)
 
@@ -181,4 +192,3 @@ async def auto_rename_files(client, message):
         os.remove(file_path)
         if ph_path:
             os.remove(ph_path)
-    
