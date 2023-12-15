@@ -20,13 +20,13 @@ pattern1 = re.compile(r'S(\d+) (?:E|EP)(\d+)')
 pattern2 = re.compile(r'S(\d+) (?:E|EP)(\d+)')
 
 # Modified Pattern 3: Episode Number After "E" or "-"
-pattern3 = re.compile(r'(?:E|-|EP)(\d+)')
+pattern3 = re.compile(r'(?:E|EP)(\d+)|(?:S\d+\s*P\d+\s*-\s*)?EP(\d+)')
 
 # Modified Pattern 4: Standalone Episode Number
 pattern4 = re.compile(r'(\d+)')
 
 # Quality Extraction Pattern
-quality_pattern = re.compile(r'\b(?:1440p|2160p|144p|240p|360p|480p|720p|1080p|HdRip 2k|4k)\b', re.IGNORECASE)
+quality_pattern = re.compile(r'\b(?:1440p|2160p|144p|240p|360p|480p|720p|1080p|HdRip 2k|4k)\b|\[(.*?)\]|\((.*?)\)|\{(.*?)\}', re.IGNORECASE)
 
 def extract_episode_number(filename):
     # Try Quality Extraction Pattern
