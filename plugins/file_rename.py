@@ -25,7 +25,15 @@ pattern3 = re.compile(r'[E|-|EP](\d+)')
 # Modified Pattern 4: Standalone Episode Number
 pattern4 = re.compile(r'(\d+)')
 
+# Quality Extraction Pattern
+quality_pattern = re.compile(r'\b(?:1440p|2160p|144p|240p|360p|480p|720p|1080p|HdRip 2k|4k)\b', re.IGNORECASE)
+
 def extract_episode_number(filename):
+    # Try Quality Extraction Pattern
+    quality_matches = quality_pattern.findall(filename)
+    if quality_matches:
+        print("Extracted Qualities:", quality_matches)
+
     # Try Pattern 1
     match = re.search(pattern1, filename)
     if match:
@@ -102,13 +110,21 @@ async def auto_rename_files(client, message):
 
     print(f"Original File Name: {file_name}")
 
+    # Extract episode number and qualities
     episode_number = extract_episode_number(file_name)
+    qualities = quality_pattern.findall(file_name)
+    
     print(f"Extracted Episode Number: {episode_number}")
+    print(f"Extracted Qualities: {qualities}")
 
     if episode_number:
         placeholders = ["episode", "Episode", "EPISODE", "{episode}"]
         for placeholder in placeholders:
             format_template = format_template.replace(placeholder, str(episode_number), 1)
+
+        # Add extracted qualities to the format template
+        if qualities:
+            format_template += " " + " ".join(qualities)
 
         await message.reply_text(f"File renamed successfully to: {format_template}")
 
@@ -121,7 +137,7 @@ async def auto_rename_files(client, message):
         try:
             path = await client.download_media(message=file, file_name=file_path, progress=progress_for_pyrogram, progress_args=("Dᴏᴡɴʟᴏᴀᴅ Sᴛᴀʀᴛᴇᴅ....", ms, time.time()))
         except Exception as e:
-            return await ms.edit(e)
+            return await ms.edit(e)     
 
         duration = 0
         try:
