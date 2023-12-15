@@ -60,10 +60,10 @@ class Database:
         user = await self.col.find_one({'_id': int(id)})
         return user.get('format_template', None)
         
-    async def set_media_type(self, id, media_type):
+    async def set_media_preference(self, id, media_type):
         await self.col.update_one({'_id': int(id)}, {'$set': {'media_type': media_type}})
         
-    async def get_media_type(self, id):
+    async def get_media_preference(self, id):
         user = await self.col.find_one({'_id': int(id)})
         return user.get('media_type', None)
 
