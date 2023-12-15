@@ -124,7 +124,9 @@ async def auto_rename_files(client, message):
 
         # Add extracted qualities to the format template
         if qualities:
-            format_template += " " + " ".join(qualities)
+            placeholders = ["quality", "Quality", "QUALITY", "{quality}"]
+            for placeholder in placeholders:
+                format_template = format_template.replace(placeholder, str(qualities), 1)
 
         await message.reply_text(f"File renamed successfully to: {format_template}")
 
