@@ -37,21 +37,25 @@ def extract_episode_number(filename):
     # Try Pattern 1
     match = re.search(pattern1, filename)
     if match:
+        print("Matched Pattern 1")
         return match.group(2)  # Extracted episode number
     
     # Try Pattern 2
     match = re.search(pattern2, filename)
     if match:
+        print("Matched Pattern 2")
         return match.group(2)  # Extracted episode number
 
     # Try Pattern 3
     match = re.search(pattern3, filename)
     if match:
+        print("Matched Pattern 3")
         return match.group(1)  # Extracted episode number
 
     # Try Pattern 4
     match = re.search(pattern4, filename)
     if match:
+        print("Matched Pattern 4")
         return match.group(1)  # Extracted episode number
     
     # Return None if no pattern matches
@@ -61,7 +65,6 @@ def extract_episode_number(filename):
 filename = "One Piece S1-07 [720p][Dual] @Anime_Edge.mkv"
 episode_number = extract_episode_number(filename)
 print(f"Extracted Episode Number: {episode_number}")
-
     
 @Client.on_message(filters.private & filters.command("autorename"))
 async def auto_rename_command(client, message):
