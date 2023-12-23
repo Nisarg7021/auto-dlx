@@ -22,8 +22,8 @@ pattern2 = re.compile(r'S(\d+)\s*(?:E|EP|-\s*EP)(\d+)')
 # Pattern 3: Episode Number After "E","EP" or "-"
 pattern3 = re.compile(r'(?:S\d+\s*-\s*)?(?:E|EP)?(\d+)')
 
-# Pattern 4: S2 09 - Kanojo Mo Kanojo [720p].mkv
-pattern4 = re.compile(r'S2 (\d+) - Kanojo Mo Kanojo \[(\d+p)\]\.mkv', re.IGNORECASE)
+# Pattern 4: S2 09 ex.
+pattern4 = re.compile(r'S(\d+)\s*(\d+)')
 
 # Pattern X: Standalone Episode Number
 patternX = re.compile(r'(\d+)')
@@ -31,7 +31,7 @@ patternX = re.compile(r'(\d+)')
 #QUALITY PATTERNS 
 
 # Pattern 5: 3-4 digits before 'p' as quality
-pattern5 = re.compile(r'\b(?:.*?(\d{3,4}\s*p)|.*?(\d{3,4}p))\b', re.IGNORECASE)
+pattern5 = re.compile(r'\b(?:.*?(\d{3,4})\s*p|.*?(\d{3,4}p))\b', re.IGNORECASE)
 # Pattern 6: 4k or 2k
 pattern6 = re.compile(r'\b(\w*)\s*k\b', re.IGNORECASE)
 # Pattern 7: Find HdRip in brackets or parentheses
