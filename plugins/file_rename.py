@@ -19,8 +19,8 @@ pattern1 = re.compile(r'S(\d+)(?:E|EP)(\d+)')
 # Pattern 2: S01 E02 or S01 EP02 or S01 - E01 or S01 - EP02
 pattern2 = re.compile(r'S(\d+)\s*(?:E|EP|-\s*EP)(\d+)')
 
-# Pattern 3: Episode Number After "E" or "-"
-pattern3 = re.compile(r'(?:E|EP)(\d+)|(?:S\d+\s*-\s*)?EP(\d+)')
+# Pattern 3: Episode Number After "E","EP" or "-"
+pattern3 = re.compile(r'(?:E|EP)(\d+)|(?:S\d+\s*-\s*)?(?:E|EP)(\d+)')
 
 # Pattern 4: S2 09 - Kanojo Mo Kanojo [720p].mkv
 pattern4 = re.compile(r'S2 (\d+) - Kanojo Mo Kanojo \[(\d+p)\]\.mkv', re.IGNORECASE)
@@ -32,11 +32,13 @@ patternX = re.compile(r'(\d+)')
 
 # Pattern 5: 3-4 digits before 'p' as quality
 pattern5 = re.compile(r'\b(?:.*?(\d{3,4}\s*p)|.*?(\d{3,4}p))\b', re.IGNORECASE)
-# Pattern 6: One or more word characters followed by 'k' like 4k, 2k, 4kx264, 2k~2160p
-pattern6 = re.compile(r'\b([\w\d]+k[\w\d]*)\b', re.IGNORECASE)
-
+# Pattern 6: 4k or 2k
+pattern6 = re.compile(r'\b(\w*)\s*k\b', re.IGNORECASE)
 # Pattern 7: Find HdRip in brackets or parentheses
 pattern7 = re.compile(r'[([<{]?\s*HdRip\s*[)\]>}]?|\bHdRip\b', re.IGNORECASE)
+# Pattern8: 4Kx264 or 2kx265
+pattern8 = re.compile(r'\b(?:\[(.*?)\]|\((.*?)\))?\s*(\d+[kK]x[26][54]([65])?)\s*(?:\[(.*?)\]|\((.*?)\))?\b')
+
 
 
 def extract_quality(filename):
@@ -62,6 +64,13 @@ def extract_quality(filename):
             print(f"Quality: {quality7}")
             return quality7
             
+            match8 = re.search(pattern8, filename)
+            if match8:
+                print("Matched Pattern 8")
+                quality8 = match8.group(3)  # Extracted quality
+                print(f"Quality: {quality8}")
+                return quality8
+                
     # Return "Unknown" if no pattern matches
     unknown_quality = "Unknown"
     print(f"Quality: {unknown_quality}")
