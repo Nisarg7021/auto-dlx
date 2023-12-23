@@ -29,8 +29,8 @@ pattern4 = re.compile(r'(\d+)')
 
 # Pattern 5: 3-4 digits before 'p' as quality
 pattern5 = re.compile(r'\b(?:.*?(\d{3,4}\s*p)|.*?(\d{3,4}p))\b', re.IGNORECASE)
-# Pattern 6: One word before 'k' like 4k, 2k
-pattern6 = re.compile(r'\b(\w*\s*k)\b', re.IGNORECASE)
+# Pattern 6: One word before 'k' like 4k, 2k, 4kx264, 2k~2160p
+pattern6 = re.compile(r'\b([\w\d]+)\s*k\b', re.IGNORECASE)
 # Pattern 7: Find HdRip in brackets or parentheses
 pattern7 = re.compile(r'[([<{]?\s*HdRip\s*[)\]>}]?|\bHdRip\b', re.IGNORECASE)
 
