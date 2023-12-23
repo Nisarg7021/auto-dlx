@@ -32,6 +32,7 @@ patternX = re.compile(r'(\d+)')
 
 # Pattern 5: 3-4 digits before 'p' as quality
 pattern5 = re.compile(r'\b(?:.*?(\d{3,4}[^\dp]*p).*?|.*?(\d{3,4}p))\b', re.IGNORECASE)
+
 # Pattern 6: 4k or 2k
 pattern6 = re.compile(r'\b(\w*)\s*k\b', re.IGNORECASE)
 # Pattern 7: Find HdRip in brackets or parentheses
@@ -92,7 +93,7 @@ def extract_episode_number(filename):
     match = re.search(pattern3, filename)
     if match:
         print("Matched Pattern 3")
-        return match.group(2)  # Extracted episode number
+        return match.group(1)  # Extracted episode number
 
     # Try Pattern 4
     match = re.search(pattern4, filename)
