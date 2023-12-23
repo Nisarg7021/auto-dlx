@@ -22,15 +22,18 @@ pattern2 = re.compile(r'S(\d+)\s*(?:E|EP|-\s*EP)(\d+)')
 # Pattern 3: Episode Number After "E" or "-"
 pattern3 = re.compile(r'(?:E|EP)(\d+)|(?:S\d+\s*-\s*)?EP(\d+)')
 
-# Pattern 4: Standalone Episode Number
-pattern4 = re.compile(r'(\d+)')
+# Pattern 4: S2 09 - Kanojo Mo Kanojo [720p].mkv
+pattern4 = re.compile(r'S2 (\d+) - Kanojo Mo Kanojo \[(\d+p)\]\.mkv', re.IGNORECASE)
+
+# Pattern X: Standalone Episode Number
+patternX = re.compile(r'(\d+)')
 
 #QUALITY PATTERNS 
 
 # Pattern 5: 3-4 digits before 'p' as quality
 pattern5 = re.compile(r'\b(?:.*?(\d{3,4}\s*p)|.*?(\d{3,4}p))\b', re.IGNORECASE)
-# Pattern 6: One word before 'k' like 4k, 2k, 4kx264, 2k~2160p
-pattern6 = re.compile(r'\b([\w\d]+)\s*k(?:x\d+)?\b', re.IGNORECASE)
+# Pattern 6: One or more word characters followed by 'k' like 4k, 2k, 4kx264, 2k~2160p
+pattern6 = re.compile(r'\b([\w\d]+k[\w\d]*)\b', re.IGNORECASE)
 
 # Pattern 7: Find HdRip in brackets or parentheses
 pattern7 = re.compile(r'[([<{]?\s*HdRip\s*[)\]>}]?|\bHdRip\b', re.IGNORECASE)
@@ -40,21 +43,21 @@ def extract_quality(filename):
     # Try Quality Patterns
     match5 = re.search(pattern5, filename)
     if match5:
-        print("Matched Pattern 5")
+        print("Matched Pattern 5 [quality]")
         quality5 = match5.group(1) or match5.group(2)  # Extracted quality from both patterns
         print(f"Quality: {quality5}")
         return quality5
 
     match6 = re.search(pattern6, filename)
     if match6:
-        print("Matched Pattern 6")
+        print("Matched Pattern 6 [quality]")
         quality6 = match6.group(1)
         print(f"Quality: {quality6}")
         return quality6
         
         match7 = re.search(pattern7, filename)
         if match7:
-            print("Matched Pattern 7")
+            print("Matched Pattern 7 [quality]")
             quality7 = "HdRip"
             print(f"Quality: {quality7}")
             return quality7
@@ -88,7 +91,13 @@ def extract_episode_number(filename):
     if match:
         print("Matched Pattern 4")
         return match.group(1)  # Extracted episode number
-    
+
+    # Try Pattern 4
+    match = re.search(patternX, filename)
+    if match:
+        print("Matched Pattern X")
+        return match.group(1)  # Extracted episode number
+        
     # Return None if no pattern matches
     return None
 
