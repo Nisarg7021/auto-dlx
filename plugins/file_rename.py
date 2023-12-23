@@ -31,7 +31,7 @@ patternX = re.compile(r'(\d+)')
 #QUALITY PATTERNS 
 
 # Pattern 5: 3-4 digits before 'p' as quality
-pattern5 = re.compile(r'\b(?:.*?(\d{3,4})\s*p|.*?(\d{3,4}p))\b', re.IGNORECASE)
+pattern5 = re.compile(r'\b(?:.*?(\d{3,4}[^\dp]*p).*?|.*?(\d{3,4}p))\b', re.IGNORECASE)
 # Pattern 6: 4k or 2k
 pattern6 = re.compile(r'\b(\w*)\s*k\b', re.IGNORECASE)
 # Pattern 7: Find HdRip in brackets or parentheses
