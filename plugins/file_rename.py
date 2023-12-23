@@ -29,7 +29,6 @@ pattern4 = re.compile(r'(\d+)')
 quality_pattern = re.compile(r'\b(?:1440p|2160p|144p|240p|360p|480p|720p|1080p|1440p|2160p|4k|2k)\b|\[(?:.*?)\]|\((?:.*?)\)|\{(?:.*?)\}', re.IGNORECASE)
 
 
-
 def extract_episode_number(filename):
     # Try Quality Extraction Pattern
     quality_matches = quality_pattern.findall(filename)
