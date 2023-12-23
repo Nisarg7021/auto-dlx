@@ -13,16 +13,16 @@ import os
 import time
 import re
 
-# Modified Pattern 1: S1 E01 or S01 E01
-pattern1 = re.compile(r'S(\d+) (?:E|EP)(\d+)')
+# Pattern 1: S01E02 or S01EP02
+pattern1 = re.compile(r'S(\d+)(?:E|EP)(\d+)')
 
-# Modified Pattern 2: S02 E01
-pattern2 = re.compile(r'S(\d+) (?:E|EP)(\d+)')
+# Pattern 2: S01 E02 or S01 EP02 or S01 - E01 or S01 - EP02
+pattern2 = re.compile(r'S(\d+)\s*(?:E|EP|-\s*EP)(\d+)')
 
-# Modified Pattern 3: Episode Number After "E" or "-"
-pattern3 = re.compile(r'(?:E|EP)(\d+)|(?:S\d+\s*P\d+\s*-\s*)?EP(\d+)')
+# Pattern 3: Episode Number After "E" or "-"
+pattern3 = re.compile(r'(?:E|EP)(\d+)|(?:S\d+\s*-\s*)?EP(\d+)')
 
-# Modified Pattern 4: Standalone Episode Number
+# Pattern 4: Standalone Episode Number
 pattern4 = re.compile(r'(\d+)')
 
 # Quality Extraction Pattern
