@@ -20,7 +20,7 @@ pattern1 = re.compile(r'S(\d+)(?:E|EP)(\d+)')
 pattern2 = re.compile(r'S(\d+)\s*(?:E|EP|-\s*EP)(\d+)')
 
 # Pattern 3: Episode Number After "E","EP" or "-"
-pattern3 = re.compile(r'(?:E|EP)(\d+)|(?:S\d+\s*-\s*)?(?:E|EP)(\d+)')
+pattern3 = re.compile(r'(?:E|EP)(\d+)')
 
 # Pattern 4: S2 09 - Kanojo Mo Kanojo [720p].mkv
 pattern4 = re.compile(r'S2 (\d+) - Kanojo Mo Kanojo \[(\d+p)\]\.mkv', re.IGNORECASE)
@@ -67,7 +67,7 @@ def extract_quality(filename):
             match8 = re.search(pattern8, filename)
             if match8:
                 print("Matched Pattern 8")
-                quality8 = match8.group(3)  # Extracted quality
+                quality8 = match8.group(2)  # Extracted quality
                 print(f"Quality: {quality8}")
                 return quality8
                 
