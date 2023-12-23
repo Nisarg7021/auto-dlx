@@ -25,11 +25,41 @@ pattern3 = re.compile(r'(?:E|EP)(\d+)|(?:S\d+\s*-\s*)?EP(\d+)')
 # Pattern 4: Standalone Episode Number
 pattern4 = re.compile(r'(\d+)')
 
-# Quality Extraction Pattern without capturing groups
-quality_pattern = re.compile(r'\b(?:1440p|2160p|144p|240p|360p|480p|720p|1080p|4k|2k)\b|\[(.*?)\]|\((.*?)\)|\{(.*?)\}', re.IGNORECASE)
+#QUALITY PATTERNS 
 
+# Pattern 5: 3-4 digits before 'p' as quality 
+pattern5 = re.compile(r'\b(?:.*?(\d{3,4}p)|.*?(\d{3,4})\s*p)\b', re.IGNORECASE)
+# Pattern 6: One word before 'k' like 4k, 2k
+pattern6 = re.compile(r'\b(\w*)\s*k\b', re.IGNORECASE)
+# Pattern 7: Find HdRip in brackets or parentheses
+pattern7 = re.compile(r'[([<{]?\s*HdRip\s*[)\]>}]?', re.IGNORECASE)
 
+def extract_quality(filename):
+    # Try Quality Patterns
+    match5 = re.search(pattern5, filename)
+    if match5:
+        print("Matched Pattern 5")
+        quality5 = match5.group(1) or match5.group(2)  # Extracted quality from both patterns
+        print(f"Quality: {quality5}")
+        return quality5
 
+    match6 = re.search(pattern6, filename)
+    if match6:
+        print("Matched Pattern 6")
+        quality6 = match6.group(1)
+        print(f"Quality: {quality6}")
+        return quality6
+
+    match7 = re.search(pattern7, filename)
+    if match7:
+        print("Matched Pattern 7")
+        quality7 = "HdRip"
+        print(f"Quality: {quality7}")
+        return quality7
+
+    # Return None if no pattern matches
+    return None
+    
 
 def extract_episode_number(filename):
     # Try Quality Extraction Pattern
@@ -133,8 +163,9 @@ async def auto_rename_files(client, message):
     quality_placeholders = ["quality", "Quality", "QUALITY", "{quality}"]
     for quality_placeholder in quality_placeholders:
         if quality_placeholder in format_template:
-            format_template = format_template.replace(quality_placeholder, " ".join(q[0] for q in qualities))
-            
+            extracted_qualities = extract_quality(file_name)
+            if extracted_qualities:
+                format_template = format_template.replace(quality_placeholder, " ".join(extracted_qualities))                
             
         await message.reply_text(f"File renamed successfully to: {format_template}")
 
