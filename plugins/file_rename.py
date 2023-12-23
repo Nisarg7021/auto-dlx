@@ -20,7 +20,7 @@ pattern1 = re.compile(r'S(\d+)(?:E|EP)(\d+)')
 pattern2 = re.compile(r'S(\d+)\s*(?:E|EP|-\s*EP)(\d+)')
 
 # Pattern 3: Episode Number After "E","EP" or "-"
-pattern3 = re.compile(r'(?:E|EP)(\d+)')
+pattern3 = re.compile(r'(?:S\d+\s*-\s*)?(?:E|EP)?(\d+)')
 
 # Pattern 4: S2 09 - Kanojo Mo Kanojo [720p].mkv
 pattern4 = re.compile(r'S2 (\d+) - Kanojo Mo Kanojo \[(\d+p)\]\.mkv', re.IGNORECASE)
@@ -37,8 +37,7 @@ pattern6 = re.compile(r'\b(\w*)\s*k\b', re.IGNORECASE)
 # Pattern 7: Find HdRip in brackets or parentheses
 pattern7 = re.compile(r'[([<{]?\s*HdRip\s*[)\]>}]?|\bHdRip\b', re.IGNORECASE)
 # Pattern8: 4Kx264 or 2kx265
-pattern8 = re.compile(r'\b(?:\[(.*?)\]|\((.*?)\))?\s*(\d+[kK]x[26][54]([65])?)\s*(?:\[(.*?)\]|\((.*?)\))?\b')
-
+pattern8 = re.compile(r'\[?(.*?)\]?[ ]*(\d+[kK]x[26][54]([65])?)[ ]*\[?(.*?)\]?')
 
 
 def extract_quality(filename):
