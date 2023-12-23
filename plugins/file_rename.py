@@ -39,7 +39,6 @@ pattern7 = re.compile(r'[([<{]?\s*HdRip\s*[)\]>}]?|\bHdRip\b', re.IGNORECASE)
 # Pattern8: 4Kx264 or 2kx265
 pattern8 = re.compile(r'\[?(.*?)\]?[ ]*(\d+[kK]x[26][54]([65])?)[ ]*\[?(.*?)\]?')
 
-
 def extract_quality(filename):
     # Try Quality Patterns
     match5 = re.search(pattern5, filename)
@@ -55,25 +54,26 @@ def extract_quality(filename):
         quality6 = match6.group(1)
         print(f"Quality: {quality6}")
         return quality6
-        
-        match7 = re.search(pattern7, filename)
-        if match7:
-            print("Matched Pattern 7 [quality]")
-            quality7 = "HdRip"
-            print(f"Quality: {quality7}")
-            return quality7
-            
-            match8 = re.search(pattern8, filename)
-            if match8:
-                print("Matched Pattern 8")
-                quality8 = match8.group(2)  # Extracted quality
-                print(f"Quality: {quality8}")
-                return quality8
-                
+
+    match7 = re.search(pattern7, filename)
+    if match7:
+        print("Matched Pattern 7 [quality]")
+        quality7 = "HdRip"
+        print(f"Quality: {quality7}")
+        return quality7
+
+    match8 = re.search(pattern8, filename)
+    if match8:
+        print("Matched Pattern 8")
+        quality8 = match8.group(2)  # Extracted quality
+        print(f"Quality: {quality8}")
+        return quality8
+
     # Return "Unknown" if no pattern matches
     unknown_quality = "Unknown"
     print(f"Quality: {unknown_quality}")
-    return unknown_quality        
+    return unknown_quality
+    
 
 def extract_episode_number(filename):    
     # Try Pattern 1
