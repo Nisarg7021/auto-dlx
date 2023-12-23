@@ -61,13 +61,7 @@ def extract_quality(filename):
     return None
     
 
-def extract_episode_number(filename):
-    # Try Quality Extraction Pattern
-    quality_matches = quality_pattern.findall(filename)
-    if quality_matches:
-        extracted_qualities = [quality for quality in quality_matches[0] if quality]
-        print("Extracted Qualities:", extracted_qualities)
-    
+def extract_episode_number(filename):    
     # Try Pattern 1
     match = re.search(pattern1, filename)
     if match:
