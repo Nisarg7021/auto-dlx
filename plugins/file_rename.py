@@ -19,8 +19,8 @@ pattern1 = re.compile(r'S(\d+)(?:E|EP)(\d+)')
 # Pattern 2: S01 E02 or S01 EP02 or S01 - E01 or S01 - EP02
 pattern2 = re.compile(r'S(\d+)\s*(?:E|EP|-\s*EP)(\d+)')
 
-# Pattern 3: Episode Number After "E","EP" or "-"
-pattern3 = re.compile(r'(?:S\d+\s*-\s*)?(?:E|EP)?(\d+)')
+# Pattern 3: Episode Number After "E" or "-" or "S04 P3 - EP02"
+pattern3 = re.compile(r'(?:E|EP)?(\d+)|(?:S\d+\s*-\s*P\d+\s*-\s*)?EP(\d+)')
 
 # Pattern 4: S2 09 ex.
 pattern4 = re.compile(r'S(\d+)\s*(\d+)')
@@ -32,9 +32,9 @@ patternX = re.compile(r'(\d+)')
 
 # Pattern 5: 3-4 digits before 'p' as quality
 pattern5 = re.compile(r'\b(?:.*?(\d{3,4}[^\dp]*p).*?|.*?(\d{3,4}p))\b', re.IGNORECASE)
-
 # Pattern 6: 4k or 2k
-pattern6 = re.compile(r'\b(\w*)\s*k\b', re.IGNORECASE)
+# Updated Pattern 6: 4k or 2k (Ensuring no word characters before 'k')
+pattern6 = re.compile(r'\b([^A-Za-z]*?\d+[kK])\b')
 # Pattern 7: Find HdRip in brackets or parentheses
 pattern7 = re.compile(r'[([<{]?\s*HdRip\s*[)\]>}]?|\bHdRip\b', re.IGNORECASE)
 # Pattern8: 4Kx264 or 2kx265
