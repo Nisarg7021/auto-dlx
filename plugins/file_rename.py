@@ -65,7 +65,7 @@ def extract_quality(filename):
     match8 = re.search(pattern8, filename)
     if match8:
         print("Matched Pattern 8")
-        quality8 = match8.group(2)  # Extracted quality
+        quality8 = match.group(2) or match.group(4)
         print(f"Quality: {quality8}")
         return quality8
 
@@ -104,7 +104,7 @@ def extract_episode_number(filename):
     match = re.search(patternX, filename)
     if match:
         print("Matched Pattern X")
-        return match.group(1)  # Extracted episode number
+        return match.group(2)  # Extracted episode number
         
     # Return None if no pattern matches
     return None
