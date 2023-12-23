@@ -25,8 +25,9 @@ pattern3 = re.compile(r'(?:E|EP)(\d+)|(?:S\d+\s*-\s*)?EP(\d+)')
 # Pattern 4: Standalone Episode Number
 pattern4 = re.compile(r'(\d+)')
 
-# Quality Extraction Patten
-quality_pattern = re.compile(r'\b(?:1440p|2160p|144p|240p|360p|480p|720p|1080p|HdRip 2k|4k)\b|\[(?:.*?)\]|\((?:.*?)\)|\{(?:.*?)\}', re.IGNORECASE)
+# Quality Extraction Pattern without capturing groups
+quality_pattern = re.compile(r'\b(?:1440p|2160p|144p|240p|360p|480p|720p|1080p|1440p|2160p|4k|2k)\b|\[(?:.*?)\]|\((?:.*?)\)|\{(?:.*?)\}', re.IGNORECASE)
+
 
 
 def extract_episode_number(filename):
