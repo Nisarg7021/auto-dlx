@@ -50,17 +50,18 @@ def extract_quality(filename):
         quality6 = match6.group(1)
         print(f"Quality: {quality6}")
         return quality6
-
-    match7 = re.search(pattern7, filename)
-    if match7:
-        print("Matched Pattern 7")
-        quality7 = "HdRip"
-        print(f"Quality: {quality7}")
-        return quality7
-
-    # Return None if no pattern matches
-    return None
-    
+        
+        match7 = re.search(pattern7, filename)
+        if match7:
+            print("Matched Pattern 7")
+            quality7 = "HdRip"
+            print(f"Quality: {quality7}")
+            return quality7
+            
+    # Return "Unknown" if no pattern matches
+    unknown_quality = "Unknown"
+    print(f"Quality: {unknown_quality}")
+    return unknown_quality        
 
 def extract_episode_number(filename):    
     # Try Pattern 1
@@ -157,9 +158,11 @@ async def auto_rename_files(client, message):
     for quality_placeholder in quality_placeholders:
         if quality_placeholder in format_template:
             extracted_qualities = extract_quality(file_name)
-            if extracted_qualities:
-                format_template = format_template.replace(quality_placeholder, "".join(extracted_qualities).strip())
-              
+            if extracted_qualities == "Unknown":
+                await message.reply_text("I wasn't able to extract the quality properly. Sorry! 😔")
+                return
+            format_template = format_template.replace(quality_placeholder, "".join(extracted_qualities))
+            
             
         await message.reply_text(f"File renamed successfully to: {format_template}")
 
