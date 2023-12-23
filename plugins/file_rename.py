@@ -143,11 +143,9 @@ async def auto_rename_files(client, message):
 
     # Extract episode number and qualities
     episode_number = extract_episode_number(file_name)
-    qualities = quality_pattern.findall(file_name)
     
     print(f"Extracted Episode Number: {episode_number}")
-    print(f"Extracted Qualities: {qualities}")
-
+    
     if episode_number:
         placeholders = ["episode", "Episode", "EPISODE", "{episode}"]
         for placeholder in placeholders:
