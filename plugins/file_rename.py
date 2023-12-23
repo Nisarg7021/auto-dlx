@@ -157,7 +157,7 @@ async def auto_rename_files(client, message):
         c_caption = await db.get_caption(message.chat.id)
         c_thumb = await db.get_thumbnail(message.chat.id)
 
-        caption = c_caption.format(filename=new_file_name, filesize=humanbytes(message.document.file_size), duration=convert(duration)) if c_caption else f"**{new_file_name}"
+        caption = c_caption.format(filename=new_file_name, filesize=humanbytes(message.document.file_size), duration=convert(duration)) if c_caption else f"**{new_file_name}**"
 
         if c_thumb:
             ph_path = await client.download_media(c_thumb)
