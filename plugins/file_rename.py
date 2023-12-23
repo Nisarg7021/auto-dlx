@@ -26,7 +26,8 @@ pattern3 = re.compile(r'(?:E|EP)(\d+)|(?:S\d+\s*-\s*)?EP(\d+)')
 pattern4 = re.compile(r'(\d+)')
 
 # Quality Extraction Pattern without capturing groups
-quality_pattern = re.compile(r'\b(?:1440p|2160p|144p|240p|360p|480p|720p|1080p|1440p|2160p|4k|2k)\b|\[(.*?)\]|\((.*?)\)|\{(.*?)\}', re.IGNORECASE)
+quality_pattern = re.compile(r'\b(?:1440p|2160p|144p|240p|360p|480p|720p|1080p|4k|2k)\b|\[(.*?)\]|\((.*?)\)|\{(.*?)\}', re.IGNORECASE)
+
 
 
 
@@ -34,8 +35,9 @@ def extract_episode_number(filename):
     # Try Quality Extraction Pattern
     quality_matches = quality_pattern.findall(filename)
     if quality_matches:
-        print("Extracted Qualities:", [quality for quality in quality_matches if any(quality)])
-
+        extracted_qualities = [quality for quality in quality_matches[0] if quality]
+        print("Extracted Qualities:", extracted_qualities)
+    
     # Try Pattern 1
     match = re.search(pattern1, filename)
     if match:
