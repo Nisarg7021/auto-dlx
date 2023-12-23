@@ -159,10 +159,8 @@ async def auto_rename_files(client, message):
         if quality_placeholder in format_template:
             extracted_qualities = extract_quality(file_name)
             if extracted_qualities == "Unknown":
-                await message.reply_text("I wasn't able to extract the quality properly. Sorry! 😔")
-                return
-            format_template = format_template.replace(quality_placeholder, "".join(extracted_qualities))
-            
+                await message.reply_text("I wasn't able to extract the quality properly. Renaming as 'Unknown'...")
+            format_template = format_template.replace(quality_placeholder, "".join(extracted_qualities))           
             
         await message.reply_text(f"File renamed successfully to: {format_template}")
 
