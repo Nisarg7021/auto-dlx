@@ -158,7 +158,7 @@ async def auto_rename_files(client, message):
         if quality_placeholder in format_template:
             extracted_qualities = extract_quality(file_name)
             if extracted_qualities:
-                format_template = format_template.replace(quality_placeholder, " ".join(extracted_qualities).strip())
+                format_template = format_template.replace(quality_placeholder, "".join(extracted_qualities).strip())
               
             
         await message.reply_text(f"File renamed successfully to: {format_template}")
