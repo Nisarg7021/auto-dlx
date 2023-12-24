@@ -48,31 +48,45 @@ def extract_quality(filename):
     # Try Quality Patterns
     match5 = re.search(pattern5, filename)
     if match5:
-        print("Matched Pattern 5 [quality]")
+        print("Matched Pattern 5")
         quality5 = match5.group(1) or match5.group(2)  # Extracted quality from both patterns
         print(f"Quality: {quality5}")
         return quality5
 
     match6 = re.search(pattern6, filename)
     if match6:
-        print("Matched Pattern 6 [quality]")
-        quality6 = match6.group(1)
+        print("Matched Pattern 6")
+        quality6 = "4k"
         print(f"Quality: {quality6}")
         return quality6
 
     match7 = re.search(pattern7, filename)
     if match7:
-        print("Matched Pattern 7 [quality]")
-        quality7 = "HdRip"
+        print("Matched Pattern 7")
+        quality7 = "2k"
         print(f"Quality: {quality7}")
         return quality7
 
     match8 = re.search(pattern8, filename)
     if match8:
         print("Matched Pattern 8")
-        quality8 = match.group(2) or match.group(4)
+        quality8 = "HdRip"
         print(f"Quality: {quality8}")
         return quality8
+
+    match9 = re.search(pattern9, filename)
+    if match9:
+        print("Matched Pattern 9")
+        quality9 = "4kX264"
+        print(f"Quality: {quality9}")
+        return quality9
+
+    match10 = re.search(pattern10, filename)
+    if match10:
+        print("Matched Pattern 10")
+        quality10 = "4kx265"
+        print(f"Quality: {quality10}")
+        return quality10    
 
     # Return "Unknown" if no pattern matches
     unknown_quality = "Unknown"
