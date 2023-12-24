@@ -2,6 +2,8 @@ from pyrogram import Client, filters
 from pyrogram.errors import FloodWait
 from pyrogram.types import InputMediaDocument
 from PIL import Image
+from datetime import datetime
+
 
 from hachoir.metadata import extractMetadata
 from hachoir.parser import createParser
@@ -12,6 +14,8 @@ from helper.database import db
 import os
 import time
 import re
+
+renaming_operations = {}
 
 # Pattern 1: S01E02 or S01EP02
 pattern1 = re.compile(r'S(\d+)(?:E|EP)(\d+)')
@@ -176,18 +180,32 @@ async def auto_rename_files(client, message):
 
     # Extract information from the incoming file name
     if message.document:
+        file_id = message.document.file_id
         file_name = message.document.file_name
         media_type = media_preference or "document"  # Use preferred media type or default to document
     elif message.video:
+        file_id = message.video.file_id
         file_name = f"{message.video.file_name}.mp4"
         media_type = media_preference or "video"  # Use preferred media type or default to video
     elif message.audio:
+        file_id = message.audio.file_id
         file_name = f"{message.audio.file_name}.mp3"
         media_type = media_preference or "audio"  # Use preferred media type or default to audio
     else:
         return await message.reply_text("Unsupported file type")
 
     print(f"Original File Name: {file_name}")
+
+    # Check whether the file is already being renamed or has been renamed recently
+    if file_id in renaming_operations:
+        elapsed_time = (datetime.now() - renaming_operations[file_id]).seconds
+        if elapsed_time < 40:
+            # Commenting out the print statement below
+            # return await message.reply_text("File is being ignored as it is currently being renamed or was renamed recently.")
+            pass
+
+    # Mark the file as currently being renamed
+    renaming_operations[file_id] = datetime.now()
 
     # Extract episode number and qualities
     episode_number = extract_episode_number(file_name)
@@ -290,3 +308,6 @@ async def auto_rename_files(client, message):
         os.remove(file_path)
         if ph_path:
             os.remove(ph_path)
+            
+            del renaming_operations[file_id]    
+
