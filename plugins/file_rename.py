@@ -26,7 +26,7 @@ pattern3 = re.compile(r'(?:[([<{]?\s*(?:E|EP)\s*(\d+)\s*[)\]>}]?)')
 pattern3_2 = re.compile(r'(?:\s*-\s*(\d+)\s*)')
 
 # Pattern 4: S2 09 ex.
-pattern4 = re.compile(r'S(\d+)\s*(\d+)', re.IGNORECASE)
+pattern4 = re.compile(r'S(\d+)[^\d]*(\d+)', re.IGNORECASE)
 
 # Pattern X: Standalone Episode Number
 patternX = re.compile(r'(\d+)')
