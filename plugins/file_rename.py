@@ -20,7 +20,7 @@ pattern1 = re.compile(r'S(\d+)(?:E|EP)(\d+)')
 pattern2 = re.compile(r'S(\d+)\s*(?:E|EP|-\s*EP)(\d+)')
 
 # Pattern 3: Episode Number After "E" or "-" or "S04 P3 - EP02"
-pattern3 = re.compile(r'(?:E|EP)?(\d+)|(?:S\d+\s*-\s*P\d+\s*-\s*)?EP(\d+)')
+pattern3 = re.compile(r'(?:E|EP)(\d+)|(?:S\d+\s*-\s*)?(?:E|EP)(\d+)')
 
 # Pattern 4: S2 09 ex.
 pattern4 = re.compile(r'S(\d+)\s*(\d+)')
@@ -32,13 +32,17 @@ patternX = re.compile(r'(\d+)')
 
 # Pattern 5: 3-4 digits before 'p' as quality
 pattern5 = re.compile(r'\b(?:.*?(\d{3,4}[^\dp]*p).*?|.*?(\d{3,4}p))\b', re.IGNORECASE)
-# Pattern 6: 4k or 2k
-# Updated Pattern 6: 4k or 2k (Ensuring no word characters before 'k')
-pattern6 = re.compile(r'\b([^A-Za-z]*?\d+[kK])\b')
-# Pattern 7: Find HdRip in brackets or parentheses
-pattern7 = re.compile(r'[([<{]?\s*HdRip\s*[)\]>}]?|\bHdRip\b', re.IGNORECASE)
-# Pattern8: 4Kx264 or 2kx265
-pattern8 = re.compile(r'\[?(.*?)\]?[ ]*(\d+[kK]x[26][54]([65])?)[ ]*\[?(.*?)\]?')
+# Pattern 6: Find 4k in brackets or parentheses
+pattern6 = re.compile(r'[([<{]?\s*4k\s*[)\]>}]?', re.IGNORECASE)
+# Pattern 7: Find 2k in brackets or parentheses
+pattern7 = re.compile(r'[([<{]?\s*2k\s*[)\]>}]?', re.IGNORECASE)
+# Pattern 8: Find HdRip without spaces
+pattern8 = re.compile(r'[([<{]?\s*HdRip\s*[)\]>}]?|\bHdRip\b', re.IGNORECASE)
+# Pattern 9: Find 4kX264 in brackets or parentheses
+pattern9 = re.compile(r'[([<{]?\s*4kX264\s*[)\]>}]?', re.IGNORECASE)
+# Pattern 10: Find 4kx265 in brackets or parentheses
+pattern10 = re.compile(r'[([<{]?\s*4kx265\s*[)\]>}]?', re.IGNORECASE)
+
 
 def extract_quality(filename):
     # Try Quality Patterns
