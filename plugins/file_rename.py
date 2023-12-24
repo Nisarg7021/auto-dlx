@@ -19,11 +19,14 @@ pattern1 = re.compile(r'S(\d+)(?:E|EP)(\d+)')
 # Pattern 2: S01 E02 or S01 EP02 or S01 - E01 or S01 - EP02
 pattern2 = re.compile(r'S(\d+)\s*(?:E|EP|-\s*EP)(\d+)')
 
-# Pattern 3: Episode Number After "E" or "-" or "S04 P3 - EP02"
-pattern3 = re.compile(r'(?:E|EP)(\d+)|(?:S\d+\s*-\s*)?(?:E|EP)(\d+)')
+# Pattern 3: Episode Number After "E" or "EP"
+pattern3 = re.compile(r'(?:[([<{]?\s*(?:E|EP)\s*(\d+)\s*[)\]>}]?)')
+
+# Pattern 3_2: episode number after - [hyphen]
+pattern3_2 = re.compile(r'(?:\s*-\s*(\d+)\s*)')
 
 # Pattern 4: S2 09 ex.
-pattern4 = re.compile(r'S(\d+)\s*(\d+)')
+pattern4 = re.compile(r'S(\d+)\s*(\d+)', re.IGNORECASE)
 
 # Pattern X: Standalone Episode Number
 patternX = re.compile(r'(\d+)')
@@ -113,6 +116,12 @@ def extract_episode_number(filename):
         print("Matched Pattern 3")
         return match.group(1)  # Extracted episode number
 
+    # Try Pattern 3_2
+    match = re.search(pattern3_2, filename)
+    if match:
+        print("Matched Pattern 3_2")
+        return match.group(1)  # Extracted episode number
+        
     # Try Pattern 4
     match = re.search(pattern4, filename)
     if match:
