@@ -318,6 +318,4 @@ async def auto_rename_files(client, message):
         del renaming_operations[file_id]
 
         # Reply to the original message with the new file name
-await message.reply_document(document=file_id)
-
-        
+        await message.reply_document(document=file_id, caption=f"File renamed successfully to: {new_file_name}")
