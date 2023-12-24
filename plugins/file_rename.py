@@ -235,6 +235,7 @@ async def auto_rename_files(client, message):
         file = message
 
         download_msg = await message.reply_document(document=file_id, caption="Trying to download...")
+
         try:
             path = await client.download_media(message=file, file_name=file_path, progress=progress_for_pyrogram, progress_args=("Dᴏᴡɴʟᴏᴀᴅ Sᴛᴀʀᴛᴇᴅ....", download_msg, time.time()))
         except Exception as e:
@@ -317,5 +318,6 @@ async def auto_rename_files(client, message):
         del renaming_operations[file_id]
 
         # Reply to the original message with the new file name
-        await upload_msg.delete()
+await message.reply_document(document=file_id)
+
         
