@@ -145,28 +145,6 @@ def extract_episode_number(filename):
 filename = "One Piece S1-07 [720p][Dual] @Anime_Edge.mkv"
 episode_number = extract_episode_number(filename)
 print(f"Extracted Episode Number: {episode_number}")
-    
-@Client.on_message(filters.private & filters.command("autorename"))
-async def auto_rename_command(client, message):
-    user_id = message.from_user.id
-
-    # Extract the format from the command
-    format_template = message.text.split("/autorename", 1)[1].strip()
-
-    # Save the format template to the database
-    await db.set_format_template(user_id, format_template)
-
-    await message.reply_text("Auto rename format updated successfully!")
-
-@Client.on_message(filters.private & filters.command("setmedia"))
-async def set_media_command(client, message):
-    user_id = message.from_user.id
-    media_type = message.text.split("/setmedia", 1)[1].strip().lower()
-
-    # Save the preferred media type to the database
-    await db.set_media_preference(user_id, media_type)
-
-    await message.reply_text(f"Media preference set to: {media_type}")
 
 # Inside the handler for file uploads
 @Client.on_message(filters.private & (filters.document | filters.video | filters.audio))
@@ -234,8 +212,7 @@ async def auto_rename_files(client, message):
         file_path = f"downloads/{new_file_name}"
         file = message
 
-        download_msg = await message.reply_document(document=file_path, caption="Trying to download...")
-
+        download_msg = await message.reply("Trying to download...")
         try:
             path = await client.download_media(message=file, file_name=file_path, progress=progress_for_pyrogram, progress_args=("Dᴏᴡɴʟᴏᴀᴅ Sᴛᴀʀᴛᴇᴅ....", download_msg, time.time()))
         except Exception as e:
@@ -318,4 +295,5 @@ async def auto_rename_files(client, message):
         del renaming_operations[file_id]
 
         # Reply to the original message with the new file name
-        await message.reply_document(document=file_id, caption=f"File renamed successfully to: {new_file_name}")
+        # await message.reply_text(f"File renamed successfully to: {new_file_name}")
+        
