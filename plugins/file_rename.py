@@ -146,6 +146,28 @@ filename = "One Piece S1-07 [720p][Dual] @Anime_Edge.mkv"
 episode_number = extract_episode_number(filename)
 print(f"Extracted Episode Number: {episode_number}")
 
+@Client.on_message(filters.private & filters.command("autorename"))
+async def auto_rename_command(client, message):
+    user_id = message.from_user.id
+
+    # Extract the format from the command
+    format_template = message.text.split("/autorename", 1)[1].strip()
+
+    # Save the format template to the database
+    await db.set_format_template(user_id, format_template)
+
+    await message.reply_text("Auto rename format updated successfully!")
+
+@Client.on_message(filters.private & filters.command("setmedia"))
+async def set_media_command(client, message):
+    user_id = message.from_user.id
+    media_type = message.text.split("/setmedia", 1)[1].strip().lower()
+
+    # Save the preferred media type to the database
+    await db.set_media_preference(user_id, media_type)
+
+    await message.reply_text(f"Media preference set to: {media_type}")
+
 # Inside the handler for file uploads
 @Client.on_message(filters.private & (filters.document | filters.video | filters.audio))
 async def auto_rename_files(client, message):
@@ -284,7 +306,6 @@ async def auto_rename_files(client, message):
             if ph_path:
                 os.remove(ph_path)
             # Mark the file as ignored
-            del renaming_operations[file_id]
             return await upload_msg.edit(f"Error: {e}")
 
         await ms.delete() 
@@ -295,6 +316,3 @@ async def auto_rename_files(client, message):
         # Remove the entry from renaming_operations after successful renaming
         del renaming_operations[file_id]
 
-        # Reply to the original message with the new file name
-        # await message.reply_text(f"File renamed successfully to: {new_file_name}")
-        
