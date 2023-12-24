@@ -229,20 +229,18 @@ async def auto_rename_files(client, message):
                 
                 format_template = format_template.replace(quality_placeholder, "".join(extracted_qualities))           
             
-        await message.reply_text(f"File renamed successfully to: {format_template}")
-
         _, file_extension = os.path.splitext(file_name)
         new_file_name = f"{format_template}{file_extension}"
         file_path = f"downloads/{new_file_name}"
         file = message
 
-        ms = await message.reply("Trying to download...")
+        download_msg = await message.reply_document(document=file_id, caption="Trying to download...")
         try:
-            path = await client.download_media(message=file, file_name=file_path, progress=progress_for_pyrogram, progress_args=("Dᴏᴡɴʟᴏᴀᴅ Sᴛᴀʀᴛᴇᴅ....", ms, time.time()))
+            path = await client.download_media(message=file, file_name=file_path, progress=progress_for_pyrogram, progress_args=("Dᴏᴡɴʟᴏᴀᴅ Sᴛᴀʀᴛᴇᴅ....", download_msg, time.time()))
         except Exception as e:
             # Mark the file as ignored
             del renaming_operations[file_id]
-            return await ms.edit(e)     
+            return await download_msg.edit(e)     
 
         duration = 0
         try:
@@ -251,6 +249,8 @@ async def auto_rename_files(client, message):
                 duration = metadata.get('duration').seconds
         except Exception as e:
             print(f"Error getting duration: {e}")
+
+        upload_msg = await download_msg.edit("Trying to uploading....")
 
         ph_path = None
         c_caption = await db.get_caption(message.chat.id)
@@ -270,8 +270,6 @@ async def auto_rename_files(client, message):
             img.resize((320, 320))
             img.save(ph_path, "JPEG")
 
-        await ms.edit("Tʀyɪɴɢ Tᴏ Uᴩʟᴏᴀᴅɪɴɢ....")
-
         try:
             type = media_type  # Use 'media_type' variable instead
             if type == "document":
@@ -281,7 +279,7 @@ async def auto_rename_files(client, message):
                     thumb=ph_path,
                     caption=caption,
                     progress=progress_for_pyrogram,
-                    progress_args=("Upload Started....", ms, time.time())
+                    progress_args=("Upload Started....", upload_msg, time.time())
                 )
             elif type == "video":
                 await client.send_video(
@@ -291,7 +289,7 @@ async def auto_rename_files(client, message):
                     thumb=ph_path,
                     duration=duration,
                     progress=progress_for_pyrogram,
-                    progress_args=("Upload Started....", ms, time.time())
+                    progress_args=("Upload Started....", upload_msg, time.time())
                 )
             elif type == "audio":
                 await client.send_audio(
@@ -301,7 +299,7 @@ async def auto_rename_files(client, message):
                     thumb=ph_path,
                     duration=duration,
                     progress=progress_for_pyrogram,
-                    progress_args=("Upload Started....", ms, time.time())
+                    progress_args=("Upload Started....", upload_msg, time.time())
                 )
         except Exception as e:
             os.remove(file_path)
@@ -309,12 +307,15 @@ async def auto_rename_files(client, message):
                 os.remove(ph_path)
             # Mark the file as ignored
             del renaming_operations[file_id]
-            return await ms.edit(f"Error: {e}")
+            return await upload_msg.edit(f"Error: {e}")
 
-        await ms.delete()
         os.remove(file_path)
         if ph_path:
             os.remove(ph_path)
             
         # Remove the entry from renaming_operations after successful renaming
-        del renaming_operations[file_id]        
+        del renaming_operations[file_id]
+
+        # Reply to the original message with the new file name
+        await upload_msg.delete()
+        
