@@ -199,10 +199,9 @@ async def auto_rename_files(client, message):
     # Check whether the file is already being renamed or has been renamed recently
     if file_id in renaming_operations:
         elapsed_time = (datetime.now() - renaming_operations[file_id]).seconds
-        if elapsed_time < 40:
-            # Commenting out the print statement below
-            # return await message.reply_text("File is being ignored as it is currently being renamed or was renamed recently.")
-            pass
+        if elapsed_time < 10:
+            print("File is being ignored as it is currently being renamed or was renamed recently.")
+            return  # Exit the handler if the file is being ignored
 
     # Mark the file as currently being renamed
     renaming_operations[file_id] = datetime.now()
@@ -218,13 +217,17 @@ async def auto_rename_files(client, message):
             format_template = format_template.replace(placeholder, str(episode_number), 1)
             
         # Add extracted qualities to the format template
-    quality_placeholders = ["quality", "Quality", "QUALITY", "{quality}"]
-    for quality_placeholder in quality_placeholders:
-        if quality_placeholder in format_template:
-            extracted_qualities = extract_quality(file_name)
-            if extracted_qualities == "Unknown":
-                await message.reply_text("I wasn't able to extract the quality properly. Renaming as 'Unknown'...")
-            format_template = format_template.replace(quality_placeholder, "".join(extracted_qualities))           
+        quality_placeholders = ["quality", "Quality", "QUALITY", "{quality}"]
+        for quality_placeholder in quality_placeholders:
+            if quality_placeholder in format_template:
+                extracted_qualities = extract_quality(file_name)
+                if extracted_qualities == "Unknown":
+                    await message.reply_text("I wasn't able to extract the quality properly. Renaming as 'Unknown'...")
+                    # Mark the file as ignored
+                    del renaming_operations[file_id]
+                    return  # Exit the handler if quality extraction fails
+                
+                format_template = format_template.replace(quality_placeholder, "".join(extracted_qualities))           
             
         await message.reply_text(f"File renamed successfully to: {format_template}")
 
@@ -237,6 +240,8 @@ async def auto_rename_files(client, message):
         try:
             path = await client.download_media(message=file, file_name=file_path, progress=progress_for_pyrogram, progress_args=("Dᴏᴡɴʟᴏᴀᴅ Sᴛᴀʀᴛᴇᴅ....", ms, time.time()))
         except Exception as e:
+            # Mark the file as ignored
+            del renaming_operations[file_id]
             return await ms.edit(e)     
 
         duration = 0
@@ -302,6 +307,8 @@ async def auto_rename_files(client, message):
             os.remove(file_path)
             if ph_path:
                 os.remove(ph_path)
+            # Mark the file as ignored
+            del renaming_operations[file_id]
             return await ms.edit(f"Error: {e}")
 
         await ms.delete()
@@ -309,5 +316,5 @@ async def auto_rename_files(client, message):
         if ph_path:
             os.remove(ph_path)
             
-            del renaming_operations[file_id]    
-
+        # Remove the entry from renaming_operations after successful renaming
+        del renaming_operations[file_id]        
