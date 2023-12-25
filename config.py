@@ -80,7 +80,9 @@ class Txt(object):
     
     THUMB_TXT = """ just send the image nigga"""
 
-    PREMIUM_TXT = """ premium ke liye rates btao guyz"""
+    PREMIUM_TXT = """Free hai
+    
+    isi baat pe @Trippy_xt ko tg premium gift karo 🙂"""
 
 #⚠️ Dᴏɴ'ᴛ Rᴇᴍᴏᴠᴇ Oᴜʀ Cʀᴇᴅɪᴛꜱ @ᴩyʀᴏ_ʙᴏᴛᴢ🙏🥲
     COMMANDS_TXT = """<b><u>/autorename - bad mein likunga abhi mood nhi hai</b></u>
