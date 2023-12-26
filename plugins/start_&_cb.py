@@ -50,7 +50,7 @@ async def start(client, message):
 @Client.on_callback_query()
 async def cb_handler(client, query: CallbackQuery):
     data = query.data 
-    user_id = query.from_user.id  # Fix here
+    user_id = query.from_user.id  
     
     if data == "start":
         await query.message.edit_text(
@@ -117,7 +117,6 @@ async def cb_handler(client, query: CallbackQuery):
     elif data == "thumbnail":
         user_thumbnail = await db.get_thumbnail(user_id)
         
-    # Edit the message to show text and buttons
         await query.message.edit_media(
             media=InputMediaPhoto(user_thumbnail),
         )
