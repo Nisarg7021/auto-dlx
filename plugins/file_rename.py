@@ -21,7 +21,7 @@ import logging
 LOG = logging.getLogger(__name__)
 
 # Assuming you have already defined FILES_CHANNEL
-files = Client.get_chat(FILES_CHANNEL)
+files = await client.get_chat(int(FILES_CHANNEL))
 
 
 renaming_operations = {}
