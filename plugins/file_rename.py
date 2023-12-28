@@ -15,6 +15,8 @@ from helper.database import db
 import os
 import time
 import re
+import logging
+
 
 LOG = logging.getLogger(__name__)
 
