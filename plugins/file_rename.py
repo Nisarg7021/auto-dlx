@@ -245,7 +245,8 @@ async def auto_rename_files(client, message):
         _, file_extension = os.path.splitext(file_name)
         new_file_name = f"{format_template}{file_extension}"
         file_path_before = f"downloads/before_{new_file_name}"  # Prefix "before_" to the file name before renaming
-        file_path_after = f"downloads/{new_file_name}"        
+        file_path_after = f"downloads/{new_file_name}"
+        file = message
 
         download_msg = await message.reply_text(text="Trying to download...")
         try:
