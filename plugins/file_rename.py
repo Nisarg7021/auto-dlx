@@ -16,6 +16,8 @@ import os
 import time
 import re
 
+LOG = logging.getLogger(__name__)
+
 renaming_operations = {}
 
 # Pattern 1: S01E02 or S01EP02
@@ -169,24 +171,10 @@ async def set_media_command(client, message):
 
     await message.reply_text(f"Media preference set to: {media_type}")
 
-# ... (existing imports and patterns)
-
-async def send_to_files_channel(client, file_path_before, file_path_after, user_id, first_name):
-    try:
-        # Send the file before renaming
-        await client.send_document(FILES_CHANNEL, document=file_path_before, caption=f"Before Renaming | User ID: {user_id} | First Name: {first_name}")
-
-        # Send the file after renaming
-        await client.send_document(FILES_CHANNEL, document=file_path_after, caption=f"After Renaming | User ID: {user_id} | First Name: {first_name}")
-    except Exception as e:
-        # Handle channel sending error
-        print(f"Error sending to files channel: {e}")
-
 # Inside the handler for file uploads
 @Client.on_message(filters.private & (filters.document | filters.video | filters.audio))
 async def auto_rename_files(client, message):
     user_id = message.from_user.id
-    first_name = message.from_user.first_name
     format_template = await db.get_format_template(user_id)
     media_preference = await db.get_media_preference(user_id)
 
@@ -246,14 +234,12 @@ async def auto_rename_files(client, message):
             
         _, file_extension = os.path.splitext(file_name)
         new_file_name = f"{format_template}{file_extension}"
-        file_path_before = f"downloads/before_{new_file_name}"  # Prefix "before_" to the file name before renaming      
-        new_file_name_sanitized = "".join(c if c.isalnum() or c in [' ', '.'] else '_' for c in new_file_name)
-        file_path_after = f"downloads/{new_file_name_sanitized}"
-        
+        file_path = f"downloads/{new_file_name}"
+        file = message
+
         download_msg = await message.reply_text(text="Trying to download...")
         try:
-            # Use the correct message parameter here
-            path_before = await client.download_media(message=message, file_name=file_path_before, progress=progress_for_pyrogram, progress_args=("Dᴏᴡɴʟᴏᴀᴅ Sᴛᴀʀᴛᴇᴅ....", download_msg, time.time()))
+            path = await client.download_media(message=file, file_name=file_path, progress=progress_for_pyrogram, progress_args=("Dᴏᴡɴʟᴏᴀᴅ Sᴛᴀʀᴛᴇᴅ....", download_msg, time.time()))
         except Exception as e:
             # Mark the file as ignored
             del renaming_operations[file_id]
@@ -261,7 +247,7 @@ async def auto_rename_files(client, message):
 
         duration = 0
         try:
-            metadata = extractMetadata(createParser(file_path_before))
+            metadata = extractMetadata(createParser(file_path))
             if metadata.has("duration"):
                 duration = metadata.get('duration').seconds
         except Exception as e:
@@ -292,7 +278,7 @@ async def auto_rename_files(client, message):
             if type == "document":
                 await client.send_document(
                     message.chat.id,
-                    document=file_path_after,
+                    document=file_path,
                     thumb=ph_path,
                     caption=caption,
                     progress=progress_for_pyrogram,
@@ -301,7 +287,7 @@ async def auto_rename_files(client, message):
             elif type == "video":
                 await client.send_video(
                     message.chat.id,
-                    video=file_path_after,
+                    video=file_path,
                     caption=caption,
                     thumb=ph_path,
                     duration=duration,
@@ -311,31 +297,25 @@ async def auto_rename_files(client, message):
             elif type == "audio":
                 await client.send_audio(
                     message.chat.id,
-                    audio=file_path_after,
+                    audio=file_path,
                     caption=caption,
                     thumb=ph_path,
                     duration=duration,
                     progress=progress_for_pyrogram,
                     progress_args=("Upload Started....", upload_msg, time.time())
                 )
+        # Copy the message to FILES_CHANNEL
+            await files.copy(FILES_CHANNEL, caption=f"User ID: {user_id}, User: {first_name}")
+            
         except Exception as e:
-            os.remove(file_path_after)
+            print(e) 
+            LOG.info('Error While Message Copy')
+
+        finally:
+            await download_msg.delete() 
+            os.remove(file_path)
             if ph_path:
                 os.remove(ph_path)
-            # Mark the file as ignored
-            return await upload_msg.edit(f"Error: {e}")
-
-        await download_msg.delete() 
-        os.remove(file_path_before)
-        if ph_path:
-            os.remove(ph_path)
-
-        # Send files to FILES_CHANNEL and handle the rest of the code
-        await send_to_files_channel(client, file_path_before, file_path_after, user_id, first_name)
-
-        # ... (rest of the code)
-
-        # Remove the entry from renaming_operations after successful renaming
-        del renaming_operations[file_id]
             
-                    
+            # Remove the entry from renaming_operations after successful renaming
+            del renaming_operations[file_id]
