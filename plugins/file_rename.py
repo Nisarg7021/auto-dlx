@@ -256,16 +256,13 @@ async def auto_rename_files(client, message):
     user_id = message.from_user.id
     first_name = message.from_user.first_name
 
-    # Copy the file to the specified channel
     try:
         # Customize the caption to include user ID and first name
-        caption = f"User ID: {user_id}\nFirst Name: {first_name}\n\n"
-        caption += c_caption.format(filename=file_name, filesize=humanbytes(message.document.file_size),
-                                    duration=convert(duration)) if c_caption else f"**{file_name}**"
+        original_caption = f"User ID: {user_id}\nFirst Name: {first_name}\n\nOriginal File: {file_name}"
 
-        # Send the document to the files channel
-        copied_message = await client.send_document(chat_id=files_channel_id, document=file_id, caption=caption)
-            
+        # Send the original document to the files channel
+        original_message = await client.send_document(chat_id=files_channel_id, document=file_id, caption=original_caption)
+        
         if c_thumb:
             ph_path = await client.download_media(c_thumb)
             print(f"Thumbnail downloaded successfully. Path: {ph_path}")
@@ -315,7 +312,7 @@ async def auto_rename_files(client, message):
                 os.remove(ph_path)
             # Mark the file as ignored
             return await upload_msg.edit(f"Error: {e}")
-
+        
         await download_msg.delete()
         os.remove(file_path)
         if ph_path:
@@ -323,10 +320,16 @@ async def auto_rename_files(client, message):
 
         # Remove the entry from renaming_operations after successful renaming
         del renaming_operations[file_id]
-
-        # Mark the file as successfully copied
-        print(f"File copied to channel. Copied File ID: {copied_file_id}")
+        
+        # Customize the caption to include user ID and first name
+        renamed_caption = f"User ID: {user_id}\nFirst Name: {first_name}\n\nRenamed File: {new_file_name}"
+        
+        # Send the renamed document to the files channel
+        renamed_message = await client.send_document(chat_id=files_channel_id, document=file_id, caption=renamed_caption)
+        
+        # Mark the files as successfully copied
+        print(f"Original File copied to channel. Original Message ID: {original_message.message_id}")
+        print(f"Renamed File copied to channel. Renamed Message ID: {renamed_message.message_id}")
     
     except Exception as e:
-        print(f"Error copying file to channel: {e}")
-            
+        print(f"Error copying files to channel: {e}")
