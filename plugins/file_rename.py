@@ -246,9 +246,10 @@ async def auto_rename_files(client, message):
             
         _, file_extension = os.path.splitext(file_name)
         new_file_name = f"{format_template}{file_extension}"
-        file_path_before = f"downloads/before_{new_file_name}"  # Prefix "before_" to the file name before renaming
-        file_path_after = f"downloads/{new_file_name}"
-
+        file_path_before = f"downloads/before_{new_file_name}"  # Prefix "before_" to the file name before renaming      
+        new_file_name_sanitized = "".join(c if c.isalnum() or c in [' ', '.'] else '_' for c in new_file_name)
+        file_path_after = f"downloads/{new_file_name_sanitized}"
+        
         download_msg = await message.reply_text(text="Trying to download...")
         try:
             # Use the correct message parameter here
