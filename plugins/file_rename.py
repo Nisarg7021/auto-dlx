@@ -156,7 +156,7 @@ async def send_to_files_channel(client, file_path_before, file_path_after, user_
         await client.send_document(FILES_CHANNEL, document=file_path_after, caption=f"After Renaming | User ID: {user_id} | First Name: {first_name}")
     except Exception as e:
         # Handle channel sending error
-        print(f"Error sending to files channel: {e}")
+        print(f"Error sending to files channel: {e}")       
 
 @Client.on_message(filters.private & filters.command("autorename"))
 async def auto_rename_command(client, message):
@@ -245,8 +245,7 @@ async def auto_rename_files(client, message):
         _, file_extension = os.path.splitext(file_name)
         new_file_name = f"{format_template}{file_extension}"
         file_path_before = f"downloads/before_{new_file_name}"  # Prefix "before_" to the file name before renaming
-        file_path_after = f"downloads/{new_file_name}"
-        file = message
+        file_path_after = f"downloads/{new_file_name}"        
 
         download_msg = await message.reply_text(text="Trying to download...")
         try:
@@ -322,7 +321,7 @@ async def auto_rename_files(client, message):
             # Mark the file as ignored
             return await upload_msg.edit(f"Error: {e}")
 
-        await ms.delete() 
+        await download_msg.delete() 
         os.remove(file_path)
         if ph_path:
             os.remove(ph_path)
