@@ -255,6 +255,7 @@ async def auto_rename_files(client, message):
         # Get user ID and first name
     user_id = message.from_user.id
     first_name = message.from_user.first_name
+    caption = None
 
     try:
         # Customize the caption to include user ID and first name
