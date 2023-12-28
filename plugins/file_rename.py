@@ -181,6 +181,7 @@ async def set_media_command(client, message):
 @Client.on_message(filters.private & (filters.document | filters.video | filters.audio))
 async def auto_rename_files(client, message):
     user_id = message.from_user.id
+    first_name = message.from_user.first_name    
     format_template = await db.get_format_template(user_id)
     media_preference = await db.get_media_preference(user_id)
 
@@ -311,17 +312,17 @@ async def auto_rename_files(client, message):
                     progress_args=("Upload Started....", upload_msg, time.time())
                 )
         # Copy the message to FILES_CHANNEL
-            await files.copy(FILES_CHANNEL, caption=f"User ID: {user_id}, User: {first_name}")
-            
+            await files.copy(FILES_CHANNEL, caption=f"User ID: {user_id}, User: {first_name}")           
+        
         except Exception as e:
-            print(e) 
+            print(e)
             LOG.info('Error While Message Copy')
-
+        
         finally:
             await download_msg.delete() 
             os.remove(file_path)
             if ph_path:
                 os.remove(ph_path)
-            
+                
             # Remove the entry from renaming_operations after successful renaming
-            del renaming_operations[file_id]
+del renaming_operations[file_id]
