@@ -3,7 +3,6 @@ from pyrogram.errors import FloodWait
 from pyrogram.types import InputMediaDocument, Message 
 from PIL import Image
 from datetime import datetime
-from config import FILES_CHANNEL
 
 
 from hachoir.metadata import extractMetadata
@@ -15,32 +14,22 @@ from helper.database import db
 import os
 import time
 import re
-import logging
 
-
-LOG = logging.getLogger(__name__)
 renaming_operations = {}
 
 # Pattern 1: S01E02 or S01EP02
 pattern1 = re.compile(r'S(\d+)(?:E|EP)(\d+)')
-
 # Pattern 2: S01 E02 or S01 EP02 or S01 - E01 or S01 - EP02
 pattern2 = re.compile(r'S(\d+)\s*(?:E|EP|-\s*EP)(\d+)')
-
 # Pattern 3: Episode Number After "E" or "EP"
 pattern3 = re.compile(r'(?:[([<{]?\s*(?:E|EP)\s*(\d+)\s*[)\]>}]?)')
-
 # Pattern 3_2: episode number after - [hyphen]
 pattern3_2 = re.compile(r'(?:\s*-\s*(\d+)\s*)')
-
 # Pattern 4: S2 09 ex.
 pattern4 = re.compile(r'S(\d+)[^\d]*(\d+)', re.IGNORECASE)
-
 # Pattern X: Standalone Episode Number
 patternX = re.compile(r'(\d+)')
-
 #QUALITY PATTERNS 
-
 # Pattern 5: 3-4 digits before 'p' as quality
 pattern5 = re.compile(r'\b(?:.*?(\d{3,4}[^\dp]*p).*?|.*?(\d{3,4}p))\b', re.IGNORECASE)
 # Pattern 6: Find 4k in brackets or parentheses
@@ -53,7 +42,6 @@ pattern8 = re.compile(r'[([<{]?\s*HdRip\s*[)\]>}]?|\bHdRip\b', re.IGNORECASE)
 pattern9 = re.compile(r'[([<{]?\s*4kX264\s*[)\]>}]?', re.IGNORECASE)
 # Pattern 10: Find 4kx265 in brackets or parentheses
 pattern10 = re.compile(r'[([<{]?\s*4kx265\s*[)\]>}]?', re.IGNORECASE)
-
 
 def extract_quality(filename):
     # Try Quality Patterns
@@ -176,11 +164,8 @@ async def set_media_command(client, message):
 @Client.on_message(filters.private & (filters.document | filters.video | filters.audio))
 async def auto_rename_files(client, message):
     user_id = message.from_user.id
-    first_name = message.from_user.first_name    
     format_template = await db.get_format_template(user_id)
     media_preference = await db.get_media_preference(user_id)
-    files = await client.get_chat(int(FILES_CHANNEL))
-    
 
     if not format_template:
         return await message.reply_text("Please set an auto rename format first using /autorename")
@@ -203,7 +188,7 @@ async def auto_rename_files(client, message):
 
     print(f"Original File Name: {file_name}")
 
-    # Check whether the file is already being renamed or has been renamed recently
+# Check whether the file is already being renamed or has been renamed recently
     if file_id in renaming_operations:
         elapsed_time = (datetime.now() - renaming_operations[file_id]).seconds
         if elapsed_time < 10:
@@ -258,7 +243,6 @@ async def auto_rename_files(client, message):
             print(f"Error getting duration: {e}")
 
         upload_msg = await download_msg.edit("Trying to uploading....")
-
         ph_path = None
         c_caption = await db.get_caption(message.chat.id)
         c_thumb = await db.get_thumbnail(message.chat.id)
@@ -308,18 +292,17 @@ async def auto_rename_files(client, message):
                     progress=progress_for_pyrogram,
                     progress_args=("Upload Started....", upload_msg, time.time())
                 )
-        # Copy the message to FILES_CHANNEL
-            await files.copy(FILES_CHANNEL, caption=f"User ID: {user_id}, User: {first_name}")           
-        
         except Exception as e:
-            print(e)
-            LOG.info('Error While Message Copy')
-        
-        finally:
-            await download_msg.delete() 
             os.remove(file_path)
             if ph_path:
                 os.remove(ph_path)
-                
-            # Remove the entry from renaming_operations after successful renaming
-del renaming_operations[file_id]
+            # Mark the file as ignored
+            return await upload_msg.edit(f"Error: {e}")
+
+        await download_msg.delete() 
+        os.remove(file_path)
+        if ph_path:
+            os.remove(ph_path)
+
+# Remove the entry from renaming_operations after successful renaming
+        del renaming_operations[file_id]
