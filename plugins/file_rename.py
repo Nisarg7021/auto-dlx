@@ -19,11 +19,6 @@ import logging
 
 
 LOG = logging.getLogger(__name__)
-
-# Assuming you have already defined FILES_CHANNEL
-files = await client.get_chat(int(FILES_CHANNEL))
-
-
 renaming_operations = {}
 
 # Pattern 1: S01E02 or S01EP02
@@ -184,6 +179,8 @@ async def auto_rename_files(client, message):
     first_name = message.from_user.first_name    
     format_template = await db.get_format_template(user_id)
     media_preference = await db.get_media_preference(user_id)
+    files = await client.get_chat(int(FILES_CHANNEL))
+    
 
     if not format_template:
         return await message.reply_text("Please set an auto rename format first using /autorename")
