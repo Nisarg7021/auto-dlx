@@ -259,8 +259,8 @@ async def auto_rename_files(client, message):
     # Copy the file to the specified channel
     try:
         # Copy the message to the specified channel without specifying message_id
-copied_message = await client.copy_message(files_channel_id, chat_id=message.chat.id, message_id=message.message_id)
-copied_file_id = None
+        copied_message = await client.copy_message(files_channel_id, chat_id=message.chat.id, message_id=message.message_id)
+        copied_file_id = None
 
         if copied_message.document:
             copied_file_id = copied_message.document.file_id
