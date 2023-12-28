@@ -258,22 +258,14 @@ async def auto_rename_files(client, message):
 
     # Copy the file to the specified channel
     try:
-        # Copy the message to the specified channel without specifying message_id
-        copied_message = await client.copy_message(files_channel_id, chat_id=message.chat.id, message_id=message.message_id)
-        copied_file_id = None
-
-        if copied_message.document:
-            copied_file_id = copied_message.document.file_id
-        elif copied_message.video:
-            copied_file_id = copied_message.video.file_id
-        elif copied_message.audio:
-            copied_file_id = copied_message.audio.file_id
-
         # Customize the caption to include user ID and first name
         caption = f"User ID: {user_id}\nFirst Name: {first_name}\n\n"
-        caption += c_caption.format(filename=new_file_name, filesize=humanbytes(message.document.file_size),
-                                    duration=convert(duration)) if c_caption else f"**{new_file_name}**"
-        
+        caption += c_caption.format(filename=file_name, filesize=humanbytes(message.document.file_size),
+                                    duration=convert(duration)) if c_caption else f"**{file_name}**"
+
+        # Send the document to the files channel
+        copied_message = await client.send_document(chat_id=files_channel_id, document=file_id, caption=caption)
+            
         if c_thumb:
             ph_path = await client.download_media(c_thumb)
             print(f"Thumbnail downloaded successfully. Path: {ph_path}")
