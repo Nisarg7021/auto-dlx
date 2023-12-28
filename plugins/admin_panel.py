@@ -47,11 +47,16 @@ async def get_stats(bot, message):
 
 
 #Restart to cancell all process 
-@Client.on_message(filters.private & filters.command("restart") & filters.user(Config.ADMIN))
+@Client.on_message(filters.private & filters.command("restart") & filters.user(ADMIN_USER_ID))
 async def restart_bot(b, m):
     await m.reply_text("🔄__Rᴇꜱᴛᴀʀᴛɪɴɢ.....__")
-    os.execl(sys.executable, sys.executable, *sys.argv)
 
+    # Add a delay to allow the bot to gracefully shut down
+    await b.stop()
+    time.sleep(2)  # Adjust the delay duration based on your bot's shutdown time
+
+    # Restart the bot process
+    os.execl(sys.executable, sys.executable, *sys.argv)
 
 @Client.on_message(filters.command("broadcast") & filters.user(Config.ADMIN) & filters.reply)
 async def broadcast_handler(bot: Client, m: Message):
