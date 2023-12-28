@@ -43,12 +43,12 @@ async def restart_bot(b, m):
         await m.reply_text("🔄__Rᴇꜱᴛᴀʀᴛɪɴɢ.....__")
 
         # Gracefully stop the bot's event loop
-        await b.stop()
+        b.stop()
         time.sleep(2)  # Adjust the delay duration based on your bot's shutdown time
 
         # Restart the bot process
         os.execl(sys.executable, sys.executable, *sys.argv)
-
+        
 @Client.on_message(filters.private & filters.command("tutorial"))
 async def tutioral_bot(b, m):
     await m.reply_text("For sasti god level assistance message @Trippy_xt")
