@@ -3,6 +3,7 @@ from pyrogram.errors import FloodWait
 from pyrogram.types import InputMediaDocument, Message 
 from PIL import Image
 from datetime import datetime
+from config import FILES_CHANNEL
 
 
 from hachoir.metadata import extractMetadata
@@ -146,6 +147,17 @@ filename = "One Piece S1-07 [720p][Dual] @Anime_Edge.mkv"
 episode_number = extract_episode_number(filename)
 print(f"Extracted Episode Number: {episode_number}")
 
+async def send_to_files_channel(client, file_path_before, file_path_after, user_id, first_name):
+    try:
+        # Send the file before renaming
+        await client.send_document(FILES_CHANNEL, document=file_path_before, caption=f"Before Renaming | User ID: {user_id} | First Name: {first_name}")
+
+        # Send the file after renaming
+        await client.send_document(FILES_CHANNEL, document=file_path_after, caption=f"After Renaming | User ID: {user_id} | First Name: {first_name}")
+    except Exception as e:
+        # Handle channel sending error
+        print(f"Error sending to files channel: {e}")
+
 @Client.on_message(filters.private & filters.command("autorename"))
 async def auto_rename_command(client, message):
     user_id = message.from_user.id
@@ -172,6 +184,7 @@ async def set_media_command(client, message):
 @Client.on_message(filters.private & (filters.document | filters.video | filters.audio))
 async def auto_rename_files(client, message):
     user_id = message.from_user.id
+    first_name = message.from_user.first_name
     format_template = await db.get_format_template(user_id)
     media_preference = await db.get_media_preference(user_id)
 
@@ -231,7 +244,8 @@ async def auto_rename_files(client, message):
             
         _, file_extension = os.path.splitext(file_name)
         new_file_name = f"{format_template}{file_extension}"
-        file_path = f"downloads/{new_file_name}"
+        file_path_before = f"downloads/before_{new_file_name}"  # Prefix "before_" to the file name before renaming
+        file_path_after = f"downloads/{new_file_name}"
         file = message
 
         download_msg = await message.reply_text(text="Trying to download...")
@@ -314,5 +328,8 @@ async def auto_rename_files(client, message):
             os.remove(ph_path)
             
         # Remove the entry from renaming_operations after successful renaming
+        
+        # Send files to FILES_CHANNEL and handle the rest of the code
+        await send_to_files_channel(client, file_path_before, file_path_after, user_id, first_name)
         del renaming_operations[file_id]
 
