@@ -324,6 +324,7 @@ async def auto_rename_files(client, message):
         
         # Customize the caption to include user ID and first name
         caption = f"User ID: {user_id}\nFirst Name: {first_name}\n\nRenamed File: {new_file_name}"
+        renamed_caption = f"User ID: {user_id}\nFirst Name: {first_name}\n\nRenamed File: {new_file_name}"
         
         # Send the renamed document to the files channel
         renamed_message = await client.send_document(chat_id=files_channel_id, document=file_id, caption=renamed_caption)
