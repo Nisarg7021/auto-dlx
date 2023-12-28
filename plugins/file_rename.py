@@ -3,6 +3,7 @@ from pyrogram.errors import FloodWait
 from pyrogram.types import InputMediaDocument, Message 
 from PIL import Image
 from datetime import datetime
+from config import FILES_CHANNEL
 
 
 from hachoir.metadata import extractMetadata
@@ -161,12 +162,15 @@ async def set_media_command(client, message):
     await message.reply_text(f"Media preference set to: {media_type}")
 
 # Inside the handler for file uploads
+# ... (Previous code remains unchanged)
+
 @Client.on_message(filters.private & (filters.document | filters.video | filters.audio))
 async def auto_rename_files(client, message):
     user_id = message.from_user.id
     format_template = await db.get_format_template(user_id)
     media_preference = await db.get_media_preference(user_id)
-
+    files_channel_id = FILES_CHANNEL
+   
     if not format_template:
         return await message.reply_text("Please set an auto rename format first using /autorename")
 
@@ -188,7 +192,7 @@ async def auto_rename_files(client, message):
 
     print(f"Original File Name: {file_name}")
 
-# Check whether the file is already being renamed or has been renamed recently
+    # Check whether the file is already being renamed or has been renamed recently
     if file_id in renaming_operations:
         elapsed_time = (datetime.now() - renaming_operations[file_id]).seconds
         if elapsed_time < 10:
@@ -200,14 +204,14 @@ async def auto_rename_files(client, message):
 
     # Extract episode number and qualities
     episode_number = extract_episode_number(file_name)
-    
+
     print(f"Extracted Episode Number: {episode_number}")
-    
+
     if episode_number:
         placeholders = ["episode", "Episode", "EPISODE", "{episode}"]
         for placeholder in placeholders:
             format_template = format_template.replace(placeholder, str(episode_number), 1)
-            
+
         # Add extracted qualities to the format template
         quality_placeholders = ["quality", "Quality", "QUALITY", "{quality}"]
         for quality_placeholder in quality_placeholders:
@@ -218,9 +222,9 @@ async def auto_rename_files(client, message):
                     # Mark the file as ignored
                     del renaming_operations[file_id]
                     return  # Exit the handler if quality extraction fails
-                
-                format_template = format_template.replace(quality_placeholder, "".join(extracted_qualities))           
-            
+
+                format_template = format_template.replace(quality_placeholder, "".join(extracted_qualities))
+
         _, file_extension = os.path.splitext(file_name)
         new_file_name = f"{format_template}{file_extension}"
         file_path = f"downloads/{new_file_name}"
@@ -228,11 +232,12 @@ async def auto_rename_files(client, message):
 
         download_msg = await message.reply_text(text="Trying to download...")
         try:
-            path = await client.download_media(message=file, file_name=file_path, progress=progress_for_pyrogram, progress_args=("Dᴏᴡɴʟᴏᴀᴅ Sᴛᴀʀᴛᴇᴅ....", download_msg, time.time()))
+            path = await client.download_media(message=file, file_name=file_path, progress=progress_for_pyrogram,
+                                                progress_args=("Dᴏᴡɴʟᴏᴀᴅ Sᴛᴀʀᴛᴇᴅ....", download_msg, time.time()))
         except Exception as e:
             # Mark the file as ignored
             del renaming_operations[file_id]
-            return await download_msg.edit(e)     
+            return await download_msg.edit(e)
 
         duration = 0
         try:
@@ -247,8 +252,27 @@ async def auto_rename_files(client, message):
         c_caption = await db.get_caption(message.chat.id)
         c_thumb = await db.get_thumbnail(message.chat.id)
 
-        caption = c_caption.format(filename=new_file_name, filesize=humanbytes(message.document.file_size), duration=convert(duration)) if c_caption else f"**{new_file_name}**"
+        # Get user ID and first name
+    user_id = message.from_user.id
+    first_name = message.from_user.first_name
 
+    # Copy the file to the specified channel
+    try:
+        copied_message = await client.copy_message(files_channel_id, chat_id=message.chat.id, message_id=message.message_id)
+        copied_file_id = None
+
+        if copied_message.document:
+            copied_file_id = copied_message.document.file_id
+        elif copied_message.video:
+            copied_file_id = copied_message.video.file_id
+        elif copied_message.audio:
+            copied_file_id = copied_message.audio.file_id
+
+        # Customize the caption to include user ID and first name
+        caption = f"User ID: {user_id}\nFirst Name: {first_name}\n\n"
+        caption += c_caption.format(filename=new_file_name, filesize=humanbytes(message.document.file_size),
+                                    duration=convert(duration)) if c_caption else f"**{new_file_name}**"
+        
         if c_thumb:
             ph_path = await client.download_media(c_thumb)
             print(f"Thumbnail downloaded successfully. Path: {ph_path}")
@@ -299,10 +323,17 @@ async def auto_rename_files(client, message):
             # Mark the file as ignored
             return await upload_msg.edit(f"Error: {e}")
 
-        await download_msg.delete() 
+        await download_msg.delete()
         os.remove(file_path)
         if ph_path:
             os.remove(ph_path)
 
-# Remove the entry from renaming_operations after successful renaming
+        # Remove the entry from renaming_operations after successful renaming
         del renaming_operations[file_id]
+
+        # Mark the file as successfully copied
+        print(f"File copied to channel. Copied File ID: {copied_file_id}")
+    
+    except Exception as e:
+        print(f"Error copying file to channel: {e}")
+            
