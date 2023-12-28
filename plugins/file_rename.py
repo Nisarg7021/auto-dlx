@@ -147,19 +147,6 @@ filename = "One Piece S1-07 [720p][Dual] @Anime_Edge.mkv"
 episode_number = extract_episode_number(filename)
 print(f"Extracted Episode Number: {episode_number}")
 
-async def send_to_files_channel(client, file_path_before, file_path_after, user_id, first_name):
-    try:
-        # Send the file before renaming
-        await client.send_document(FILES_CHANNEL, document=file_path_before, caption=f"Before Renaming | User ID: {user_id} | First Name: {first_name}")
-
-        # Send the file after renaming
-        await client.send_document(FILES_CHANNEL, document=file_path_after, caption=f"After Renaming | User ID: {user_id} | First Name: {first_name}")
-    except Exception as e:
-        # Handle channel sending error
-        print(f"Error sending to files channel: {e}")
-        
-
-
 @Client.on_message(filters.private & filters.command("autorename"))
 async def auto_rename_command(client, message):
     user_id = message.from_user.id
@@ -181,6 +168,19 @@ async def set_media_command(client, message):
     await db.set_media_preference(user_id, media_type)
 
     await message.reply_text(f"Media preference set to: {media_type}")
+
+# ... (existing imports and patterns)
+
+async def send_to_files_channel(client, file_path_before, file_path_after, user_id, first_name):
+    try:
+        # Send the file before renaming
+        await client.send_document(FILES_CHANNEL, document=file_path_before, caption=f"Before Renaming | User ID: {user_id} | First Name: {first_name}")
+
+        # Send the file after renaming
+        await client.send_document(FILES_CHANNEL, document=file_path_after, caption=f"After Renaming | User ID: {user_id} | First Name: {first_name}")
+    except Exception as e:
+        # Handle channel sending error
+        print(f"Error sending to files channel: {e}")
 
 # Inside the handler for file uploads
 @Client.on_message(filters.private & (filters.document | filters.video | filters.audio))
@@ -251,7 +251,8 @@ async def auto_rename_files(client, message):
 
         download_msg = await message.reply_text(text="Trying to download...")
         try:
-            path = await client.download_media(message=message, file_name=file_path_before, progress=progress_for_pyrogram, progress_args=("Dᴏᴡɴʟᴏᴀᴅ Sᴛᴀʀᴛᴇᴅ....", download_msg, time.time()))
+            # Use the correct message parameter here
+            path_before = await client.download_media(message=message, file_name=file_path_before, progress=progress_for_pyrogram, progress_args=("Dᴏᴡɴʟᴏᴀᴅ Sᴛᴀʀᴛᴇᴅ....", download_msg, time.time()))
         except Exception as e:
             # Mark the file as ignored
             del renaming_operations[file_id]
@@ -290,7 +291,7 @@ async def auto_rename_files(client, message):
             if type == "document":
                 await client.send_document(
                     message.chat.id,
-                    document=file_path_before,
+                    document=file_path_after,
                     thumb=ph_path,
                     caption=caption,
                     progress=progress_for_pyrogram,
@@ -299,7 +300,7 @@ async def auto_rename_files(client, message):
             elif type == "video":
                 await client.send_video(
                     message.chat.id,
-                    video=file_path_before,
+                    video=file_path_after,
                     caption=caption,
                     thumb=ph_path,
                     duration=duration,
@@ -309,7 +310,7 @@ async def auto_rename_files(client, message):
             elif type == "audio":
                 await client.send_audio(
                     message.chat.id,
-                    audio=file_path_before,
+                    audio=file_path_after,
                     caption=caption,
                     thumb=ph_path,
                     duration=duration,
@@ -317,7 +318,7 @@ async def auto_rename_files(client, message):
                     progress_args=("Upload Started....", upload_msg, time.time())
                 )
         except Exception as e:
-            os.remove(file_path_before)
+            os.remove(file_path_after)
             if ph_path:
                 os.remove(ph_path)
             # Mark the file as ignored
@@ -330,4 +331,10 @@ async def auto_rename_files(client, message):
 
         # Send files to FILES_CHANNEL and handle the rest of the code
         await send_to_files_channel(client, file_path_before, file_path_after, user_id, first_name)
+
+        # ... (rest of the code)
+
+        # Remove the entry from renaming_operations after successful renaming
         del renaming_operations[file_id]
+            
+                    
