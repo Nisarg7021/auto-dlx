@@ -20,6 +20,10 @@ import logging
 
 LOG = logging.getLogger(__name__)
 
+# Assuming you have already defined FILES_CHANNEL
+files = app.get_chat(FILES_CHANNEL)
+
+
 renaming_operations = {}
 
 # Pattern 1: S01E02 or S01EP02
