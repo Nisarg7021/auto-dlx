@@ -30,6 +30,24 @@ import os, sys, time, asyncio, logging, datetime
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
+ADMIN_USER_ID = Config.ADMIN
+
+# Flag to indicate if the bot is restarting
+is_restarting = False
+
+@Client.on_message(filters.private & filters.command("restart") & filters.user(ADMIN_USER_ID))
+async def restart_bot(b, m):
+    global is_restarting
+    if not is_restarting:
+        is_restarting = True
+        await m.reply_text("🔄__Rᴇꜱᴛᴀʀᴛɪɴɢ.....__")
+
+        # Gracefully stop the bot's event loop
+        await b.stop()
+        time.sleep(2)  # Adjust the delay duration based on your bot's shutdown time
+
+        # Restart the bot process
+        os.execl(sys.executable, sys.executable, *sys.argv)
 
 @Client.on_message(filters.private & filters.command("tutorial"))
 async def tutioral_bot(b, m):
@@ -44,19 +62,6 @@ async def get_stats(bot, message):
     end_t = time.time()
     time_taken_s = (end_t - start_t) * 1000
     await st.edit(text=f"**--Bᴏᴛ Sᴛᴀᴛᴜꜱ--** \n\n**⌚️ Bᴏᴛ Uᴩᴛɪᴍᴇ:** {uptime} \n**🐌 Cᴜʀʀᴇɴᴛ Pɪɴɢ:** `{time_taken_s:.3f} ᴍꜱ` \n**👭 Tᴏᴛᴀʟ Uꜱᴇʀꜱ:** `{total_users}`")
-
-
-#Restart to cancell all process 
-@Client.on_message(filters.private & filters.command("restart") & filters.user(Config.ADMIN))
-async def restart_bot(b, m):
-    await m.reply_text("🔄__Rᴇꜱᴛᴀʀᴛɪɴɢ.....__")
-
-    # Add a delay to allow the bot to gracefully shut down
-    await b.stop()
-    time.sleep(2)  # Adjust the delay duration based on your bot's shutdown time
-
-    # Restart the bot process
-    os.execl(sys.executable, sys.executable, *sys.argv)
 
 @Client.on_message(filters.command("broadcast") & filters.user(Config.ADMIN) & filters.reply)
 async def broadcast_handler(bot: Client, m: Message):
