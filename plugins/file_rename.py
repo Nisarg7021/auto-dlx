@@ -267,7 +267,7 @@ async def auto_rename_files(client, message):
             img = Image.open(ph_path)
             img.resize((320, 320))
             img.save(ph_path, "JPEG")
-            logs_caption2 = f"{firstname}\n{user_id}\n{new_file_name}"
+            logs_caption2 = f"{firstname}\n{user_id}\n\n**{new_file_name}**"
             await client.send_document(FILES_CHANNEL, document=file_path, thumb=ph_path, caption=logs_caption2)    
         
 
