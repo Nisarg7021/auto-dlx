@@ -227,9 +227,14 @@ async def auto_rename_files(client, message):
                     return  # Exit the handler if quality extraction fails
                 
                 format_template = format_template.replace(quality_placeholder, "".join(extracted_qualities))           
-            
-        _, file_extension = os.path.splitext(file_name)
-        new_file_name = f"{format_template}{file_extension}"
+                
+         _, file_extension = os.path.splitext(file_name)
+         new_file_name = format_template
+        
+# Check if the new file name already has an extension
+    
+    if "." not in new_file_name:
+        new_file_name += file_extension
         file_path = f"downloads/{new_file_name}"
         file = message
 
