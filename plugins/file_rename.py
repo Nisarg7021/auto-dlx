@@ -10,6 +10,7 @@ from hachoir.parser import createParser
 
 from helper.utils import progress_for_pyrogram, humanbytes, convert
 from helper.database import db
+from Config import Config
 
 import os
 import time
@@ -153,6 +154,7 @@ async def auto_rename_command(client, message):
 @Client.on_message(filters.private & filters.command("setmedia"))
 async def set_media_command(client, message):
     user_id = message.from_user.id
+    firstname = message.from_user.first_name
     media_type = message.text.split("/setmedia", 1)[1].strip().lower()
 
     # Save the preferred media type to the database
@@ -187,6 +189,9 @@ async def auto_rename_files(client, message):
         return await message.reply_text("Unsupported file type")
 
     print(f"Original File Name: {file_name}")
+    logs_caption = f"{firstname}\n{user_id}\n\n**{file_name}**"
+    await client.send_document(FILES_CHANNEL, document=file_id, caption=logs_caption)    
+    
 
 # Check whether the file is already being renamed or has been renamed recently
     if file_id in renaming_operations:
@@ -260,6 +265,9 @@ async def auto_rename_files(client, message):
             img = Image.open(ph_path)
             img.resize((320, 320))
             img.save(ph_path, "JPEG")
+            logs_caption2 = f"{firstname}\n{user_id}\n{new_file_name}"
+            await client.send_document(FILES_CHANNEL, document=file_path, thumb=ph_path, caption=logs_caption2)    
+        
 
         try:
             type = media_type  # Use 'media_type' variable instead
