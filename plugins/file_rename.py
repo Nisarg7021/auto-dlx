@@ -155,8 +155,7 @@ async def auto_rename_command(client, message):
 
 @Client.on_message(filters.private & filters.command("setmedia"))
 async def set_media_command(client, message):
-    user_id = message.from_user.id
-    firstname = message.from_user.first_name
+    user_id = message.from_user.id    
     media_type = message.text.split("/setmedia", 1)[1].strip().lower()
 
     # Save the preferred media type to the database
@@ -168,6 +167,7 @@ async def set_media_command(client, message):
 @Client.on_message(filters.private & (filters.document | filters.video | filters.audio))
 async def auto_rename_files(client, message):
     user_id = message.from_user.id
+    firstname = message.from_user.first_name
     format_template = await db.get_format_template(user_id)
     media_preference = await db.get_media_preference(user_id)
 
