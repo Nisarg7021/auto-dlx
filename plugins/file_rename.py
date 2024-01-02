@@ -10,7 +10,7 @@ from hachoir.parser import createParser
 
 from helper.utils import progress_for_pyrogram, humanbytes, convert
 from helper.database import db
-from Config import Config
+from config import Config
 
 import os
 import time
