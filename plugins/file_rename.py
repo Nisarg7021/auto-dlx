@@ -226,12 +226,12 @@ async def auto_rename_files(client, message):
                     del renaming_operations[file_id]
                     return  # Exit the handler if quality extraction fails
                 
-                format_template = format_template.replace(quality_placeholder, "".join(extracted_qualities))           
+                format_template = format_template.replace(quality_placeholder, "".join(extracted_qualities))            
                 
-         _, file_extension = os.path.splitext(file_name)
-        new_file_name = f"{format_template}{file_extension}"        
-        file_path = f"downloads/{new_file_name}"
-        file = message
+                _, file_extension = os.path.splitext(file_name)
+                new_file_name = f"{format_template}{file_extension}"        
+                file_path = f"downloads/{new_file_name}"
+                file = message
 
         download_msg = await message.reply_text(text="Trying to download...")
         try:
