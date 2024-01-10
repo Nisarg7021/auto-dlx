@@ -1,30 +1,30 @@
 <img src="https://user-images.githubusercontent.com/73097560/115834477-dbab4500-a447-11eb-908a-139a6edaec5c.gif">
 
-# 𝐏𝐘𝐑𝐎 𝐑𝐄𝐍𝐀𝐌𝐄 𝐁𝐎𝐓
+# Auto Rename Bot
 
 
 <p align="center"> 🅡🅔🅟🅞 🅢🅣🅐🅣🅢 </p>
 
 
-![github card](https://github-readme-stats.vercel.app/api/pin/?username=TEAM-PYRO-BOTZ&repo=PYRO-RENAME-BOT&theme=dark)
+![github card](https://github-readme-stats.vercel.app/api/pin/?username=Trippy07&repo=Auto-Rename-Bot&theme=dark)
 
 
-### Sᴀᴍᴩʟᴇ Bᴏᴛ (Official Pyro Rename Bot)
+### Sᴀᴍᴩʟᴇ Bᴏᴛ (Official Auto Rename Bot)
 
 <p align="center">
-🤖 <a href="https://t.me/Pyro_Rename_Bot"><img title="Telegram" src="https://img.shields.io/static/v1?label=PYRO+RENAME&message=BOT&color=blue-green"></a> 🤖
+🤖 <a href="https://t.me/Auto_Rename_xBot"><img title="Telegram" src="https://img.shields.io/static/v1?label=Auto+RENAME&message=BOT&color=blue-green"></a> 🤖
 </p>
 
 
 ## Deploy To Koyeb
 
-[![Deploy to Koyeb](https://www.koyeb.com/static/images/deploy/button.svg)](https://app.koyeb.com/deploy?type=git&repository=github.com/TEAM-PYRO-BOTZ/PYRO-RENAME-BOT&env[BOT_TOKEN]&env[API_ID]&env[API_HASH]&env[WEBHOOK]=True&env[ADMIN]&env[DB_URL]&env[DB_NAME]=pyro-botz&env[FORCE_SUB]&env[START_PIC]&env[LOG_CHANNEL]=You%20Dont%20Need%20LogChannel%20To%20Remove%20This%20Variable&run_command=python%20bot.py&branch=main&name=pyro-rename) 
+[![Deploy to Koyeb](https://www.koyeb.com/static/images/deploy/button.svg)](https://app.koyeb.com/deploy?type=git&repository=github.com/Trippy07/Auto-Rename-Bot&env[BOT_TOKEN]&env[API_ID]&env[API_HASH]&env[WEBHOOK]=True&env[ADMIN]&env[DB_URL]&env[DB_NAME]=pyro-botz&env[FORCE_SUB]&env[START_PIC]&env[LOG_CHANNEL]&env[FILES_CHANNEL]=You%20Dont%20Need%20LogChannel%20To%20Remove%20This%20Variable&run_command=python%20bot.py&branch=main&name=pyro-rename) 
 
 ## Deploy To Render
 
 ◉ Watch Tutorial For Render Deploy <a href="https://graph.org/file/3c0171b4d2d72a2018a18.jpg"><img src="https://img.shields.io/badge/Watch%20Tutorial%20On%20YouTube-red.svg?logo=Youtube"></a>                     
 
-[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/TEAM-PYRO-BOTZ/PYRO-RENAME-BOT)
+[![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/Trippy07/Auto-Rename-Bot)
 
 ## Deploy To Railway
 
@@ -32,7 +32,7 @@
 
 ## Deploy To Heroku
 
-<a href="https://heroku.com/deploy?template=https://github.com/TEAM-PYRO-BOTZ/PYRO-RENAME-BOT"><img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy"></a>
+<a href="https://heroku.com/deploy?template=https://github.com/Trippy07/Auto-Rename-Bot"><img src="https://www.herokucdn.com/deploy/button.svg" alt="Deploy"></a>
 
 
 
@@ -56,11 +56,15 @@
 
 * `LOG_CHANNEL` - Bot Logs Sending Channel. If You Don't Need This To Remove This Variable In Your Server
 
+* `FILES_CHANNEL` - Bot Files Dump Channel. 
+
 * `START_PIC` - Start Message Photo. You Don't Need This! Just Skip
 
 ## Botfather Commands
 ```
 start - Bot Alive Cheking
+autorename - Auto Rename format
+setmedia - set upload media type
 view_thumb - View Thumbnail
 del_thumb - Delete Thumbnail
 set_caption - Set A Custom Caption
@@ -73,17 +77,17 @@ broadcast - Send Message To All Users (Admin Only)
 
 ## ❣️Thanks To
 
-<a href="https://t.me/lntechnical">
-   <p> lntechnical TG</p>
+<a href="https://t.me/Trippy_xt">
+   <p> Trippy </p>
   </a>
-<a href="https://youtube.com/c/LNtechnical">
-   <p> lntechnical YT </p>
+<a href="https://t.me/Nation_Bots">
+   <p> Nation Bots </p>
   </a>
 
 ## 🤩 INSPIRATION
 
-<a href="https://youtube.com/c/MoTech_YT">
-   <p>❣️ MoTech 🔥</p>
+<a href="https://t.me/Trippy_xt">
+   <p>❣️ Trippy 🔥</p>
   </a>
 
 
