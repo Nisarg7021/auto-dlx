@@ -369,9 +369,9 @@ del renaming_operations[message.document.file_id]
 return
 
 # If sequence mode is active, add the file to the sequence list
-    else:    
-        await message.reply_text(f"File {len(SEQUENCE_FILES) + 1} received successfully.")
-        SEQUENCE_FILES.append((message.document.file_id, file_name))
+else:    
+await message.reply_text(f"File {len(SEQUENCE_FILES) + 1} received successfully.")
+SEQUENCE_FILES.append((message.document.file_id, file_name))
 
 # Made by @Nation_Bots
 
