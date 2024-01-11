@@ -296,3 +296,6 @@ async def auto_rename_files(client, message):
 
 # Remove the entry from renaming_operations after successful renaming
         del renaming_operations[file_id]
+
+# Made by @Nation_Bots
+
