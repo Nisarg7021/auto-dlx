@@ -231,14 +231,13 @@ async def end_sequence(client, message):
         await message.reply_text(
             f"**ꜰɪʟᴇ sᴇQᴜᴇɴᴄɪɴɢ ᴄᴏᴍᴘʟᴇᴛᴇᴅ. ʏᴏᴜ ʜᴀᴠᴇ ʀᴇᴄᴇɪᴠᴇᴅ {len(user_data['files'])} sᴇQᴜᴇɴᴄᴇᴅ ꜰɪʟᴇs.**"
         )
-
+    
     else:
         await message.reply_text("**ɴᴏ ꜰɪʟᴇs ᴛᴏ sᴇQᴜᴇɴᴄᴇ. Sᴇɴᴅ sᴏᴍᴇ ꜰɪʟᴇs ᴡɪᴛʜ /startsequence ꜰɪʀsᴛ.**")
-
-    del user_file_sequences[user_id]
-
+    
 else:
-    await message.reply_text("**ɴᴏ ᴏɴɢᴏɪɴɢ ꜰɪʟᴇ sᴇQᴜᴇɴᴄɪɴɢ ᴘʀᴏᴄᴇss. Usᴇ /startsequence ᴛᴏ ʙᴇɢɪɴ.**")
+await message.reply_text("**ɴᴏ ᴏɴɢᴏɪɴɢ ꜰɪʟᴇ sᴇQᴜᴇɴᴄɪɴɢ ᴘʀᴏᴄᴇss. Usᴇ /startsequence ᴛᴏ ʙᴇɢɪɴ.**")
+del user_file_sequences[user_id]
         
 # Inside the handler for file uploads
 @Client.on_message(filters.private & (filters.document | filters.video | filters.audio))
