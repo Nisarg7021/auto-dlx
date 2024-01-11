@@ -13,7 +13,7 @@ class Config(object):
 
     # database config
     DB_NAME = os.environ.get("DB_NAME","pyro-botz")     
-    DB_URL  = os.environ.get("DB_URL","Mongoloid Url - mongodb+srv://dlxsmith:8876790388@cluster0.jfy5pyy.mongodb.net/?retryWrites=true&w=majority")
+    DB_URL  = os.environ.get("DB_URL","mongodb+srv://dlxsmith:8876790388@cluster0.jfy5pyy.mongodb.net/?retryWrites=true&w=majority")
  
     # other configs
     BOT_UPTIME  = time.time()
