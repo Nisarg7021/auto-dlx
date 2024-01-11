@@ -4,8 +4,6 @@ from pyrogram.errors import FloodWait
 from helper.database import db
 from config import Config
 
-Config.USER_REPLY_TEXT = USER_REPLY_TXT
-
 @Client.on_message(filters.private & filters.command("autorename") & filters.user(Config.ADMIN))
 async def auto_rename_command(client, message):
     user_id = message.from_user.id
@@ -30,5 +28,5 @@ async def set_media_command(client, message):
 
 @Client.on_message(filters.private & filters.incoming)
 async def useless(_,message: Message):
-    if USER_REPLY_TXT:
-        await message.reply(USER_REPLY_TXT)
+    if Config.USER_REPLY_TEXT:
+        await message.reply(Config.USER_REPLY_TEXT)
