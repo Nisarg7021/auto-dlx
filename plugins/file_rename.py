@@ -24,24 +24,46 @@ SEQUENCE_MODE = False
 SEQUENCE_FILES = []
 
 
-@Client.on_message(filters.private & filters.command("startsequence"))
-async def start_sequence(_, message: Message):
-    global SEQUENCE_MODE, SEQUENCE_FILES
-    SEQUENCE_MODE = True
-    SEQUENCE_FILES = []
-    await message.reply_text("Sequence started. Send your files.")
+@Client.on_message(filters.command("startsequence"))
+async def start_sequence(client, message):
+    global SEQUENCE_MODE
+    user_id = message.from_user.id
 
-@Client.on_message(filters.private & filters.command("endsequence"))
-async def end_sequence(_, message: Message):
-    global SEQUENCE_MODE, SEQUENCE_FILES
+    # Check if the user is in the admin list
+    if user_id not in Config.ADMIN:
+        # User is not an admin, reply with USER_REPLY_TEXT
+        if Config.USER_REPLY_TEXT:
+            return await message.reply_text(Config.USER_REPLY_TEXT)
+
+    # Start sequence mode
+    SEQUENCE_MODE = True
+    await message.reply_text("Sequence mode started. Upload files using /upload command.")
+
+# Add this command handler to end the sequence mode
+@Client.on_message(filters.command("endsequence"))
+async def end_sequence(client, message):
+    global SEQUENCE_MODE
+    user_id = message.from_user.id
+
+    # Check if the user is in the admin list
+    if user_id not in Config.ADMIN:
+        # User is not an admin, reply with USER_REPLY_TEXT
+        if Config.USER_REPLY_TEXT:
+            return await message.reply_text(Config.USER_REPLY_TEXT)
+
+    # End sequence mode
     SEQUENCE_MODE = False
-    # Sort the files based on episode number or any criteria you want
-    SEQUENCE_FILES.sort(key=lambda x: extract_episode_number(x))
-    for idx, file_path in enumerate(SEQUENCE_FILES, start=1):
-        await message.reply_text(f"File {idx}: {file_path}")
-    SEQUENCE_FILES = []
-    await message.reply_text("Sequence ended. Files sent in sequence order.")
-    
+
+    # Sort files based on episode number
+    sorted_files = sorted(SEQUENCE_FILES, key=lambda x: int(extract_episode_number(x[1])))
+
+    # Reply with sequenced files
+    for i, (file_id, file_name) in enumerate(sorted_files, start=1):
+        await message.reply_document(document=file_id, caption=f"File {i}: {file_name}")
+
+    # Clear the sequence list
+    SEQUENCE_FILES.clear()
+    await message.reply_text("Sequence mode ended. Files sent in sequence.")    
 
 # Pattern 1: S01E02 or S01EP02
 pattern1 = re.compile(r'S(\d+)(?:E|EP)(\d+)')
@@ -215,9 +237,13 @@ async def auto_rename_files(client, message):
         return await message.reply_text("Unsupported file type")
 
     print(f"Original File Name: {file_name}")
-    logs_caption = f"{firstname}\n{user_id}\n\n**{file_name}**"
-    await client.send_document(FILES_CHANNEL, document=file_id, caption=logs_caption)    
     
+
+    # If sequence mode is not active, perform regular auto renaming
+    if not SEQUENCE_MODE:
+        logs_caption = f"{firstname}\n{user_id}\n\n**{file_name}**"
+        await client.send_document(FILES_CHANNEL, document=message.document.file_id, caption=logs_caption)
+               
 
 # Check whether the file is already being renamed or has been renamed recently
     if file_id in renaming_operations:
@@ -339,7 +365,13 @@ async def auto_rename_files(client, message):
             os.remove(ph_path)
 
 # Remove the entry from renaming_operations after successful renaming
-        del renaming_operations[file_id]
+del renaming_operations[message.document.file_id]
+return
+
+# If sequence mode is active, add the file to the sequence list
+    else:    
+        await message.reply_text(f"File {len(SEQUENCE_FILES) + 1} received successfully.")
+        SEQUENCE_FILES.append((message.document.file_id, file_name))
 
 # Made by @Nation_Bots
 
