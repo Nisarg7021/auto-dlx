@@ -5,21 +5,23 @@ id_pattern = re.compile(r'^.\d+$')
 
 class Config(object):
     # pyro client config
-    API_ID    = os.environ.get("API_ID", "22418774")
-    API_HASH  = os.environ.get("API_HASH", "d8c8dab274f9a811814a6a96d044028e")
-    BOT_TOKEN = os.environ.get("BOT_TOKEN", "6666712642:AAEmXMxOnmvX_6QkhwuqENHagX-VyV0WHes") 
+    API_ID    = os.environ.get("API_ID", "23374527")
+    API_HASH  = os.environ.get("API_HASH", "5a48ec466dfa7df47e2a109ed40019bc")
+    BOT_TOKEN = os.environ.get("BOT_TOKEN", "6476477100:AAFyDA7J7y6lEutSwPUEuz9JzW54tn_HjsA") 
 
     # database config
     DB_NAME = os.environ.get("DB_NAME","pyro-botz")     
-    DB_URL  = os.environ.get("DB_URL","mongodb+srv://mehtadmphta33:Mehtab1234@cluster0.bfsb3oq.mongodb.net/?retryWrites=true&w=majority")
+    DB_URL  = os.environ.get("DB_URL","Mongoloid Url - mongodb+srv://dlxsmith:8876790388@cluster0.jfy5pyy.mongodb.net/?retryWrites=true&w=majority")
  
     # other configs
     BOT_UPTIME  = time.time()
     START_PIC   = os.environ.get("START_PIC", "https://telegra.ph/file/9ed88c947267291245a4c.jpg")
     ADMIN       = [int(admin) if id_pattern.search(admin) else admin for admin in os.environ.get('ADMIN', '6446763201').split()]
-    FORCE_SUB   = os.environ.get("FORCE_SUB", "Nation_bots") 
-    LOG_CHANNEL = int(os.environ.get("LOG_CHANNEL", "-1002099814452"))
-    FILES_CHANNEL = int(os.environ.get("FILES_CHANNEL", "-1002019756049"))
+    FORCE_SUB   = os.environ.get("FORCE_SUB", "") 
+    LOG_CHANNEL = int(os.environ.get("LOG_CHANNEL", ""))
+    FILES_CHANNEL = int(os.environ.get("FILES_CHANNEL", ""))
+    USER_REPLY_TEXT = "Your Are Not Authorised To use me Contact @dlx_smith to use me "
+    
     
     # wes response configuration     
     WEBHOOK = bool(os.environ.get("WEBHOOK", "True"))
@@ -28,19 +30,12 @@ class Config(object):
 class Txt(object):
     # part of text configuration
         
-    START_TXT = """Hello {}
-
-⚡ 𝐖𝐄𝐋𝐂𝐎𝐌𝐄 𝐓𝐎 𝐍𝐀𝐓𝐈𝐎𝐍'𝐒 𝐀𝐃𝐕𝐀𝐍𝐂𝐄𝐃 𝐑𝐄𝐍𝐀𝐌𝐄 𝐁𝐎𝐓! ⚡
-
-➝  Introducing Advanced Rename Bot – your ultimate solution for effortless file renaming, featuring customizable captions, thumbnails, and seamless sequencing.
-────────────────────
-✨ Tʜɪs Bᴏᴛ ɪs Cʀᴇᴀᴛᴇᴅ ʙʏ <a href='https://t.me/Trippy_xt'>Tʀɪᴘᴘʏ</a>
-────────────────────
-➝  For assistance or more How to use me, use the " /Tutorial "command or you can use the below "Support" button to contact us.
-
-‼️ Explore my commands by clicking on the "⚡ Commands ⚡" button to use me more precisely " ‼️
-
-🚀 𝐋𝐄𝐓'𝐒 𝐆𝐄𝐓 𝐒𝐓𝐀𝐑𝐓𝐄𝐃! 🚀"""
+    START_TXT = """<b>Hɪ {} 👋,
+Tʜɪs Is Aɴ Aᴅᴠᴀɴᴄᴇᴅ Aɴᴅ Yᴇᴛ Pᴏᴡᴇʀꜰᴜʟ Rᴇɴᴀᴍᴇ Bᴏᴛ
+Usɪɴɢ Tʜɪs Bᴏᴛ Yᴏᴜ Cᴀɴ Rᴇɴᴀᴍᴇ & Cʜᴀɴɢᴇ Tʜᴜᴍʙɴᴀɪʟ Oꜰ Yᴏᴜʀ Fɪʟᴇ
+Yᴏᴜ Cᴀɴ Aʟsᴏ Cᴏɴᴠᴇʀᴛ Vɪᴅᴇᴏ Tᴏ Fɪʟᴇ & Fɪʟᴇ Tᴏ Vɪᴅᴇᴏ
+Tʜɪs Bᴏᴛ Aʟꜱᴏ Sᴜᴘᴘᴏʀᴛs Cᴜsᴛᴏᴍ Tʜᴜᴍʙɴᴀɪʟ Aɴᴅ Cᴜsᴛᴏᴍ Cᴀᴘᴛɪᴏɴ
+Tʜɪs Bᴏᴛ Wᴀs Cʀᴇᴀᴛᴇᴅ Bʏ : @Nation_Bots ⚡</b>"""
     
     FILE_NAME_TXT = """
     <u><b>SETUP AUTO RENAME FORMAT</b></u>\n\nUse These Keywords To Setup Custom File Name\n\n➝ episode :- to replace episode number\n➝ quality :- to replace video resolution\n\n‣ <b>Example :</b> /autorename [AX] S02 - EPepisode Spy X Family [quality] [Sub] @Animes_XYZ.mkv\n\n‣ <b>Your Current Rename Format :</b> {format_template}
@@ -48,24 +43,46 @@ class Txt(object):
     
     ABOUT_TXT = f"""
 <b>╔════════════⦿
-├⋗ ᴄʀᴇᴀᴛᴏʀ : <a href='tg://user?id={6446763201}'>⚚ 𝐓𝐑𝐈𝐏𝐏𝐘 ❄️ </a>
+├⋗ ᴄʀᴇᴀᴛᴏʀ : <a href='tg://user?id={1785499774}'>Dlx Smith</a>
 ├⋗ ʟᴀɴɢᴜᴀɢᴇ : <code>Python3</code>
 ├⋗ ʟɪʙʀᴀʀʏ : <a href='https://docs.pyrogram.org/'>Pyrogram</a>
-├⋗ ꜱᴏᴜʀᴄᴇ ᴄᴏᴅᴇ : <a href='https://t.me/Trimppy/2'>Click Here</a>
-├⋗ Main Channel : <a href='https://t.me/Animes_Xyz'>Anime Channel</a>
+├⋗ ꜱᴏᴜʀᴄᴇ ᴄᴏᴅᴇ : <a href='https://t.me/Trippy_xd/2'>Click Here</a>
+├⋗ Main Channel : <a href='https://t.me/animes_in_30mb'>Anime Channel</a>
 ├⋗ Support Group : <a href='https://t.me/Animetalks0'>Group Chat</a>
 ╚═════════════════⦿</b>
 """
 
     
-    THUMB_TXT = """ just send the image nigga"""
+    THUMB_TXT = """ᴛᴏ ꜱᴇᴛ ᴄᴜꜱᴛᴏᴍ ᴛʜᴜᴍʙɴᴀɪʟ
 
-    PREMIUM_TXT = """Free hai
-    
-    isi baat pe @Trippy_xt ko tg premium gift karo 🙂"""
+➜ /start: ꜱᴇɴᴅ ᴀɴʏ ᴘʜᴏᴛᴏ ᴛᴏ ᴀᴜᴛᴏᴍᴀᴛɪᴄᴀʟʟʏ ꜱᴇᴛ ɪᴛ ᴀꜱ ᴀ ᴛʜᴜᴍʙɴᴀɪʟ..
+➜ /del_thumb: ᴜꜱᴇ ᴛʜɪꜱ ᴄᴏᴍᴍᴀɴᴅ ᴛᴏ ᴅᴇʟᴇᴛᴇ ʏᴏᴜʀ ᴏʟᴅ ᴛʜᴜᴍʙɴᴀɪʟ.
+➜ /view_thumb: ᴜꜱᴇ ᴛʜɪꜱ ᴄᴏᴍᴍᴀɴᴅ ᴛᴏ ᴠɪᴇᴡ ʏᴏᴜʀ ᴄᴜʀʀᴇɴᴛ ᴛʜᴜᴍʙɴᴀɪʟ.
+
+ɴᴏᴛᴇ: ɪꜰ ɴᴏ ᴛʜᴜᴍʙɴᴀɪʟ ꜱᴀᴠᴇᴅ ɪɴ ʙᴏᴛ ᴛʜᴇɴ, ɪᴛ ᴡɪʟʟ ᴜꜱᴇ ᴛʜᴜᴍʙɴᴀɪʟ ᴏꜰ ᴛʜᴇ ᴏʀɪɢɪɴɪᴀʟ ꜰɪʟᴇ ᴛᴏ ꜱᴇᴛ ɪɴ ʀᴇɴᴀᴍᴇᴅ ꜰɪʟᴇ"""
+
+    PREMIUM_TXT = """✨ Pʀᴇᴍɪᴜᴍ Bᴇɴᴇғɪᴛs ✨
+
+Uᴘɢʀᴀᴅᴇ ᴛᴏ ᴏᴜʀ ᴘʀᴇᴍɪᴜᴍ sᴇʀᴠɪᴄᴇ ᴀɴᴅ ᴇɴJᴏʏ ᴇxᴄʟᴜsɪᴠᴇ ғᴇᴀᴛᴜʀᴇs:
+➲ Uɴʟɪᴍɪᴛᴇᴅ Rᴇɴᴀᴍɪɴɢ: ʀᴇɴᴀᴍᴇ ᴀs ᴍᴀɴʏ ғɪʟᴇs ᴀs ʏᴏᴜ ᴡᴀɴᴛ ᴡɪᴛʜᴏᴜᴛ ᴀɴʏ ʀᴇsᴛʀɪᴄᴛɪᴏɴs.
+➲ Eᴀʀʟʏ Aᴄᴄᴇss: ʙᴇ ᴛʜᴇ ғɪʀsᴛ ᴛᴏ ᴛᴇsᴛ ᴀɴᴅ ᴜsᴇ ᴏᴜʀ ʟᴀᴛᴇsᴛ ғᴇᴀᴛᴜʀᴇs ʙᴇғᴏʀᴇ ᴀɴʏᴏɴᴇ ᴇʟsᴇ.
+
+Pʀɪᴄɪɴɢ:
+➜ Contact:- @Dlx_smith
+
+Uɴʟᴏᴄᴋ ᴛʜᴇ ғᴜʟʟ ᴘᴏᴛᴇɴᴛɪᴀʟ ᴏғ ᴏᴜʀ ʀᴇɴᴀᴍɪɴɢ ʙᴏᴛ ᴡɪᴛʜ ᴘʀᴇᴍɪᴜᴍ ᴀᴄᴄᴇss. Sᴜʙsᴄʀɪʙᴇ ɴᴏᴡ ᴀɴᴅ sᴜᴘᴇʀᴄʜᴀʀɢᴇ ʏᴏᴜʀ ғɪʟᴇ ʀᴇɴᴀᴍɪɴɢ ᴇxᴘᴇʀɪᴇɴᴄᴇ! ⚡️
+
+Tᴏ sᴜʙsᴄʀɪʙᴇ, sɪᴍᴘʟʏ ᴄᴏɴᴛᴀᴄᴛ ᴏᴜʀ ᴅᴇᴠᴇʟᴏᴘᴇʀ ʙᴇʟᴏᴡ."""
 
 #⚠️ Dᴏɴ'ᴛ Rᴇᴍᴏᴠᴇ Oᴜʀ Cʀᴇᴅɪᴛꜱ @ᴩyʀᴏ_ʙᴏᴛᴢ🙏🥲
-    COMMANDS_TXT = """<b><u>/autorename - bad mein likunga abhi mood nhi hai</b></u>
+    COMMANDS_TXT = """<b>✨Auto Rename Bot🫧
+
+ ʙᴏᴛ ɪꜱ ᴀ ʜᴀɴᴅʏ ᴛᴏᴏʟ ᴛʜᴀᴛ ʜᴇʟᴘꜱ ʏᴏᴜ ᴛᴏ ᴀᴜᴛᴏʀᴇɴᴀᴍᴇ ʙʏ ɢɪᴠɪɴɢ ᴄᴏᴍᴍᴀɴᴅ /Aᴜᴛᴏʀᴇɴᴀᴍᴇ [Yᴏᴜʀ ғᴏʀᴍᴀᴛ] ᴀɴᴅ ᴍᴀɴᴀɢᴇ ʏᴏᴜʀ ꜰɪʟᴇꜱ ᴇꜰꜰᴏʀᴛʟᴇꜱꜱʟʏ.
+
+ɪᴍᴘᴏʀᴛᴀɴᴛ ᴄᴏᴍᴍᴀɴᴅꜱ:
+➲ /Autorename: ᴀᴜᴛᴏ ʀᴇɴᴀᴍᴇ ʏᴏᴜʀ ꜰɪʟᴇꜱ.
+➲ /View_Thumb: ᴛᴏ sᴇᴇ ᴄᴏᴜsᴛᴏᴍ ᴛʜᴜᴍʙɴᴀɪʟ.
+➲ /Setmedia: sᴇᴛ ʏᴏᴜʀ ᴜᴘʟᴏᴀᴅ ᴍᴇᴅɪᴀ ᴛʏᴘᴇ.
     """
 
     PROGRESS_BAR = """<b>\n
