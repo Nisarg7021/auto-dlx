@@ -1,3 +1,5 @@
+# Made by @Nation_Bots
+
 import random
 from pyrogram import Client, filters
 from pyrogram.types import InlineKeyboardButton, InlineKeyboardMarkup, ForceReply, CallbackQuery, Message, InputMediaPhoto
@@ -12,7 +14,7 @@ async def start(client, message):
     button = InlineKeyboardMarkup([[
       InlineKeyboardButton("⚡ 𝖢𝗈𝗆𝗆𝖺𝗇𝖽𝗌 ⚡", callback_data='commands')
     ],[
-      InlineKeyboardButton('Uᴩᴅᴀᴛᴇꜱ', url='https://t.me/Nation_Bots'),
+      InlineKeyboardButton('Uᴩᴅᴀᴛᴇꜱ', url='https://t.me/animes_in_30mb'),
       InlineKeyboardButton('Sᴜᴩᴩᴏʀᴛ', url='https://t.me/Nation_Support')
     ],[
       InlineKeyboardButton('Hᴇʟᴘ', callback_data='about'),
@@ -35,7 +37,7 @@ async def cb_handler(client, query: CallbackQuery):
             reply_markup=InlineKeyboardMarkup([[
                 InlineKeyboardButton("⚡ 𝖢𝗈𝗆𝗆𝖺𝗇𝖽𝗌 ⚡", callback_data='commands')
                 ],[
-                InlineKeyboardButton('Uᴩᴅᴀᴛᴇꜱ', url='https://t.me/Nation_Bots'),
+                InlineKeyboardButton('Uᴩᴅᴀᴛᴇꜱ', url='https://t.me/animes_in_30mb'),
                 InlineKeyboardButton('Sᴜᴩᴩᴏʀᴛ', url='https://t.me/Nation_Support')
                 ],[
                 InlineKeyboardButton('Hᴇʟᴘ', callback_data='about'),
@@ -47,7 +49,7 @@ async def cb_handler(client, query: CallbackQuery):
             text=Txt.PREMIUM_TXT,
             disable_web_page_preview=True,
             reply_markup=InlineKeyboardMarkup([[
-                InlineKeyboardButton('Bᴜʏ Nᴏᴡ ⚡', url='https://t.me/Trippy_xt')
+                InlineKeyboardButton('Bᴜʏ Nᴏᴡ ⚡', url='https://t.me/Dlx_smith')
                 ],[
                 InlineKeyboardButton("Cʟᴏꜱᴇ", callback_data="close"),
                 InlineKeyboardButton("Bᴀᴄᴋ", callback_data="about")
