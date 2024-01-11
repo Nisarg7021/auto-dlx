@@ -66,7 +66,7 @@ async def cb_handler(client, query: CallbackQuery):
                 InlineKeyboardButton('Sᴇǫᴜᴇɴᴄᴇ', url='https://t.me/File_Sequencer_Bot')
                 ],[
                 InlineKeyboardButton('Pʀᴇᴍɪᴜᴍ', callback_data='premium'),
-                InlineKeyboardButton('Aʙᴏᴜᴛ', callback_data='about')
+                InlineKeyboardButton('Aʙᴏᴜᴛ', callback_data='abouts')
                 ],[
                 InlineKeyboardButton('Hᴏᴍᴇ', callback_data='start')
             ]])
