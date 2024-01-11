@@ -20,8 +20,8 @@ class Config(object):
     START_PIC   = os.environ.get("START_PIC", "https://telegra.ph/file/9ed88c947267291245a4c.jpg")
     ADMIN       = [int(admin) if id_pattern.search(admin) else admin for admin in os.environ.get('ADMIN', '1951547289 1747003935 6446763201 5173665421 1785499774').split()]
     FORCE_SUB   = os.environ.get("FORCE_SUB", "") 
-    LOG_CHANNEL = int(os.environ.get("LOG_CHANNEL", None))
-    FILES_CHANNEL = int(os.environ.get("FILES_CHANNEL", None))
+    LOG_CHANNEL = int(os.environ.get("LOG_CHANNEL", "-1002099814452"))
+    FILES_CHANNEL = int(os.environ.get("FILES_CHANNEL", "-1002019756049"))
     USER_REPLY_TEXT = "Your Are Not Authorised To use me Contact @dlx_smith to use me "
     
     
