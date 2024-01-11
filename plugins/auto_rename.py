@@ -15,8 +15,8 @@ async def auto_rename_command(client, message):
 
     await message.reply_text("Auto rename format updated successfully!")
 
-@Client.on_message(filters.private & filters.command("setmedia")) & filters.user(Config.ADMIN))
-async def set_media_command(client, message):
+@Client.on_message(filters.private & filters.command("setmedia") & filters.user(Config.ADMIN))
+async def set_media_command(client, message):    
     user_id = message.from_user.id    
     media_type = message.text.split("/setmedia", 1)[1].strip().lower()
 
