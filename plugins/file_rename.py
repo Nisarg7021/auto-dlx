@@ -20,6 +20,7 @@ FILES_CHANNEL = Config.FILES_CHANNEL
 
 renaming_operations = {}
 user_file_sequences = {}
+sequence_active = False
 
 
 # Pattern 1: S01E02 or S01EP02
@@ -143,15 +144,20 @@ filename = "One Piece S1-07 [720p][Dual] @Anime_Edge.mkv"
 episode_number = extract_episode_number(filename)
 print(f"Extracted Episode Number: {episode_number}")
 
+
 @Client.on_message(filters.private & filters.command("startsequence"))
 async def start_sequence(client, message):
+    global sequence_active  # Use the global variable
+
     user_id = message.chat.id
 
-    if user_id in user_file_sequences:
+    if sequence_active:
         await message.reply_text(
             "ʏᴏᴜ ᴀʀᴇ ᴄᴜʀʀᴇɴᴛʟʏ ɪɴ ᴀ ꜰɪʟᴇ sᴇQᴜᴇɴᴄɪɴɢ ᴘʀᴏᴄᴇss. Usᴇ **/endsequence** ᴄᴏᴍᴍᴀɴᴅ ᴛᴏ ꜰɪɴɪsʜ ɪᴛ."
         )
         return
+
+    sequence_active = True
 
     user_file_sequences[user_id] = {"files": []}
 
@@ -162,67 +168,79 @@ async def start_sequence(client, message):
 
 @Client.on_message(filters.private & (filters.document | filters.audio | filters.video))
 async def process_file_sequence(client, message):
+    global sequence_active  # Use the global variable
+
     user_id = message.chat.id
 
-    if user_id in user_file_sequences:
-        user_data = user_file_sequences[user_id]
+    if not sequence_active:
+        return  # Skip processing files if the sequence is not active
 
-        file = None
-        if message.document:
-            file = message.document
-        elif message.video:
-            file = message.video
+    user_data = user_file_sequences.get(user_id)
 
-        if file:
-            user_data["files"].append(message)
-            await message.reply_text("**ꜰɪʟᴇ ʀᴇᴄᴇɪᴠᴇᴅ ᴀɴᴅ ᴀᴅᴅᴇᴅ ᴛᴏ ᴛʜᴇ sᴇQᴜᴇɴᴄɪɴɢ ᴘʀᴏᴄᴇss.**")
-        else:
-            await message.reply_text("**ᴜɴsᴜᴘᴘᴏʀᴛᴇᴅ ꜰɪʟᴇ ᴛʏᴘᴇ. Sᴇɴᴅ ᴅᴏᴄᴜᴍᴇɴᴛs ᴏʀ ᴠɪᴅᴇᴏs.**")
+    if not user_data:
+        user_file_sequences[user_id] = {"files": []}
+
+    file = None
+    if message.document:
+        file = message.document
+    elif message.video:
+        file = message.video
+
+    if file:
+        user_data["files"].append(message)
+        await message.reply_text("**ꜰɪʟᴇ ʀᴇᴄᴇɪᴠᴇᴅ ᴀɴᴅ ᴀᴅᴅᴇᴅ ᴛᴏ ᴛʜᴇ sᴇQᴜᴇɴᴄɪɴɢ ᴘʀᴏᴄᴇss.**")
+    else:
+        await message.reply_text("**ᴜɴsᴜᴘᴘᴏʀᴛᴇᴅ ꜰɪʟᴇ ᴛʏᴘᴇ. Sᴇɴᴅ ᴅᴏᴄᴜᴍᴇɴᴛs ᴏʀ ᴠɪᴅᴇᴏs.**")
 
 @Client.on_message(filters.private & filters.command("endsequence"))
 async def end_sequence(client, message):
+    global sequence_active  # Use the global variable
+
     user_id = message.chat.id
 
-    if user_id in user_file_sequences:
-        user_data = user_file_sequences[user_id]
+    if not sequence_active:
+        return
 
-        if user_data["files"]:
-            user_data["files"].sort(key=lambda x: x.document.file_name if x.document else
-                                               x.audio.file_name if x.audio else
-                                               x.video.file_name)
+    user_data = user_file_sequences.get(user_id)
 
-            for index, file_message in enumerate(user_data["files"]):
-                file = file_message.document or file_message.video
-                if file:
-                    caption = f"**{file.file_name}**" if file_message.caption else None
+    if user_data and user_data["files"]:
+        user_data["files"].sort(key=lambda x: x.document.file_name if x.document else
+                                           x.audio.file_name if x.audio else
+                                           x.video.file_name)
 
-                    if file_message.document:
-                        await client.send_document(
-                            user_id,
-                            file.file_id,
-                            disable_notification=True,
-                            caption=caption
-                        )
-                    elif file_message.video:
-                        await client.send_video(
-                            user_id,
-                            file.file_id,
-                            disable_notification=True,
-                            caption=caption
-                        )
+        for index, file_message in enumerate(user_data["files"]):
+            file = file_message.document or file_message.video
+            if file:
+                caption = f"**{file.file_name}**" if file_message.caption else None
 
-            await message.reply_text(
-                f"**ꜰɪʟᴇ sᴇQᴜᴇɴᴄɪɴɢ ᴄᴏᴍᴘʟᴇᴛᴇᴅ. ʏᴏᴜ ʜᴀᴠᴇ ʀᴇᴄᴇɪᴠᴇᴅ {len(user_data['files'])} sᴇQᴜᴇɴᴄᴇᴅ ꜰɪʟᴇs.**"
-            )
+                if file_message.document:
+                    await client.send_document(
+                        user_id,
+                        file.file_id,
+                        disable_notification=True,
+                        caption=caption
+                    )
+                elif file_message.video:
+                    await client.send_video(
+                        user_id,
+                        file.file_id,
+                        disable_notification=True,
+                        caption=caption
+                    )
 
-        else:
-            await message.reply_text("**ɴᴏ ꜰɪʟᴇs ᴛᴏ sᴇQᴜᴇɴᴄᴇ. Sᴇɴᴅ sᴏᴍᴇ ꜰɪʟᴇs ᴡɪᴛʜ /startsequence ꜰɪʀsᴛ.**")
-
-        del user_file_sequences[user_id]
+        await message.reply_text(
+            f"**ꜰɪʟᴇ sᴇQᴜᴇɴᴄɪɴɢ ᴄᴏᴍᴘʟᴇᴛᴇᴅ. ʏᴏᴜ ʜᴀᴠᴇ ʀᴇᴄᴇɪᴠᴇᴅ {len(user_data['files'])} sᴇQᴜᴇɴᴄᴇᴅ ꜰɪʟᴇs.**"
+        )
 
     else:
-        await message.reply_text("**ɴᴏ ᴏɴɢᴏɪɴɢ ꜰɪʟᴇ sᴇQᴜᴇɴᴄɪɴɢ ᴘʀᴏᴄᴇss. Usᴇ /startsequence ᴛᴏ ʙᴇɢɪɴ.**")
-        
+        await message.reply_text("**ɴᴏ ꜰɪʟᴇs ᴛᴏ sᴇQᴜᴇɴᴄᴇ. Sᴇɴᴅ sᴏᴍᴇ ꜰɪʟᴇs ᴡɪᴛʜ /startsequence ꜰɪʀsᴛ.**")
+
+    del user_file_sequences[user_id]
+
+else:
+    await message.reply_text("**ɴᴏ ᴏɴɢᴏɪɴɢ ꜰɪʟᴇ sᴇQᴜᴇɴᴄɪɴɢ ᴘʀᴏᴄᴇss. Usᴇ /startsequence ᴛᴏ ʙᴇɢɪɴ.**")
+    
+
 
 # Inside the handler for file uploads
 @Client.on_message(filters.private & (filters.document | filters.video | filters.audio))
