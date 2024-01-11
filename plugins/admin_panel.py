@@ -1,3 +1,5 @@
+# Made by @Nation_Bots
+
 from config import Config
 from helper.database import db
 from pyrogram.types import Message
@@ -72,3 +74,4 @@ async def send_msg(user_id, message):
         logger.error(f"{user_id} : {e}")
         return 500
  
+# Made by @Nation_Bots
