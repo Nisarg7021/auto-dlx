@@ -52,7 +52,7 @@ async def cb_handler(client, query: CallbackQuery):
                 InlineKeyboardButton('Bᴜʏ Nᴏᴡ ⚡', url='https://t.me/Dlx_smith')
                 ],[
                 InlineKeyboardButton("Cʟᴏꜱᴇ", callback_data="close"),
-                InlineKeyboardButton("Bᴀᴄᴋ", callback_data="about")
+                InlineKeyboardButton("Bᴀᴄᴋ", callback_data="start")
             ]])            
         )
     elif data == "about":
@@ -74,6 +74,16 @@ async def cb_handler(client, query: CallbackQuery):
     elif data == "commands":
         await query.message.edit_text(
             text=Txt.COMMANDS_TXT,
+            disable_web_page_preview=True,
+            reply_markup=InlineKeyboardMarkup([[
+                InlineKeyboardButton("Cʟᴏꜱᴇ", callback_data="close"),
+                InlineKeyboardButton("Bᴀᴄᴋ", callback_data="start")
+            ]])          
+        )
+
+    elif data == "abouts":
+        await query.message.edit_text(
+            text=Txt.ABOUTS_TXT,
             disable_web_page_preview=True,
             reply_markup=InlineKeyboardMarkup([[
                 InlineKeyboardButton("Cʟᴏꜱᴇ", callback_data="close"),
