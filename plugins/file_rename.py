@@ -175,16 +175,20 @@ async def auto_rename_files(client, message):
     user_id = message.from_user.id
     firstname = message.from_user.first_name
 
+
+    # Inside the handler for file uploads
+    if SEQUENCE_MODE:
+        file_name = message.document.file_name
+        SEQUENCE_FILES.append(file_name)
+        await message.reply_text(f"File {len(SEQUENCE_FILES)} received successfully.")
+        return
+    
+
     # Check if the user is in the admin list
     if user_id not in Config.ADMIN:
         # User is not an admin, reply with USER_REPLY_TEXT
         if Config.USER_REPLY_TEXT:
             return await message.reply_text(Config.USER_REPLY_TEXT)
-
-    if SEQUENCE_MODE:
-        SEQUENCE_FILES.append(file_path)
-        await message.reply_text(f"File received successfully. Total files: {len(SEQUENCE_FILES)}")
-        return
         
 
     # Continue with the rest of the function for admin users
