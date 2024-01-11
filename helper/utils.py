@@ -1,3 +1,5 @@
+# Made by @Nation_Bots
+
 import math, time
 from datetime import datetime
 from pytz import timezone
@@ -80,6 +82,7 @@ async def send_log(b, u):
             f"**--Nᴇᴡ Uꜱᴇʀ Sᴛᴀʀᴛᴇᴅ Tʜᴇ Bᴏᴛ--**\n\nUꜱᴇʀ: {u.mention}\nIᴅ: `{u.id}`\nUɴ: @{u.username}\n\nDᴀᴛᴇ: {date}\nTɪᴍᴇ: {time}\n\nBy: {b.mention}"
         )
         
+# Made by @Nation_Bots
 
 
 
