@@ -1,3 +1,5 @@
+# Made by @Nation_Bots
+
 from pyrogram import Client, filters 
 from helper.database import db
 from config import Config 
@@ -46,4 +48,4 @@ async def addthumbs(client, message):
     await db.set_thumbnail(message.from_user.id, file_id=message.photo.file_id)                
     await mkn.edit("✅️ __**Tʜᴜᴍʙɴᴀɪʟ Sᴀᴠᴇᴅ**__")
 
-
+# Made by @Nation_Bots
