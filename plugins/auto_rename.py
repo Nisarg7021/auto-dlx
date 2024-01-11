@@ -1,10 +1,8 @@
 from pyrogram import Client, filters
-from pyrogram.types import Message
 from pyrogram.errors import FloodWait
 from helper.database import db
-from config import Config
 
-@Client.on_message(filters.private & filters.command("autorename") & filters.user(Config.ADMIN))
+@Client.on_message(filters.private & filters.command("autorename"))
 async def auto_rename_command(client, message):
     user_id = message.from_user.id
 
@@ -16,8 +14,8 @@ async def auto_rename_command(client, message):
 
     await message.reply_text("Auto rename format updated successfully!")
 
-@Client.on_message(filters.private & filters.command("setmedia") & filters.user(Config.ADMIN))
-async def set_media_command(client, message):    
+@Client.on_message(filters.private & filters.command("setmedia"))
+async def set_media_command(client, message):
     user_id = message.from_user.id    
     media_type = message.text.split("/setmedia", 1)[1].strip().lower()
 
@@ -25,10 +23,4 @@ async def set_media_command(client, message):
     await db.set_media_preference(user_id, media_type)
 
     await message.reply_text(f"Media preference set to: {media_type}")
-
-@Client.on_message(filters.private & filters.incoming)
-async def useless(_, message: Message):
-    if message.from_user.id not in Config.ADMIN:
-        if Config.USER_REPLY_TEXT:
-            await message.reply(Config.USER_REPLY_TEXT)
-    
+  
