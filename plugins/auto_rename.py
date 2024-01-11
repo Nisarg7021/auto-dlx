@@ -27,6 +27,8 @@ async def set_media_command(client, message):
     await message.reply_text(f"Media preference set to: {media_type}")
 
 @Client.on_message(filters.private & filters.incoming)
-async def useless(_,message: Message):
-    if Config.USER_REPLY_TEXT:
-        await message.reply(Config.USER_REPLY_TEXT)
+async def useless(_, message: Message):
+    if message.from_user.id not in Config.ADMIN:
+        if Config.USER_REPLY_TEXT:
+            await message.reply(Config.USER_REPLY_TEXT)
+    
