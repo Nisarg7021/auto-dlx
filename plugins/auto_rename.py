@@ -3,7 +3,7 @@ from pyrogram.errors import FloodWait
 from helper.database import db
 from config import Config
 
-@Client.on_message(filters.private & filters.command("autorename")) & filters.user(Config.ADMIN))
+@Client.on_message(filters.private & filters.command("autorename") & filters.user(Config.ADMIN))
 async def auto_rename_command(client, message):
     user_id = message.from_user.id
 
