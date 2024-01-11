@@ -238,9 +238,7 @@ async def end_sequence(client, message):
     del user_file_sequences[user_id]
 
 else:
-    await message.reply_text("**ɴᴏ ᴏɴɢᴏɪɴɢ ꜰɪʟᴇ sᴇQᴜᴇɴᴄɪɴɢ ᴘʀᴏᴄᴇss. Usᴇ /startsequence ᴛᴏ ʙᴇɢɪɴ.**")
-    
-
+await message.reply_text("**ɴᴏ ᴏɴɢᴏɪɴɢ ꜰɪʟᴇ sᴇQᴜᴇɴᴄɪɴɢ ᴘʀᴏᴄᴇss. Usᴇ /startsequence ᴛᴏ ʙᴇɢɪɴ.**")    
 
 # Inside the handler for file uploads
 @Client.on_message(filters.private & (filters.document | filters.video | filters.audio))
