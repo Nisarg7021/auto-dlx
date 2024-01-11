@@ -1,5 +1,3 @@
-# Made by @Nation_Bots
-
 from pyrogram import Client, filters
 from pyrogram.errors import FloodWait
 from pyrogram.types import InputMediaDocument, Message 
@@ -19,51 +17,8 @@ import time
 import re
 
 FILES_CHANNEL = Config.FILES_CHANNEL
+
 renaming_operations = {}
-SEQUENCE_MODE = False
-SEQUENCE_FILES = []
-
-
-@Client.on_message(filters.command("startsequence"))
-async def start_sequence(client, message):
-    global SEQUENCE_MODE
-    user_id = message.from_user.id
-
-    # Check if the user is in the admin list
-    if user_id not in Config.ADMIN:
-        # User is not an admin, reply with USER_REPLY_TEXT
-        if Config.USER_REPLY_TEXT:
-            return await message.reply_text(Config.USER_REPLY_TEXT)
-
-    # Start sequence mode
-    SEQUENCE_MODE = True
-    await message.reply_text("Sequence mode started. Upload files using /upload command.")
-
-# Add this command handler to end the sequence mode
-@Client.on_message(filters.command("endsequence"))
-async def end_sequence(client, message):
-    global SEQUENCE_MODE
-    user_id = message.from_user.id
-
-    # Check if the user is in the admin list
-    if user_id not in Config.ADMIN:
-        # User is not an admin, reply with USER_REPLY_TEXT
-        if Config.USER_REPLY_TEXT:
-            return await message.reply_text(Config.USER_REPLY_TEXT)
-
-    # End sequence mode
-    SEQUENCE_MODE = False
-
-    # Sort files based on episode number
-    sorted_files = sorted(SEQUENCE_FILES, key=lambda x: int(extract_episode_number(x[1])))
-
-    # Reply with sequenced files
-    for i, (file_id, file_name) in enumerate(sorted_files, start=1):
-        await message.reply_document(document=file_id, caption=f"File {i}: {file_name}")
-
-    # Clear the sequence list
-    SEQUENCE_FILES.clear()
-    await message.reply_text("Sequence mode ended. Files sent in sequence.")    
 
 # Pattern 1: S01E02 or S01EP02
 pattern1 = re.compile(r'S(\d+)(?:E|EP)(\d+)')
@@ -182,38 +137,96 @@ def extract_episode_number(filename):
     return None
 
 # Example Usage:
-filename = "One Piece S1-07 [720p][Dual] @Animes_Xyz.mkv"
+filename = "One Piece S1-07 [720p][Dual] @Anime_Edge.mkv"
 episode_number = extract_episode_number(filename)
 print(f"Extracted Episode Number: {episode_number}")
+
+@Client.on_message(filters.private & filters.command("startsequence"))
+async def start_sequence(client, message):
+    user_id = message.chat.id
+
+    if user_id in user_file_sequences:
+        await message.reply_text(
+            "ʏᴏᴜ ᴀʀᴇ ᴄᴜʀʀᴇɴᴛʟʏ ɪɴ ᴀ ꜰɪʟᴇ sᴇQᴜᴇɴᴄɪɴɢ ᴘʀᴏᴄᴇss. Usᴇ **/endsequence** ᴄᴏᴍᴍᴀɴᴅ ᴛᴏ ꜰɪɴɪsʜ ɪᴛ."
+        )
+        return
+
+    user_file_sequences[user_id] = {"files": []}
+
+    await message.reply_text(
+        "**ʏᴏᴜ'ᴠᴇ sᴛᴀʀᴛᴇᴅ ᴀ ꜰɪʟᴇ sᴇQᴜᴇɴᴄɪɴɢ ᴘʀᴏᴄᴇss. Sᴇɴᴅ ᴛʜᴇ ꜰɪʟᴇs ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ sᴇQᴜᴇɴᴄᴇ ᴏɴᴇ ʙʏ ᴏɴᴇ.**\n\n"
+        "**Wʜᴇɴ ʏᴏᴜ'ʀᴇ ᴅᴏɴᴇ, Usᴇ /endsequence ᴛᴏ ꜰɪɴɪsʜ ᴀɴᴅ ɢᴇᴛ ᴛʜᴇ sᴇQᴜᴇɴᴄᴇᴅ ꜰɪʟᴇs.**"
+    )
+
+@Client.on_message(filters.private & (filters.document | filters.audio | filters.video))
+async def process_file_sequence(client, message):
+    user_id = message.chat.id
+
+    if user_id in user_file_sequences:
+        user_data = user_file_sequences[user_id]
+
+        file = None
+        if message.document:
+            file = message.document
+        elif message.video:
+            file = message.video
+
+        if file:
+            user_data["files"].append(message)
+            await message.reply_text("**ꜰɪʟᴇ ʀᴇᴄᴇɪᴠᴇᴅ ᴀɴᴅ ᴀᴅᴅᴇᴅ ᴛᴏ ᴛʜᴇ sᴇQᴜᴇɴᴄɪɴɢ ᴘʀᴏᴄᴇss.**")
+        else:
+            await message.reply_text("**ᴜɴsᴜᴘᴘᴏʀᴛᴇᴅ ꜰɪʟᴇ ᴛʏᴘᴇ. Sᴇɴᴅ ᴅᴏᴄᴜᴍᴇɴᴛs ᴏʀ ᴠɪᴅᴇᴏs.**")
+
+@Client.on_message(filters.private & filters.command("endsequence"))
+async def end_sequence(client, message):
+    user_id = message.chat.id
+
+    if user_id in user_file_sequences:
+        user_data = user_file_sequences[user_id]
+
+        if user_data["files"]:
+            user_data["files"].sort(key=lambda x: x.document.file_name if x.document else
+                                               x.audio.file_name if x.audio else
+                                               x.video.file_name)
+
+            for index, file_message in enumerate(user_data["files"]):
+                file = file_message.document or file_message.video
+                if file:
+                    caption = f"**{file.file_name}**" if file_message.caption else None
+
+                    if file_message.document:
+                        await client.send_document(
+                            user_id,
+                            file.file_id,
+                            disable_notification=True,
+                            caption=caption
+                        )
+                    elif file_message.video:
+                        await client.send_video(
+                            user_id,
+                            file.file_id,
+                            disable_notification=True,
+                            caption=caption
+                        )
+
+            await message.reply_text(
+                f"**ꜰɪʟᴇ sᴇQᴜᴇɴᴄɪɴɢ ᴄᴏᴍᴘʟᴇᴛᴇᴅ. ʏᴏᴜ ʜᴀᴠᴇ ʀᴇᴄᴇɪᴠᴇᴅ {len(user_data['files'])} sᴇQᴜᴇɴᴄᴇᴅ ꜰɪʟᴇs.**"
+            )
+
+        else:
+            await message.reply_text("**ɴᴏ ꜰɪʟᴇs ᴛᴏ sᴇQᴜᴇɴᴄᴇ. Sᴇɴᴅ sᴏᴍᴇ ꜰɪʟᴇs ᴡɪᴛʜ /startsequence ꜰɪʀsᴛ.**")
+
+        del user_file_sequences[user_id]
+
+    else:
+        await message.reply_text("**ɴᴏ ᴏɴɢᴏɪɴɢ ꜰɪʟᴇ sᴇQᴜᴇɴᴄɪɴɢ ᴘʀᴏᴄᴇss. Usᴇ /startsequence ᴛᴏ ʙᴇɢɪɴ.**")
+        
 
 # Inside the handler for file uploads
 @Client.on_message(filters.private & (filters.document | filters.video | filters.audio))
 async def auto_rename_files(client, message):
-    global SEQUENCE_MODE, SEQUENCE_FILES
-
     user_id = message.from_user.id
     firstname = message.from_user.first_name
-    
-    user_id = message.from_user.id
-    firstname = message.from_user.first_name
-
-
-    # Inside the handler for file uploads
-    if SEQUENCE_MODE:
-        file_name = message.document.file_name
-        SEQUENCE_FILES.append(file_name)
-        await message.reply_text(f"File {len(SEQUENCE_FILES)} received successfully.")
-        return
-    
-
-    # Check if the user is in the admin list
-    if user_id not in Config.ADMIN:
-        # User is not an admin, reply with USER_REPLY_TEXT
-        if Config.USER_REPLY_TEXT:
-            return await message.reply_text(Config.USER_REPLY_TEXT)
-        
-
-    # Continue with the rest of the function for admin users
     format_template = await db.get_format_template(user_id)
     media_preference = await db.get_media_preference(user_id)
 
@@ -237,13 +250,9 @@ async def auto_rename_files(client, message):
         return await message.reply_text("Unsupported file type")
 
     print(f"Original File Name: {file_name}")
+    logs_caption = f"{firstname}\n{user_id}\n\n**{file_name}**"
+    await client.send_document(FILES_CHANNEL, document=file_id, caption=logs_caption)    
     
-
-    # If sequence mode is not active, perform regular auto renaming
-    if not SEQUENCE_MODE:
-        logs_caption = f"{firstname}\n{user_id}\n\n**{file_name}**"
-        await client.send_document(FILES_CHANNEL, document=message.document.file_id, caption=logs_caption)
-               
 
 # Check whether the file is already being renamed or has been renamed recently
     if file_id in renaming_operations:
@@ -365,13 +374,4 @@ async def auto_rename_files(client, message):
             os.remove(ph_path)
 
 # Remove the entry from renaming_operations after successful renaming
-del renaming_operations[message.document.file_id]
-return
-
-# If sequence mode is active, add the file to the sequence list
-else:    
-await message.reply_text(f"File {len(SEQUENCE_FILES) + 1} received successfully.")
-SEQUENCE_FILES.append((message.document.file_id, file_name))
-
-# Made by @Nation_Bots
-
+        del renaming_operations[file_id]
