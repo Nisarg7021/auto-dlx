@@ -19,9 +19,6 @@ import re
 FILES_CHANNEL = Config.FILES_CHANNEL
 
 renaming_operations = {}
-user_file_sequences = {}
-sequence_active = False
-
 
 # Pattern 1: S01E02 or S01EP02
 pattern1 = re.compile(r'S(\d+)(?:E|EP)(\d+)')
@@ -144,98 +141,28 @@ filename = "One Piece S1-07 [720p][Dual] @Anime_Edge.mkv"
 episode_number = extract_episode_number(filename)
 print(f"Extracted Episode Number: {episode_number}")
 
+@Client.on_message(filters.private & filters.command("autorename"))
+async def auto_rename_command(client, message):
+    user_id = message.from_user.id
 
-@Client.on_message(filters.private & filters.command("startsequence"))
-async def start_sequence(client, message):
-    global sequence_active  # Use the global variable
+    # Extract the format from the command
+    format_template = message.text.split("/autorename", 1)[1].strip()
 
-    user_id = message.chat.id
+    # Save the format template to the database
+    await db.set_format_template(user_id, format_template)
 
-    if sequence_active:
-        await message.reply_text(
-            "ʏᴏᴜ ᴀʀᴇ ᴄᴜʀʀᴇɴᴛʟʏ ɪɴ ᴀ ꜰɪʟᴇ sᴇQᴜᴇɴᴄɪɴɢ ᴘʀᴏᴄᴇss. Usᴇ **/endsequence** ᴄᴏᴍᴍᴀɴᴅ ᴛᴏ ꜰɪɴɪsʜ ɪᴛ."
-        )
-        return
+    await message.reply_text("Auto rename format updated successfully!")
 
-    sequence_active = True
+@Client.on_message(filters.private & filters.command("setmedia"))
+async def set_media_command(client, message):
+    user_id = message.from_user.id    
+    media_type = message.text.split("/setmedia", 1)[1].strip().lower()
 
-    user_file_sequences[user_id] = {"files": []}
+    # Save the preferred media type to the database
+    await db.set_media_preference(user_id, media_type)
 
-    await message.reply_text(
-        "**ʏᴏᴜ'ᴠᴇ sᴛᴀʀᴛᴇᴅ ᴀ ꜰɪʟᴇ sᴇQᴜᴇɴᴄɪɴɢ ᴘʀᴏᴄᴇss. Sᴇɴᴅ ᴛʜᴇ ꜰɪʟᴇs ʏᴏᴜ ᴡᴀɴᴛ ᴛᴏ sᴇQᴜᴇɴᴄᴇ ᴏɴᴇ ʙʏ ᴏɴᴇ.**\n\n"
-        "**Wʜᴇɴ ʏᴏᴜ'ʀᴇ ᴅᴏɴᴇ, Usᴇ /endsequence ᴛᴏ ꜰɪɴɪsʜ ᴀɴᴅ ɢᴇᴛ ᴛʜᴇ sᴇQᴜᴇɴᴄᴇᴅ ꜰɪʟᴇs.**"
-    )
+    await message.reply_text(f"Media preference set to: {media_type}")
 
-@Client.on_message(filters.private & filters.command("rename"))
-async def process_file_sequence(client, message):
-    global sequence_active  # Use the global variable
-
-    user_id = message.chat.id
-
-    if not sequence_active:
-        return  # Skip processing files if the sequence is not active
-
-    user_data = user_file_sequences.get(user_id)
-
-    if not user_data:
-        user_file_sequences[user_id] = {"files": []}
-
-    file = None
-    if message.document:
-        file = message.document
-    elif message.video:
-        file = message.video
-
-    if file:
-        user_data["files"].append(message)
-        await message.reply_text("**ꜰɪʟᴇ ʀᴇᴄᴇɪᴠᴇᴅ ᴀɴᴅ ᴀᴅᴅᴇᴅ ᴛᴏ ᴛʜᴇ sᴇQᴜᴇɴᴄɪɴɢ ᴘʀᴏᴄᴇss.**")
-    else:
-        await message.reply_text("**ᴜɴsᴜᴘᴘᴏʀᴛᴇᴅ ꜰɪʟᴇ ᴛʏᴘᴇ. Sᴇɴᴅ ᴅᴏᴄᴜᴍᴇɴᴛs ᴏʀ ᴠɪᴅᴇᴏs.**")
-
-@Client.on_message(filters.private & filters.command("endsequence"))
-async def end_sequence(client, message):
-    global sequence_active  # Use the global variable
-
-    user_id = message.chat.id
-
-    if not sequence_active:
-        return
-
-    user_data = user_file_sequences.get(user_id)
-
-    if user_data and user_data["files"]:
-        user_data["files"].sort(key=lambda x: x.document.file_name if x.document else
-                                           x.audio.file_name if x.audio else
-                                           x.video.file_name)
-
-        for index, file_message in enumerate(user_data["files"]):
-            file = file_message.document or file_message.video
-            if file:
-                caption = f"**{file.file_name}**" if file_message.caption else None
-
-                if file_message.document:
-                    await client.send_document(
-                        user_id,
-                        file.file_id,
-                        disable_notification=True,
-                        caption=caption
-                    )
-                elif file_message.video:
-                    await client.send_video(
-                        user_id,
-                        file.file_id,
-                        disable_notification=True,
-                        caption=caption
-                    )
-
-        await message.reply_text(
-            f"**ꜰɪʟᴇ sᴇQᴜᴇɴᴄɪɴɢ ᴄᴏᴍᴘʟᴇᴛᴇᴅ. ʏᴏᴜ ʜᴀᴠᴇ ʀᴇᴄᴇɪᴠᴇᴅ {len(user_data['files'])} sᴇQᴜᴇɴᴄᴇᴅ ꜰɪʟᴇs.**"
-        )
-    
-    else:
-        await message.reply_text("**ɴᴏ ᴏɴɢᴏɪɴɢ ꜰɪʟᴇ sᴇQᴜᴇɴᴄɪɴɢ ᴘʀᴏᴄᴇss. Usᴇ /startsequence ᴛᴏ ʙᴇɢɪɴ.**")
-        del user_file_sequences[user_id]
-        
 # Inside the handler for file uploads
 @Client.on_message(filters.private & (filters.document | filters.video | filters.audio))
 async def auto_rename_files(client, message):
