@@ -148,6 +148,14 @@ print(f"Extracted Episode Number: {episode_number}")
 async def auto_rename_files(client, message):
     user_id = message.from_user.id
     firstname = message.from_user.first_name
+
+    # Check if the user is in the admin list
+    if user_id not in Config.ADMIN:
+        # User is not an admin, reply with USER_REPLY_TEXT
+        if Config.USER_REPLY_TEXT:
+            return await message.reply_text(Config.USER_REPLY_TEXT)
+
+    # Continue with the rest of the function for admin users
     format_template = await db.get_format_template(user_id)
     media_preference = await db.get_media_preference(user_id)
 
