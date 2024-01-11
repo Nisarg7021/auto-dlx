@@ -1,4 +1,5 @@
 from pyrogram import Client, filters
+from pyrogram.types import Message
 from pyrogram.errors import FloodWait
 from helper.database import db
 from config import Config
