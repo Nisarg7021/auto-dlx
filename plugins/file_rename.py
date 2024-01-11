@@ -19,6 +19,8 @@ import re
 FILES_CHANNEL = Config.FILES_CHANNEL
 
 renaming_operations = {}
+user_file_sequences = {}
+
 
 # Pattern 1: S01E02 or S01EP02
 pattern1 = re.compile(r'S(\d+)(?:E|EP)(\d+)')
