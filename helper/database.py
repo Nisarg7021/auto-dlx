@@ -1,3 +1,5 @@
+# Made by @Nation_Bots
+
 import motor.motor_asyncio
 from config import Config
 from .utils import send_log
@@ -71,3 +73,4 @@ class Database:
 
 db = Database(Config.DB_URL, Config.DB_NAME)
         
+# Made by @Nation_Bots
