@@ -19,46 +19,29 @@ import time
 import re
 
 FILES_CHANNEL = Config.FILES_CHANNEL
-
 renaming_operations = {}
-sequence_mode = False
-sequence_files = []
+SEQUENCE_MODE = False
+SEQUENCE_FILES = []
+
 
 @Client.on_message(filters.private & filters.command("startsequence"))
-async def start_sequence(client, message):
-    global sequence_mode, sequence_files
-    sequence_mode = True
-    sequence_files = []
-    await message.reply_text("Sequence mode started. Send your files.")
+async def start_sequence(_, message: Message):
+    global SEQUENCE_MODE, SEQUENCE_FILES
+    SEQUENCE_MODE = True
+    SEQUENCE_FILES = []
+    await message.reply_text("Sequence started. Send your files.")
 
-# Function to end the sequence
 @Client.on_message(filters.private & filters.command("endsequence"))
-async def end_sequence(client, message):
-    global sequence_mode
-    sequence_mode = False
-    await message.reply_text("Sequence mode ended. Processing files...")
-
-# Function to handle file uploads during the sequence
-@Client.on_message(filters.private & (filters.document | filters.video | filters.audio) & filters.incoming)
-async def handle_sequence_files(client, message):
-    global sequence_mode, sequence_files
-
-    if sequence_mode:
-        if message.document or message.video or message.audio:
-            sequence_files.append(message)
-
-            # Reply with a success message for each file
-            await message.reply_text(f"File {len(sequence_files)} received successfully.")
-
-@Client.on_message(filters.private & filters.command("processfiles"))
-async def process_files(client, message):
-    global sequence_files
-
-    if sequence_files:
-        for idx, file_message in enumerate(sequence_files, start=1):
-            await auto_rename_files(client, file_message)
-            await message.reply_text(f"Processed file {idx}")            
-
+async def end_sequence(_, message: Message):
+    global SEQUENCE_MODE, SEQUENCE_FILES
+    SEQUENCE_MODE = False
+    # Sort the files based on episode number or any criteria you want
+    SEQUENCE_FILES.sort(key=lambda x: extract_episode_number(x))
+    for idx, file_path in enumerate(SEQUENCE_FILES, start=1):
+        await message.reply_text(f"File {idx}: {file_path}")
+    SEQUENCE_FILES = []
+    await message.reply_text("Sequence ended. Files sent in sequence order.")
+    
 
 # Pattern 1: S01E02 or S01EP02
 pattern1 = re.compile(r'S(\d+)(?:E|EP)(\d+)')
@@ -184,6 +167,11 @@ print(f"Extracted Episode Number: {episode_number}")
 # Inside the handler for file uploads
 @Client.on_message(filters.private & (filters.document | filters.video | filters.audio))
 async def auto_rename_files(client, message):
+    global SEQUENCE_MODE, SEQUENCE_FILES
+
+    user_id = message.from_user.id
+    firstname = message.from_user.first_name
+    
     user_id = message.from_user.id
     firstname = message.from_user.first_name
 
@@ -192,6 +180,12 @@ async def auto_rename_files(client, message):
         # User is not an admin, reply with USER_REPLY_TEXT
         if Config.USER_REPLY_TEXT:
             return await message.reply_text(Config.USER_REPLY_TEXT)
+
+    if SEQUENCE_MODE:
+        SEQUENCE_FILES.append(file_path)
+        await message.reply_text(f"File received successfully. Total files: {len(SEQUENCE_FILES)}")
+        return
+        
 
     # Continue with the rest of the function for admin users
     format_template = await db.get_format_template(user_id)
