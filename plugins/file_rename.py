@@ -21,6 +21,44 @@ import re
 FILES_CHANNEL = Config.FILES_CHANNEL
 
 renaming_operations = {}
+sequence_mode = False
+sequence_files = []
+
+@Client.on_message(filters.private & filters.command("startsequence"))
+async def start_sequence(client, message):
+    global sequence_mode, sequence_files
+    sequence_mode = True
+    sequence_files = []
+    await message.reply_text("Sequence mode started. Send your files.")
+
+# Function to end the sequence
+@Client.on_message(filters.private & filters.command("endsequence"))
+async def end_sequence(client, message):
+    global sequence_mode
+    sequence_mode = False
+    await message.reply_text("Sequence mode ended. Processing files...")
+
+# Function to handle file uploads during the sequence
+@Client.on_message(filters.private & (filters.document | filters.video | filters.audio) & filters.incoming)
+async def handle_sequence_files(client, message):
+    global sequence_mode, sequence_files
+
+    if sequence_mode:
+        if message.document or message.video or message.audio:
+            sequence_files.append(message)
+
+            # Reply with a success message for each file
+            await message.reply_text(f"File {len(sequence_files)} received successfully.")
+
+@Client.on_message(filters.private & filters.command("processfiles"))
+async def process_files(client, message):
+    global sequence_files
+
+    if sequence_files:
+        for idx, file_message in enumerate(sequence_files, start=1):
+            await auto_rename_files(client, file_message)
+            await message.reply_text(f"Processed file {idx}")            
+
 
 # Pattern 1: S01E02 or S01EP02
 pattern1 = re.compile(r'S(\d+)(?:E|EP)(\d+)')
