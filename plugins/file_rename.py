@@ -233,11 +233,8 @@ async def end_sequence(client, message):
         )
     
     else:
-        await message.reply_text("**ɴᴏ ꜰɪʟᴇs ᴛᴏ sᴇQᴜᴇɴᴄᴇ. Sᴇɴᴅ sᴏᴍᴇ ꜰɪʟᴇs ᴡɪᴛʜ /startsequence ꜰɪʀsᴛ.**")
-    
-else:
-await message.reply_text("**ɴᴏ ᴏɴɢᴏɪɴɢ ꜰɪʟᴇ sᴇQᴜᴇɴᴄɪɴɢ ᴘʀᴏᴄᴇss. Usᴇ /startsequence ᴛᴏ ʙᴇɢɪɴ.**")
-del user_file_sequences[user_id]
+        await message.reply_text("**ɴᴏ ᴏɴɢᴏɪɴɢ ꜰɪʟᴇ sᴇQᴜᴇɴᴄɪɴɢ ᴘʀᴏᴄᴇss. Usᴇ /startsequence ᴛᴏ ʙᴇɢɪɴ.**")
+        del user_file_sequences[user_id]
         
 # Inside the handler for file uploads
 @Client.on_message(filters.private & (filters.document | filters.video | filters.audio))
