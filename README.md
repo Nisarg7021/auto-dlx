@@ -80,15 +80,6 @@ broadcast - Send Message To All Users (Admin Only)
 <a href="https://t.me/dlx_smith">
    <p> DLX SMITH </p>
   </a>
-<a href="https://t.me/dlx_smith">
-   <p> DLX SMITH </p>
-  </a>
-
-## 🤩 INSPIRATION
-
-<a href="https://t.me/dlx_smith   
-<p> DLX SMITH </p>
-  </a>
 
 
 
