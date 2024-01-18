@@ -86,8 +86,8 @@ broadcast - Send Message To All Users (Admin Only)
 
 ## 🤩 INSPIRATION
 
-<a href="https://t.me/Trippy_xt">
-   <p>❣️ DLX 🔥</p>
+<a href="https://@dlx_smith   
+<p>❣️ DLX 🔥</p>
   </a>
 
 
