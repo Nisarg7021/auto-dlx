@@ -77,17 +77,17 @@ broadcast - Send Message To All Users (Admin Only)
 
 ## ❣️Thanks To
 
-<a href="https://t.me/Trippy_xt">
-   <p> Trippy </p>
+<a href="https://t.me/dlx_smith">
+   <p> DLX SMITH </p>
   </a>
-<a href="https://t.me/Nation_Bots">
-   <p> Nation Bots </p>
+<a href="https://t.me/dlx_smith">
+   <p> DLX SMITH </p>
   </a>
 
 ## 🤩 INSPIRATION
 
-<a href="https://@dlx_smith   
-<p>❣️ DLX 🔥</p>
+<a href="https://t.me/dlx_smith   
+<p> DLX SMITH </p>
   </a>
 
 
