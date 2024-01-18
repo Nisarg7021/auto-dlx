@@ -175,13 +175,13 @@ async def auto_rename_files(client, message):
         return await message.reply_text("Please set an auto rename format first using /autorename")
 
     # Extract information from the incoming file name
-    if message.document:
-        file_id = message.document.file_id
-        file_name = f"{message.document.file_name}.mp4"
-        media_type = media_preference or "video"  # Use preferred media type or default to document
-    elif message.video:
+    if message.video:
         file_id = message.video.file_id
-        file_name = message.video.file_name
+        file_name = f"{message.video.file_name}.mp4"
+        media_type = media_preference or "video"  # Use preferred media type or default to document
+    elif message.document:
+        file_id = message.document.file_id
+        file_name = message.document.file_name
         media_type = media_preference or "document"  # Use preferred media type or default to video
     elif message.audio:
         file_id = message.audio.file_id
