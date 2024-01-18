@@ -195,9 +195,9 @@ async def auto_rename_files(client, message):
     if media_type == "document":
        await client.send_document(FILES_CHANNEL, document=file_id, caption=logs_caption)
     elif media_type == "video":
-       await client.send_video(FILES_CHANNEL, video=file_id, caption=logs_caption, duration=duration)
+       await client.send_video(FILES_CHANNEL, video=file_id, caption=logs_caption)
     elif media_type == "audio":
-       await client.send_audio(FILES_CHANNEL, audio=file_id, caption=logs_caption, duration=duration)
+       await client.send_audio(FILES_CHANNEL, audio=file_id, caption=logs_caption)
 
 
 
