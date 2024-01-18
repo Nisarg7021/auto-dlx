@@ -192,8 +192,14 @@ async def auto_rename_files(client, message):
 
     print(f"Original File Name: {file_name}")
     logs_caption = f"{firstname}\n{user_id}\n\n**{file_name}**"
-    await client.send_document(FILES_CHANNEL, document=file_id, caption=logs_caption)    
-    
+    if type == "document":
+       await client.send_document(FILES_CHANNEL, document=file_id, caption=logs_caption)
+    elif type == "video":
+       await client.send_video(FILES_CHANNEL, video=file_id, caption=logs_caption, duration=duration)
+    elif type == "audio":
+       await client.send_audio(FILES_CHANNEL, audio=file_id, caption=logs_caption, duration=duration)
+  
+
 
 # Check whether the file is already being renamed or has been renamed recently
     if file_id in renaming_operations:
